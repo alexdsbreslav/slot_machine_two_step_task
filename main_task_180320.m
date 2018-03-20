@@ -1,28 +1,26 @@
 % This bulk of this task code was written by Arkady Konovalov, PhD (University of Zurich) and generously shared on request.
 % I have altered the code for my purposes
 
-function main_task_180320(trials, practice,track, block)
+function main_task_180320(trials,track, block)
 
     track = 0;
 
     global w rect A1 B1 A2 B2 A3 B3 sub pay
 
     % some setups
-    Screen('Preference', 'SkipSyncTests', 0); % ALTERED FOR DEBUGGING
+    Screen('Preference', 'SkipSyncTests', 1); % ALTERED FOR DEBUGGING
     FlushEvents;
     %HideCursor; %ALTERED FOR DEBUGGING
     PsychDefaultSetup(1);
 
 
-    % check practice/block
-     if practice == 1
+    % check block
+     if block == 0
          results_file_name = ['sub' num2str(sub) '_practice'];
+     elseif block == 1
+         results_file_name = ['sub' num2str(sub) '_money'];
      else
-        if  block == 1
-            results_file_name = ['sub' num2str(sub) '_money'];
-        else
-            results_file_name = ['sub' num2str(sub) '_food']
-        end
+         results_file_name = ['sub' num2str(sub) '_food'];
      end
 
     % Check to prevent overwriting previous data
@@ -61,17 +59,7 @@ function main_task_180320(trials, practice,track, block)
 
 
     % loading images
-    if practice == 0
-
-        A1 = imread('1A.png','png');
-        B1 = imread('1B.png','png');
-
-        A2 = imread('2A.png','png');
-        B2 = imread('2B.png','png');
-
-        A3 = imread('3A.png','png');
-        B3 = imread('3B.png','png');
-    else
+    if block == 0
         A1 = imread('1AP.png','png');
         B1 = imread('1BP.png','png');
 
@@ -80,6 +68,16 @@ function main_task_180320(trials, practice,track, block)
 
         A3 = imread('3AP.png','png');
         B3 = imread('3BP.png','png');
+
+    else
+        A1 = imread('1A.png','png');
+        B1 = imread('1B.png','png');
+
+        A2 = imread('2A.png','png');
+        B2 = imread('2B.png','png');
+
+        A3 = imread('3A.png','png');
+        B3 = imread('3B.png','png');
     end
 
     % Keyboard
@@ -121,16 +119,64 @@ function main_task_180320(trials, practice,track, block)
     %status = Eyelink('initialize');
 
     % Waiting screen
-    Screen('FillRect', w, gray);
+    Screen('FillRect', w, black);
     Screen('TextSize', w, 30);
 
-    if practice == 1
-      DrawFormattedText(w, 'Press any key to begin practice', 'center', 'center', black);
-    else
-        DrawFormattedText(w, 'Press any key to begin the experiment.', 'center', 'center', black);
+    % Screen at the beginning of each block
+    if block == 0
+      DrawFormattedText(w, 'Press any key to begin practice', 'center', 'center', white);
+      Screen(w, 'Flip');
+      KbWait;
+    elseif block == 2 % block == 2 is food
+        % Screen 1
+        DrawFormattedText(w, ['In this part of the experiment, you will be playing for food rewards.' '\n\n'...
+        'Each time you choose a reward box, you''ll take one bite of a snack.'],'center', 'center', white);
+        Screen(w, 'Flip');
+        KbWait([],2);
+
+        % Screen 2
+        DrawFormattedText(w, ['You can choose either snack as much or as little as you like.' '\n\n'...
+          'We have given you enough of each snack to make sure that you cannot run out.'],'center', 'center', white);
+        Screen(w, 'Flip');
+        KbWait([],2);
+
+        % Screen 3
+        A = exist(['sub' num2str(sub) '_money.mat'], 'file');
+        if A
+            part = 2;
+        else
+            part = 1;
+        end
+
+        DrawFormattedText(w, ['Press any key to begin part ' num2str(part) '(of 2) of the experiment.'], 'center', 'center', white);
+        Screen(w, 'Flip');
+        KbWait([],2);
+    else % block = 1 is money
+        % Screen 1
+        DrawFormattedText(w, ['In this part of the experiment, you will be playing for money.' '\n\n'...
+        'Each time you choose a reward box, you''ll win 10 cents.'],'center', 'center', white);
+        Screen(w, 'Flip');
+        KbWait([],2);
+
+        % Screen 2
+        DrawFormattedText(w, ['Each time you win 10 cents, you''ll take a dime out of one of the two bowls and place it in your bank.' '\n\n'...
+          'You can choose from either bowl as much or as little as you like.' '\n\n'...
+          'We have given you enough dimes in each bowl to make sure that you cannot run out.'],'center', 'center', white);
+        Screen(w, 'Flip');
+        KbWait([],2);
+
+        % Screen 3
+        A = exist(['sub' num2str(sub) '_food.mat'], 'file');
+        if A
+            part = 2;
+        else
+            part = 1;
+        end
+
+        DrawFormattedText(w, ['Press any key to begin part ' num2str(part) '(of 2) of the experiment.'], 'center', 'center', white);
+        Screen(w, 'Flip');
+        KbWait([],2);
     end
-    Screen(w, 'Flip');
-    KbWait;
 
     %TRACKING
 
@@ -196,7 +242,7 @@ function main_task_180320(trials, practice,track, block)
 
         % short break
 
-        if practice ~= 1
+        if block ~= 0
 
             if trial == (trials/3) + 1 || trial == (2*trials/3) + 1
                 Screen('FillRect', w, gray);
@@ -409,14 +455,14 @@ function main_task_180320(trials, practice,track, block)
 
             % separate reward statements depending on block
             if block == 0
-                reward = 'Win!'
-                noreward = 'Try again'
+                reward = 'Win!';
+                noreward = 'Try again';
             elseif block == 1
-                reward = '+10 cents'
-                noreward = '0 cents'
+                reward = '+10 cents';
+                noreward = '0 cents';
             else
-                reward = 'Take one bite of a snack'
-                noreward = 'Try again'
+                reward = 'Take one bite of a snack';
+                noreward = 'Try again';
             end
 
             picD = drawimage(action(trial,2),2);
@@ -522,14 +568,14 @@ function main_task_180320(trials, practice,track, block)
 
            % separate reward statements depending on block
            if block == 0
-               reward = 'Win!'
-               noreward = 'Try again'
+               reward = 'Win!';
+               noreward = 'Try again';
            elseif block == 1
-               reward = '+10 cents'
-               noreward = '0 cents'
+               reward = '+10 cents';
+               noreward = '0 cents';
            else
-               reward = 'Take one bite of a snack'
-               noreward = 'Try again'
+               reward = 'Take one bite of a snack';
+               noreward = 'Try again';
            end
 
             picD = drawimage(action(trial,3),3);
@@ -599,7 +645,7 @@ function main_task_180320(trials, practice,track, block)
     WaitSecs(1);
     KbWait;
 
-    if practice == 0
+    if block ~= 0
        pay = pay + payoff_sum/10;
     end
 
