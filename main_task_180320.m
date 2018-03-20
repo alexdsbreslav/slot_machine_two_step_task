@@ -1,7 +1,4 @@
-% This bulk of this task code was written by Arkady Konovalov, PhD (University of Zurich) and generously shared on request.
-% I have altered the code for my purposes
-
-function main_task_180316(trials, practice,track)
+function main_task_180320(trials, practice,track)
 
     track = 0;
 
@@ -12,6 +9,7 @@ function main_task_180316(trials, practice,track)
     FlushEvents;
     %HideCursor; %ALTERED FOR DEBUGGING
     PsychDefaultSetup(1);
+
 
     % check if practice or not
      if practice == 1
@@ -275,7 +273,7 @@ function main_task_180316(trials, practice,track)
             Screen('DrawTexture', w, picL, [], Lpoint);
             Screen('DrawTexture', w, picR, [], Rpoint);
             Screen('FrameRect',w,white,Lchoice);
-           Screen('Flip',w);
+            Screen('Flip',w);
 
        elseif down_key == R
 
