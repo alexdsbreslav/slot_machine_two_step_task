@@ -1,3 +1,5 @@
+% This bulk of this task code was written by Arkady Konovalov, PhD (University of Zurich) and generously shared on request.
+
 function main_task_180316(trials, practice,track)
 
     track = 0;
