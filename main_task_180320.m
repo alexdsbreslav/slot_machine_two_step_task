@@ -1,24 +1,28 @@
 % This bulk of this task code was written by Arkady Konovalov, PhD (University of Zurich) and generously shared on request.
 % I have altered the code for my purposes
 
-function main_task_180320(trials, practice,track)
+function main_task_180320(trials, practice,track, block)
 
     track = 0;
 
     global w rect A1 B1 A2 B2 A3 B3 sub pay
 
     % some setups
-    Screen('Preference', 'SkipSyncTests', 1); % ALTERED FOR DEBUGGING
+    Screen('Preference', 'SkipSyncTests', 0); % ALTERED FOR DEBUGGING
     FlushEvents;
     %HideCursor; %ALTERED FOR DEBUGGING
     PsychDefaultSetup(1);
 
 
-    % check if practice or not
+    % check practice/block
      if practice == 1
          results_file_name = ['sub' num2str(sub) '_practice'];
      else
-        results_file_name = ['sub' num2str(sub) '_maintask'];
+        if  block == 1
+            results_file_name = ['sub' num2str(sub) '_money'];
+        else
+            results_file_name = ['sub' num2str(sub) '_food']
+        end
      end
 
     % Check to prevent overwriting previous data
@@ -403,14 +407,24 @@ function main_task_180320(trials, practice,track)
 
             % choice - payoff screen
 
+            % separate reward statements depending on block
+            if block == 0
+                reward = 'Win!'
+                noreward = 'Try again'
+            elseif block == 1
+                reward = '+10 cents'
+                noreward = '0 cents'
+            else
+                reward = 'Take one bite of a snack'
+                noreward = 'Try again'
+            end
 
             picD = drawimage(action(trial,2),2);
-
             Screen('DrawTexture', w, picD, [], Mpoint);
             if payoff(trial,1) == 1
-                DrawFormattedText(w, '+1 point', 'center', rect(4)*0.8, white);
+                DrawFormattedText(w, reward, 'center', rect(4)*0.8, white);
             else
-                DrawFormattedText(w, '0 points', 'center', rect(4)*0.8, white);
+                DrawFormattedText(w, noreward, 'center', rect(4)*0.8, white);
             end
 
             Screen('Flip', w);
@@ -451,9 +465,6 @@ function main_task_180320(trials, practice,track)
 
             position(trial,3) = round(rand); %randomizing images positions
             type = position(trial,3);
-
-
-
 
             picL = drawimage(type,3);
             picR = drawimage(1-type,3);
@@ -509,12 +520,24 @@ function main_task_180320(trials, practice,track)
                WaitSecs(0.5);
            end
 
+           % separate reward statements depending on block
+           if block == 0
+               reward = 'Win!'
+               noreward = 'Try again'
+           elseif block == 1
+               reward = '+10 cents'
+               noreward = '0 cents'
+           else
+               reward = 'Take one bite of a snack'
+               noreward = 'Try again'
+           end
+
             picD = drawimage(action(trial,3),3);
             Screen('DrawTexture', w, picD, [], Mpoint);
             if payoff(trial,2) == 1
-                DrawFormattedText(w, '+1 point', 'center', rect(4)*0.8, white);
+                DrawFormattedText(w, reward, 'center', rect(4)*0.8, white);
             else
-                DrawFormattedText(w, '0 points', 'center', rect(4)*0.8, white);
+                DrawFormattedText(w, noreward, 'center', rect(4)*0.8, white);
             end
 
             Screen('Flip', w);
