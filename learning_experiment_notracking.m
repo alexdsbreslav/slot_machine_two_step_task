@@ -1,3 +1,10 @@
+% This task was written by Arkady Konovalov, PhD (University of Zurich) and generously shared on request.
+% This code is not my original work; it is posted here to use GitHub for version control as I adapt Arkady's
+% task for my own purposes
+ 
+% Please do not use or reproduce without written consent from the original author.
+
+
 function learning_experiment_notracking(trials, bars, practice,track)
      
     track = 0;
