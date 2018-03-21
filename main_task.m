@@ -634,19 +634,29 @@ function main_task_180320(trials,track, block)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     % Payoff screen
+    if block == 1 % money block
+        payoff_sum = sum(nansum(payoff));
+        Screen(w, 'FillRect', black);
+        Screen('TextSize', w, 30);
+        DrawFormattedText(w, 'This part of the experiment is complete. You earned:', 'center', 'center', white);
+        DrawFormattedText(w,  num2str(payoff_sum), 'center', rect(4)*0.6, black);
+        DrawFormattedText(w, 'Press any key to continue to the next part', 'center', rect(4)*0.8, white);
+        Screen(w, 'Flip');
+        WaitSecs(1);
+        KbWait;
 
-    payoff_sum = sum(nansum(payoff));
-    Screen(w, 'FillRect', gray);
-    Screen('TextSize', w, 30);
-    DrawFormattedText(w, 'This part is complete. Your payoff in points in all rounds:', 'center', 'center', black);
-    DrawFormattedText(w,  num2str(payoff_sum), 'center', rect(4)*0.6, black);
-    DrawFormattedText(w, 'Press any key to continue to the next part', 'center', rect(4)*0.8, black);
-    Screen(w, 'Flip');
-    WaitSecs(1);
-    KbWait;
+    if block == 2 % food block
+        payoff_sum = sum(nansum(payoff));
+        Screen(w, 'FillRect', black);
+        Screen('TextSize', w, 30);
+        DrawFormattedText(w, ['This part of the experiment is complete.' '\n\n'...
+          'Press any key to contine to the next part.'], 'center', 'center', white);
+        Screen(w, 'Flip');
+        WaitSecs(1);
+        KbWait;
 
-    if block ~= 0
-       pay = pay + payoff_sum/10;
+    if block == 1
+       pay = pay + payoff_sum;
     end
 
 %     Screen('Close',w);
