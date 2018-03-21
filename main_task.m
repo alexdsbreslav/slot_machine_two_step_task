@@ -84,7 +84,10 @@ function main_task(trials,track, block)
     KbName('UnifyKeyNames');
     L = KbName('LeftArrow');
     R = KbName('RightArrow');
-
+    exitKeys = KbName({'e', 'E'});
+    spaceKey = KbName('space');
+    startFirstKeys = KbName({'b', 'B'});
+    continueKeys = KbName({'c', 'C'})
 
     % Variables
 
@@ -124,9 +127,18 @@ function main_task(trials,track, block)
 
     % Screen at the beginning of each block
     if block == 0
-      DrawFormattedText(w, 'Press any key to begin the practice round', 'center', 'center', white);
-      Screen(w, 'Flip');
-      KbWait;
+        DrawFormattedText(w, 'Press b to begin the practice round', 'center', 'center', white);
+        Screen(w, 'Flip');
+
+        while 1 %wait for response and allow exit if necessesary
+          [keyIsDown, ~, keyCode] = KbCheck;
+          if keyIsDown && any(keyCode(exitKeys))
+              sca; return
+          elseif keyIsDown && any(keyCode(startFirstKeys))
+              break
+          end
+        end
+
     elseif block == 2 % block == 2 is food
         A = exist(['sub' num2str(sub) '_money.mat'], 'file');
         if A
@@ -154,9 +166,18 @@ function main_task(trials,track, block)
 
         % Screen 3
 
-        DrawFormattedText(w, ['Press any key to begin part ' num2str(part) '(of 2) of the experiment.'], 'center', 'center', white);
+        DrawFormattedText(w, ['Press b to begin part ' num2str(part) '(of 2) of the experiment.'], 'center', 'center', white);
         Screen(w, 'Flip');
-        KbWait([],2);
+
+        while 1 %wait for response and allow exit if necessesary
+          [keyIsDown, ~, keyCode] = KbCheck;
+          if keyIsDown && any(keyCode(exitKeys))
+              sca; return
+          elseif keyIsDown && any(keyCode(startFirstKeys))
+              break
+          end
+        end
+
     else % block = 1 is money
         A = exist(['sub' num2str(sub) '_food.mat'], 'file');
         if A
@@ -188,9 +209,18 @@ function main_task(trials,track, block)
         KbWait([],2);
 
         % Screen 4
-        DrawFormattedText(w, ['Press any key to begin part ' num2str(part) '(of 2) of the experiment.'], 'center', 'center', white);
+        DrawFormattedText(w, ['Press b to begin part ' num2str(part) '(of 2) of the experiment.'], 'center', 'center', white);
         Screen(w, 'Flip');
-        KbWait([],2);
+
+        while 1 %wait for response and allow exit if necessesary
+          [keyIsDown, ~, keyCode] = KbCheck;
+          if keyIsDown && any(keyCode(exitKeys))
+              sca; return
+          elseif keyIsDown && any(keyCode(startFirstKeys))
+              break
+          end
+        end
+
     end
 
     %TRACKING
@@ -260,11 +290,11 @@ function main_task(trials,track, block)
         if block ~= 0
 
             if trial == (trials/3) + 1 || trial == (2*trials/3) + 1
-                Screen('FillRect', w, gray);
+                Screen('FillRect', w, black);
                 Screen('TextSize', w, 30);
-                DrawFormattedText(w, 'You can take a short break. Press left or right to continue', 'center', 'center', black);
+                DrawFormattedText(w, 'You can take a short break. Press left or right to continue', 'center', 'center', white);
                 Screen(w, 'Flip');
-                KbWait;
+                KbWait([],2);
             end
         end
 
@@ -651,25 +681,58 @@ function main_task(trials,track, block)
     % Payoff screen
     payoff_sum = sum(nansum(payoff))/10;
 
-    if block == 1 % money block
+    if block == 0 % practice
+        Screen(w, 'FillRect', black);
+        Screen('TextSize', w, 30);
+        DrawFormattedText(w, 'You have completed the practice round.', 'center', 'center', white);
+        DrawFormattedText(w, 'Press c to continue to the experiment', 'center', rect(4)*0.8, white);
+        Screen(w, 'Flip');
+        WaitSecs(1);
+
+        while 1 %wait for response and allow exit if necessesary
+          [keyIsDown, ~, keyCode] = KbCheck;
+          if keyIsDown && any(keyCode(exitKeys))
+              sca; return
+          elseif keyIsDown && any(keyCode(continueKeys))
+              break
+          end
+        end
+
+    elseif block == 1 % money block
         Screen(w, 'FillRect', black);
         Screen('TextSize', w, 30);
         DrawFormattedText(w, 'This part of the experiment is complete. You earned:', 'center', 'center', white);
         DrawFormattedText(w,  ['$' sprintf('%.2f', payoff_sum)], 'center', rect(4)*0.6, white);
-        DrawFormattedText(w, 'Press any key to continue to the next part', 'center', rect(4)*0.8, white);
+        DrawFormattedText(w, 'Press c to continue to the next part', 'center', rect(4)*0.8, white);
         Screen(w, 'Flip');
         WaitSecs(1);
-        KbWait;
-    end
 
-    if block == 2 % food block
+        while 1 %wait for response and allow exit if necessesary
+          [keyIsDown, ~, keyCode] = KbCheck;
+          if keyIsDown && any(keyCode(exitKeys))
+              sca; return
+          elseif keyIsDown && any(keyCode(continueKeys))
+              break
+          end
+        end
+
+    elseif block == 2 % food block
         Screen(w, 'FillRect', black);
         Screen('TextSize', w, 30);
         DrawFormattedText(w, ['This part of the experiment is complete.' '\n\n'...
-          'Press any key to contine to the next part.'], 'center', 'center', white);
+          'Press c to contine to the next part.'], 'center', 'center', white);
         Screen(w, 'Flip');
         WaitSecs(1);
-        KbWait;
+
+        while 1 %wait for response and allow exit if necessesary
+          [keyIsDown, ~, keyCode] = KbCheck;
+          if keyIsDown && any(keyCode(exitKeys))
+              sca; return
+          elseif keyIsDown && any(keyCode(continueKeys))
+              break
+          end
+        end
+
     end
 
     if block == 1
