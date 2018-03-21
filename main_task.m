@@ -177,9 +177,7 @@ function main_task(trials,track, block)
         KbWait([],2);
 
         % Screen 2
-        DrawFormattedText(w, ['Each time you win 10 cents, you''ll take a dime out of one of the two bowls and place it in your bank.' '\n\n'...
-          'You can choose from either bowl as much or as little as you like.' '\n\n'...
-          'We have given you enough dimes in each bowl to make sure that you cannot run out.'],'center', 'center', white);
+        DrawFormattedText(w, ['Each time you win 10 cents, you''ll take a dime out of one of the two bowls and place it in your bank.'],'center', 'center', white);
         Screen(w, 'Flip');
         KbWait([],2);
 
@@ -657,7 +655,7 @@ function main_task(trials,track, block)
         Screen(w, 'FillRect', black);
         Screen('TextSize', w, 30);
         DrawFormattedText(w, 'This part of the experiment is complete. You earned:', 'center', 'center', white);
-        DrawFormattedText(w,  sprintf('%.2f', num2str(payoff_sum)), 'center', rect(4)*0.6, white);
+        DrawFormattedText(w,  ['$' sprintf('%.2f', payoff_sum)], 'center', rect(4)*0.6, white);
         DrawFormattedText(w, 'Press any key to continue to the next part', 'center', rect(4)*0.8, white);
         Screen(w, 'Flip');
         WaitSecs(1);
@@ -665,7 +663,6 @@ function main_task(trials,track, block)
     end
 
     if block == 2 % food block
-        payoff_sum = sum(nansum(payoff));
         Screen(w, 'FillRect', black);
         Screen('TextSize', w, 30);
         DrawFormattedText(w, ['This part of the experiment is complete.' '\n\n'...
