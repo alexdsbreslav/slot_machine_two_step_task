@@ -1,7 +1,7 @@
 % This bulk of this task code was written by Arkady Konovalov, PhD (University of Zurich) and generously shared on request.
 % I have altered the code for my purposes
 
-function main_task_180320(trials,track, block)
+function main_task(trials,track, block)
 
     track = 0;
 
@@ -644,6 +644,7 @@ function main_task_180320(trials,track, block)
         Screen(w, 'Flip');
         WaitSecs(1);
         KbWait;
+    end
 
     if block == 2 % food block
         payoff_sum = sum(nansum(payoff));
@@ -654,6 +655,7 @@ function main_task_180320(trials,track, block)
         Screen(w, 'Flip');
         WaitSecs(1);
         KbWait;
+    end
 
     if block == 1
        pay = pay + payoff_sum;
