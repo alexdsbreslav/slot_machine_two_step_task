@@ -124,11 +124,23 @@ function main_task(trials,track, block)
 
     % Screen at the beginning of each block
     if block == 0
-      DrawFormattedText(w, 'Press any key to begin practice', 'center', 'center', white);
+      DrawFormattedText(w, 'Press any key to begin the practice round', 'center', 'center', white);
       Screen(w, 'Flip');
       KbWait;
     elseif block == 2 % block == 2 is food
-        % Screen 1
+        A = exist(['sub' num2str(sub) '_money.mat'], 'file');
+        if A
+            part = 2;
+            % Screen 1a if we are on block 2
+            DrawFormattedText(w, ['This is part 2(of 2) of the experiment.' '\n\n'...
+            'The rules of the game are exactly the same, but the chances of winning from each reward block have been reset!'],'center', 'center', white);
+            Screen(w, 'Flip');
+            KbWait([],2);
+        else
+            part = 1;
+        end
+
+        % Screen 1b
         DrawFormattedText(w, ['In this part of the experiment, you will be playing for food rewards.' '\n\n'...
         'Each time you choose a reward box, you''ll take one bite of a snack.'],'center', 'center', white);
         Screen(w, 'Flip');
@@ -141,17 +153,23 @@ function main_task(trials,track, block)
         KbWait([],2);
 
         % Screen 3
-        A = exist(['sub' num2str(sub) '_money.mat'], 'file');
-        if A
-            part = 2;
-        else
-            part = 1;
-        end
 
         DrawFormattedText(w, ['Press any key to begin part ' num2str(part) '(of 2) of the experiment.'], 'center', 'center', white);
         Screen(w, 'Flip');
         KbWait([],2);
     else % block = 1 is money
+        A = exist(['sub' num2str(sub) '_food.mat'], 'file');
+        if A
+            part = 2;
+            % Screen 1a if we are on block 2
+            DrawFormattedText(w, ['This is part 2(of 2) of the experiment.' '\n\n'...
+            'The rules of the game are exactly the same, but the chances of winning from each reward block have been reset!'],'center', 'center', white);
+            Screen(w, 'Flip');
+            KbWait([],2);
+        else
+            part = 1;
+        end
+
         % Screen 1
         DrawFormattedText(w, ['In this part of the experiment, you will be playing for money.' '\n\n'...
         'Each time you choose a reward box, you''ll win 10 cents.'],'center', 'center', white);
@@ -166,13 +184,12 @@ function main_task(trials,track, block)
         KbWait([],2);
 
         % Screen 3
-        A = exist(['sub' num2str(sub) '_food.mat'], 'file');
-        if A
-            part = 2;
-        else
-            part = 1;
-        end
+        DrawFormattedText(w, ['You can choose from either bowl as much or as little as you like.' '\n\n'...
+          'We have given you enough dimes in each bowl to make sure that you cannot run out.'],'center', 'center', white);
+        Screen(w, 'Flip');
+        KbWait([],2);
 
+        % Screen 4
         DrawFormattedText(w, ['Press any key to begin part ' num2str(part) '(of 2) of the experiment.'], 'center', 'center', white);
         Screen(w, 'Flip');
         KbWait([],2);
@@ -634,13 +651,13 @@ function main_task(trials,track, block)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     % Payoff screen
-    payoff_sum = sum(nansum(payoff));
+    payoff_sum = sum(nansum(payoff))/10;
 
     if block == 1 % money block
         Screen(w, 'FillRect', black);
         Screen('TextSize', w, 30);
         DrawFormattedText(w, 'This part of the experiment is complete. You earned:', 'center', 'center', white);
-        DrawFormattedText(w,  num2str(payoff_sum), 'center', rect(4)*0.6, black);
+        DrawFormattedText(w,  sprintf('%.2f', num2str(payoff_sum)), 'center', rect(4)*0.6, white);
         DrawFormattedText(w, 'Press any key to continue to the next part', 'center', rect(4)*0.8, white);
         Screen(w, 'Flip');
         WaitSecs(1);
@@ -659,7 +676,7 @@ function main_task(trials,track, block)
     end
 
     if block == 1
-       pay = pay + payoff_sum/10;
+       pay = 7 + payoff_sum; % base pay for my task is $7
     end
 
 %     Screen('Close',w);
