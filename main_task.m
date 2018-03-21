@@ -634,8 +634,9 @@ function main_task(trials,track, block)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     % Payoff screen
+    payoff_sum = sum(nansum(payoff));
+
     if block == 1 % money block
-        payoff_sum = sum(nansum(payoff));
         Screen(w, 'FillRect', black);
         Screen('TextSize', w, 30);
         DrawFormattedText(w, 'This part of the experiment is complete. You earned:', 'center', 'center', white);
@@ -658,7 +659,7 @@ function main_task(trials,track, block)
     end
 
     if block == 1
-       pay = pay + payoff_sum;
+       pay = pay + payoff_sum/10;
     end
 
 %     Screen('Close',w);
