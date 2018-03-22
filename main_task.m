@@ -1,5 +1,9 @@
-% This bulk of this task code was written by Arkady Konovalov, PhD (University of Zurich) and generously shared on request.
-% I have altered the code for my purposes
+% The bulk of this task code was written by Arkady Konovalov, PhD (University of Zurich)
+% and generously shared on request. I have superficially altered the script to be amenable to
+% multiple blocks with different reward structures. Portions of this code have been pulled
+% from a script written by Nikki Sullivan, PhD (Duke University) with her permission. 
+
+% Please do not share or use this script without the permission of all invovled parties.
 
 function main_task(trials,track, block)
 
