@@ -1,7 +1,7 @@
 % The bulk of this task code was written by Arkady Konovalov, PhD (University of Zurich)
 % and generously shared on request. I have superficially altered the script to be amenable to
 % multiple blocks with different reward structures. Portions of this code have been pulled
-% from a script written by Nikki Sullivan, PhD (Duke University) with her permission. 
+% from a script written by Nikki Sullivan, PhD (Duke University) with her permission.
 
 % Please do not share or use this script without the permission of all invovled parties.
 
@@ -227,41 +227,6 @@ function main_task(trials,track, block)
 
     end
 
-    %TRACKING
-
-
-%      el = EyelinkInitDefaults(w);
-%      EyelinkInit(0);
-%     Screen('FillRect', w, gray);
-%     Screen('Flip', w);
-
-
-
-    %Eyelink('Command', 'link_sample_data = LEFT,RIGHT,GAZE,AREA');
-%     if practice == 1
-%     etfilename = ['edata' num2str(sub)  'p.edf'];
-%     else
-%         etfilename = ['edata' num2str(sub) num2str(bars) '.edf'];
-%     end
-%     et_on_time = NaN(trials,1);
-%     et_off_time = NaN(trials,1);
-%
-%     createFile=1;
-%
-%      if createFile
-%         status=Eyelink('OpenFile',etfilename);
-%         if status~=0
-%             error('openfile error, status: ',status)
-%         end
-%      end
-%
-%     if practice == 0
-%         if bars == 0
-%             EyelinkDoTrackerSetup(el);
-%         end
-%     end
-    %EyelinkDoDriftCorrection(el);
-
     Screen('CloseAll');
 
 
@@ -273,11 +238,6 @@ function main_task(trials,track, block)
 
     [w, rect] = Screen('OpenWindow', whichScreen, 0,[], 32, ...
         doublebuffer+1,[],[],kPsychNeedFastBackingStore);
-
-%     Eyelink('startrecording');
-%     evt = Eyelink('NewestFloatSample');
-%     et0 = evt.time;
-
 
     % Trial loop
 
@@ -307,26 +267,6 @@ function main_task(trials,track, block)
         Screen('TextSize', w, 60);
         DrawFormattedText(w, '+', 'center', 'center', white);
         Screen(w, 'Flip');
-
-%         if track == 1
-%         %the following section gets eyeposition data from the eye
-%             %tracker and makes the subject stare at the cross for 2 s
-%             timeonfix=0;
-%             fixstart=GetSecs;
-%             while timeonfix<1
-%                 evt = Eyelink('NewestFloatSample');
-%                 mx = evt.gx(eye_used+1); % +1 as we're accessing MATLAB array (Why?)
-%                 my = evt.gy(eye_used+1);
-%
-%                 if mx<0.4*rect(3) || mx>0.6*rect(3) || my<0.35*rect(4) || my>0.65*rect(4)
-%                     fixstart = GetSecs;
-%                 end
-%
-%                 timeonfix=GetSecs-fixstart;
-%             end
-%         else
-          WaitSecs(1);
-%         end
 
         % Draw indicators
 
@@ -418,26 +358,6 @@ function main_task(trials,track, block)
             DrawFormattedText(w, '+', 'center', 'center', white);
             Screen(w, 'Flip');
 
-%             if track == 1
-%             %the following section gets eyeposition data from the eye
-%                 %tracker and makes the subject stare at the cross for 2 s
-%                 timeonfix=0;
-%                 fixstart=GetSecs;
-%                 while timeonfix<1
-%                     evt = Eyelink('NewestFloatSample');
-%                     mx = evt.gx(eye_used+1); % +1 as we're accessing MATLAB array (Why?)
-%                     my = evt.gy(eye_used+1);
-%
-%                     if mx<0.4*rect(3) || mx>0.6*rect(3) || my<0.35*rect(4) || my>0.65*rect(4)
-%                         fixstart = GetSecs;
-%                     end
-%
-%                     timeonfix=GetSecs-fixstart;
-%                 end
-%             else
-                WaitSecs(1);
-%             end
-
             %choice screen
             Screen(w, 'FillRect', black);
 
@@ -466,9 +386,7 @@ function main_task(trials,track, block)
             end
 
             choice_off_time(trial,2) = GetSecs - t0;
-%             evt = Eyelink('newestfloatsample');
-%             et_off_time(trial,2) = evt.time - et0;
-%
+
             down_key = find(key_code,1);
 
             if (down_key==L && type == 0) || (down_key==R && type == 1)
@@ -534,26 +452,6 @@ function main_task(trials,track, block)
             DrawFormattedText(w, '+', 'center', 'center', white);
             Screen(w, 'Flip');
 
-%             if track == 1
-%             %the following section gets eyeposition data from the eye
-%                 %tracker and makes the subject stare at the cross for 2 s
-%                 timeonfix=0;
-%                 fixstart=GetSecs;
-%                 while timeonfix<1
-%                     evt = Eyelink('NewestFloatSample');
-%                     mx = evt.gx(eye_used+1); % +1 as we're accessing MATLAB array (Why?)
-%                     my = evt.gy(eye_used+1);
-%
-%                     if mx<0.4*rect(3) || mx>0.6*rect(3) || my<0.35*rect(4) || my>0.65*rect(4)
-%                         fixstart = GetSecs;
-%                     end
-%
-%                     timeonfix=GetSecs-fixstart;
-%                 end
-%             else
-                 WaitSecs(1);
-%             end
-
             %choice screen
 
             Screen(w, 'FillRect', black);
@@ -570,8 +468,6 @@ function main_task(trials,track, block)
             Screen('Flip', w);
 
             choice_on_time(trial,3) = GetSecs - t0;
-%             evt = Eyelink('newestfloatsample');
-%             et_on_time(trial,3) = evt.time - et0;
 
             key_is_down = 0;
             FlushEvents;
@@ -582,9 +478,7 @@ function main_task(trials,track, block)
             end
 
             choice_off_time(trial,3) = GetSecs - t0;
-%             evt = Eyelink('newestfloatsample');
-%             et_off_time(trial,3) = evt.time - et0;
-%
+
             down_key = find(key_code,1);
 
             if (down_key==L && type == 0) || (down_key==R && type == 1)
@@ -661,26 +555,12 @@ function main_task(trials,track, block)
     two_stage_task_data.action = action;
     two_stage_task_data.on = choice_on_time;
     two_stage_task_data.off = choice_off_time;
-%     two_stage_task_data.eton = et_on_time;
-%     two_stage_task_data.etoff = et_off_time;
     two_stage_task_data.rt = choice_off_time-choice_on_time;
     two_stage_task_data.transition_prob = a;
     two_stage_task_data.payoff_prob = payoff_prob;
     two_stage_task_data.payoff = payoff;
     two_stage_task_data.state = state;
-%   two_stage_task_data.et0 = et0; ALTERED FOR DEBUGGING; I THINK THIS IS A
-%   TRACKING VARIABLE
     save(results_file_name, 'two_stage_task_data', '-v6');
-
-     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%turn off eyetracking
-%         Eyelink('stoprecording');
-%
-%
-%     Eyelink('closefile');
-%     status = Eyelink('receivefile',etfilename);
-%     Eyelink('shutdown');
-
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     % Payoff screen
     payoff_sum = sum(nansum(payoff))/10;
