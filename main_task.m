@@ -5,9 +5,7 @@
 
 % Please do not share or use this script without the permission of all invovled parties.
 
-function main_task(trials,track, block)
-
-    track = 0;
+function main_task(trials, block)
 
     global w rect A1 B1 A2 B2 A3 B3 sub pay
 
@@ -61,6 +59,11 @@ function main_task(trials,track, block)
     Lchoice = CenterRectOnPoint(rc, rect(3)/4, rect(4)*0.3); %drawingpoints on screen
     Rchoice = CenterRectOnPoint(rc, 3*rect(3)/4, rect(4)*0.3);
 
+    %stimuli selection
+    stim_color_step1 = randperm(3);
+    stim_colors_step2 = randperm (3);
+    stim_prac_symbol = randperm(6);
+    stim_symbol = randperm(12);
 
     % loading images
     if block == 0
@@ -110,7 +113,6 @@ function main_task(trials,track, block)
 
     blue = [152,205,232];
     purple = [196,182,206];
-
 
     % blank matrices for variables
     action = NaN(trials,3);
@@ -242,8 +244,6 @@ function main_task(trials,track, block)
     % Trial loop
 
     t0 = GetSecs;
-
-%     eye_used = Eyelink('eyeavailable'); % get eye that's tracked
 
     for trial = 1:trials
 
@@ -549,18 +549,22 @@ function main_task(trials,track, block)
     RestrictKeysForKbCheck([]);
 
     %saving data
-    two_stage_task_data = struct;
-    two_stage_task_data.subject = sub; %*ones(trials,1);
-    two_stage_task_data.position = position;
-    two_stage_task_data.action = action;
-    two_stage_task_data.on = choice_on_time;
-    two_stage_task_data.off = choice_off_time;
-    two_stage_task_data.rt = choice_off_time-choice_on_time;
-    two_stage_task_data.transition_prob = a;
-    two_stage_task_data.payoff_prob = payoff_prob;
-    two_stage_task_data.payoff = payoff;
-    two_stage_task_data.state = state;
-    save(results_file_name, 'two_stage_task_data', '-v6');
+    task_data = struct;
+    task_data.subject = sub; %*ones(trials,1);
+    task_data.stim_color_step1 = stim_color_step1;
+    task_data.stim_colors_step2 = stim_colors_step2;
+    task_data.stim_prac_symbol = stim_prac_symbol;
+    task_data.stim_symbol = stim_symbol;
+    task_data.position = position;
+    task_data.action = action;
+    task_data.on = choice_on_time;
+    task_data.off = choice_off_time;
+    task_data.rt = choice_off_time-choice_on_time;
+    task_data.transition_prob = a;
+    task_data.payoff_prob = payoff_prob;
+    task_data.payoff = payoff;
+    task_data.state = state;
+    save(results_file_name, 'task_data', '-v6');
 
     % Payoff screen
     payoff_sum = sum(nansum(payoff))/10;
