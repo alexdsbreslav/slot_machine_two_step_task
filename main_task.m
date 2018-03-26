@@ -94,7 +94,7 @@ function main_task(trials, block)
     exitKeys = KbName({'e', 'E'});
     spaceKey = KbName('space');
     startFirstKeys = KbName({'b', 'B'});
-    continueKeys = KbName({'c', 'C'})
+    continueKeys = KbName({'c', 'C'});
 
     % Variables
 
@@ -267,6 +267,7 @@ function main_task(trials, block)
         Screen('TextSize', w, 60);
         DrawFormattedText(w, '+', 'center', 'center', white);
         Screen(w, 'Flip');
+        WaitSecs(1);
 
         % Draw indicators
 
@@ -289,8 +290,6 @@ function main_task(trials, block)
 
 
         choice_on_time(trial,1) = GetSecs - t0;
-%         evt = Eyelink('newestfloatsample');
-%         et_on_time(trial,1) = evt.time - et0;
 
         key_is_down = 0;
         FlushEvents;
@@ -301,8 +300,7 @@ function main_task(trials, block)
         end
 
         choice_off_time(trial,1) = GetSecs - t0;
-%         evt = Eyelink('newestfloatsample');
-%         et_off_time(trial,1) = evt.time - et0;
+
         down_key = find(key_code,1);
 
         if (down_key==L && type == 0) || (down_key==R && type == 1)
@@ -357,6 +355,7 @@ function main_task(trials, block)
             Screen('TextSize', w, 60);
             DrawFormattedText(w, '+', 'center', 'center', white);
             Screen(w, 'Flip');
+            WaitSecs(1);
 
             %choice screen
             Screen(w, 'FillRect', black);
@@ -374,8 +373,6 @@ function main_task(trials, block)
             Screen('Flip', w);
 
             choice_on_time(trial,2) = GetSecs - t0;
-%             evt = Eyelink('newestfloatsample');
-%             et_on_time(trial,2) = evt.time - et0;
 
             key_is_down = 0;
             FlushEvents;
@@ -451,6 +448,7 @@ function main_task(trials, block)
             Screen('TextSize', w, 60);
             DrawFormattedText(w, '+', 'center', 'center', white);
             Screen(w, 'Flip');
+            WaitSecs(1);
 
             %choice screen
 
