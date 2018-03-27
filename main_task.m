@@ -7,7 +7,10 @@
 
 function main_task(trials, block)
 
-    global w rect A1 B1 A2 B2 A3 B3 sub pay stim_color_step1 stim_colors_step2 stim_prac_symbol stim_symbol
+    global w rect A1 B1 A2 B2 A3 B3 sub pay stim_color_step1 stim_colors_step2 stim_prac_symbol stim_symbol rand_num_gen
+
+    % assign the rng to the value that was determined in start; seed will differ for each participant
+    rng(rand_num_gen);
 
     % some setups
     Screen('Preference', 'SkipSyncTests', 1); % ALTERED FOR DEBUGGING
@@ -91,10 +94,8 @@ function main_task(trials, block)
     continueKeys = KbName({'c', 'C'});
 
     % Variables
-
-
-
     a = 0.4 + 0.6.*rand(trials,2); %transition probabilities
+    r = rand(trials, 2); %transition determinant
 
     % colors
     gray = 150;
@@ -117,6 +118,7 @@ function main_task(trials, block)
 
     payoff_prob = zeros(trials,4);
     payoff_prob(1,:) = 0.25 + 0.5.*rand(1,4);
+    payoff_det = rand(trials,4);
     payoff = NaN(trials,2);
 
     % Waiting screen
@@ -318,14 +320,18 @@ function main_task(trials, block)
 
         % second stage transition randomization
 
-        r = rand;
+        % a is a Gaussian distribution from 0.4 - 1.0 (mean = 0.7).
+        % r is a Guassian distribution from 0 - 1 (mean = 0.5).
+        % this code basically says that when you choose A, go to state 2 70% of the time;
+        % when you choose B, goes to state 2 30% of the time
+
         if action(trial,1) == 0
-            if  r < a(trial,1)
+            if  r(trial, 1) < a(trial,1)
                 state(trial,1) = 2;
             else state(trial,1) = 3;
             end
         else
-            if  r > a(trial,2)
+            if  r(trial, 2) > a(trial,2)
                 state(trial,1) = 2;
             else state(trial,1) = 3;
             end
@@ -380,13 +386,13 @@ function main_task(trials, block)
 
             if (down_key==L && type == 0) || (down_key==R && type == 1)
                 action(trial,2)=0;
-                if rand <  payoff_prob(trial,1)
+                if payoff_det(trial, 1) <  payoff_prob(trial,1)
                     payoff(trial,1) = 1;
                 else payoff(trial,1) = 0;
                 end
             elseif (down_key==L && type == 1) || (down_key==R && type == 0)
                 action(trial,2)=1;
-                if rand <  payoff_prob(trial,2)
+                if payoff_det(trial, 2) <  payoff_prob(trial,2)
                     payoff(trial,1) = 1;
                 else payoff(trial,1) = 0;
                 end
@@ -473,13 +479,13 @@ function main_task(trials, block)
 
             if (down_key==L && type == 0) || (down_key==R && type == 1)
                 action(trial,3)=0;
-                if rand <  payoff_prob(trial,3)
+                if payoff_det(trial, 3) <  payoff_prob(trial,3)
                     payoff(trial,2) = 1;
                 else payoff(trial,2) = 0;
                 end
             elseif (down_key==L && type == 1) || (down_key==R && type == 0)
                 action(trial,3)=1;
-                if rand <  payoff_prob(trial,4)
+                if payoff_det(trial, 4) <  payoff_prob(trial,4)
                     payoff(trial,2) = 1;
                 else payoff(trial,2) = 0;
                 end
@@ -541,6 +547,7 @@ function main_task(trials, block)
     %saving data
     task_data = struct;
     task_data.subject = sub; %*ones(trials,1);
+    task_data.rand_num_gen = rand_num_gen;
     task_data.stim_color_step1 = stim_color_step1(block+1); % stimuli are always selected where 1st item in array goes to practice, then money, then food
     task_data.stim_colors_step2 = stim_colors_step2(block+1);
 
@@ -558,7 +565,9 @@ function main_task(trials, block)
     task_data.off = choice_off_time;
     task_data.rt = choice_off_time-choice_on_time;
     task_data.transition_prob = a;
+    task_data.transition_det = r;
     task_data.payoff_prob = payoff_prob;
+    task_data.payoff_det = payoff_det;
     task_data.payoff = payoff;
     task_data.state = state;
     save(results_file_name, 'task_data', '-v6');
