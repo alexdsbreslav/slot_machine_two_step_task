@@ -7,7 +7,7 @@
 
 function main_task(trials, block)
 
-    global w rect A1 B1 A2 B2 A3 B3 sub pay
+    global w rect A1 B1 A2 B2 A3 B3 sub pay stim_color_step1 stim_colors_step2 stim_prac_symbol stim_symbol
 
     % some setups
     Screen('Preference', 'SkipSyncTests', 1); % ALTERED FOR DEBUGGING
@@ -58,12 +58,6 @@ function main_task(trials, block)
     Mpoint = CenterRectOnPoint(r, rect(3)/2, rect(4)*0.5);
     Lchoice = CenterRectOnPoint(rc, rect(3)/4, rect(4)*0.3); %drawingpoints on screen
     Rchoice = CenterRectOnPoint(rc, 3*rect(3)/4, rect(4)*0.3);
-
-    %stimuli selection
-    stim_color_step1 = randperm(3);
-    stim_colors_step2 = randperm (3);
-    stim_prac_symbol = randperm(6);
-    stim_symbol = randperm(12);
 
     % loading images
     if block == 0
@@ -124,8 +118,6 @@ function main_task(trials, block)
     payoff_prob = zeros(trials,4);
     payoff_prob(1,:) = 0.25 + 0.5.*rand(1,4);
     payoff = NaN(trials,2);
-
-    %status = Eyelink('initialize');
 
     % Waiting screen
     Screen('FillRect', w, black);
@@ -267,7 +259,7 @@ function main_task(trials, block)
         Screen('TextSize', w, 60);
         DrawFormattedText(w, '+', 'center', 'center', white);
         Screen(w, 'Flip');
-        WaitSecs(1);
+        WaitSecs(.4);
 
         % Draw indicators
 
@@ -355,7 +347,7 @@ function main_task(trials, block)
             Screen('TextSize', w, 60);
             DrawFormattedText(w, '+', 'center', 'center', white);
             Screen(w, 'Flip');
-            WaitSecs(1);
+            WaitSecs(.4);
 
             %choice screen
             Screen(w, 'FillRect', black);
@@ -448,7 +440,7 @@ function main_task(trials, block)
             Screen('TextSize', w, 60);
             DrawFormattedText(w, '+', 'center', 'center', white);
             Screen(w, 'Flip');
-            WaitSecs(1);
+            WaitSecs(.4);
 
             %choice screen
 
@@ -549,10 +541,17 @@ function main_task(trials, block)
     %saving data
     task_data = struct;
     task_data.subject = sub; %*ones(trials,1);
-    task_data.stim_color_step1 = stim_color_step1;
-    task_data.stim_colors_step2 = stim_colors_step2;
-    task_data.stim_prac_symbol = stim_prac_symbol;
-    task_data.stim_symbol = stim_symbol;
+    task_data.stim_color_step1 = stim_color_step1(block+1); % stimuli are always selected where 1st item in array goes to practice, then money, then food
+    task_data.stim_colors_step2 = stim_colors_step2(block+1);
+
+    if block == 0
+        task_data.stim_symbol = stim_prac_symbol;
+    elseif block == 1 % first 6 symbols always go to money block
+        task_data.stim_symbol = stim_symbol(1:6);
+    else % second 6 symbols in the arrary always go to food block
+        task_data.stim_symbol = stim_symbol(7:12);
+    end
+
     task_data.position = position;
     task_data.action = action;
     task_data.on = choice_on_time;
