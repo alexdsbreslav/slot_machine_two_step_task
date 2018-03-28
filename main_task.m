@@ -9,9 +9,10 @@ function main_task(trials, block)
 
     global w rect A1 B1 A2 B2 A3 B3 sub pay stim_color_step1 stim_colors_step2 stim_prac_symbol stim_symbol
 
-    % assign the rng to the value that was determined in start; seed will differ for each participant
-    rng('shuffle')
-    rng_seed = rng.Seed;
+    % shuffle the rng and save the seed
+    rng('shuffle');
+    rng_seed = rng;
+    rng_seed = rng_seed.Seed;
 
     % some setups
     Screen('Preference', 'SkipSyncTests', 1); % ALTERED FOR DEBUGGING
