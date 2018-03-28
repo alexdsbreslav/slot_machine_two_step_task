@@ -7,12 +7,7 @@
 
 function main_task(trials, block)
 
-    global w rect A1 B1 A2 B2 A3 B3 sub pay stim_color_step1 stim_colors_step2 stim_prac_symbol stim_symbol
-
-    % shuffle the rng and save the seed
-    rng('shuffle');
-    rng_seed = rng;
-    rng_seed = rng_seed.Seed;
+    global w rect A1 B1 A2 B2 A3 B3 sub pay stim_color_step1 stim_colors_step2 stim_prac_symbol stim_symbol rng_seed
 
     % some setups
     Screen('Preference', 'SkipSyncTests', 1); % ALTERED FOR DEBUGGING
