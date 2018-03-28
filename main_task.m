@@ -7,10 +7,11 @@
 
 function main_task(trials, block)
 
-    global w rect A1 B1 A2 B2 A3 B3 sub pay stim_color_step1 stim_colors_step2 stim_prac_symbol stim_symbol rand_num_gen
+    global w rect A1 B1 A2 B2 A3 B3 sub pay stim_color_step1 stim_colors_step2 stim_prac_symbol stim_symbol
 
     % assign the rng to the value that was determined in start; seed will differ for each participant
-    rng(rand_num_gen);
+    rng('shuffle')
+    rng_seed = rng.Seed;
 
     % some setups
     Screen('Preference', 'SkipSyncTests', 1); % ALTERED FOR DEBUGGING
@@ -546,8 +547,7 @@ function main_task(trials, block)
 
     %saving data
     task_data = struct;
-    rand_num_gen = rand_num_gen;
-
+    task_data.rng_seed = rng_seed;
     task_data.subject = sub; %*ones(trials,1);
     task_data.stim_color_step1 = stim_color_step1(block+1); % stimuli are always selected where 1st item in array goes to practice, then money, then food
     task_data.stim_colors_step2 = stim_colors_step2(block+1);
@@ -573,7 +573,6 @@ function main_task(trials, block)
     task_data.state = state;
 
     save(results_file_name, 'task_data', '-v6');
-    save('sub' [num2string(sub) '_rng'], 'rand_num_gen')
 
     % Payoff screen
     payoff_sum = sum(nansum(payoff))/10;
