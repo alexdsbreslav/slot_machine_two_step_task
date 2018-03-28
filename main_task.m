@@ -261,7 +261,7 @@ function main_task(trials, block)
         Screen('TextSize', w, 60);
         DrawFormattedText(w, '+', 'center', 'center', white);
         Screen(w, 'Flip');
-        WaitSecs(.4);
+        WaitSecs(.5);
 
         % Draw indicators
 
@@ -353,7 +353,7 @@ function main_task(trials, block)
             Screen('TextSize', w, 60);
             DrawFormattedText(w, '+', 'center', 'center', white);
             Screen(w, 'Flip');
-            WaitSecs(.4);
+            WaitSecs(.5);
 
             %choice screen
             Screen(w, 'FillRect', black);
@@ -446,7 +446,7 @@ function main_task(trials, block)
             Screen('TextSize', w, 60);
             DrawFormattedText(w, '+', 'center', 'center', white);
             Screen(w, 'Flip');
-            WaitSecs(.4);
+            WaitSecs(.5);
 
             %choice screen
 
@@ -546,8 +546,9 @@ function main_task(trials, block)
 
     %saving data
     task_data = struct;
+    rand_num_gen = rand_num_gen;
+
     task_data.subject = sub; %*ones(trials,1);
-    task_data.rand_num_gen = rand_num_gen;
     task_data.stim_color_step1 = stim_color_step1(block+1); % stimuli are always selected where 1st item in array goes to practice, then money, then food
     task_data.stim_colors_step2 = stim_colors_step2(block+1);
 
@@ -570,7 +571,9 @@ function main_task(trials, block)
     task_data.payoff_det = payoff_det;
     task_data.payoff = payoff;
     task_data.state = state;
+
     save(results_file_name, 'task_data', '-v6');
+    save('sub' [num2string(sub) '_rng'], 'rand_num_gen')
 
     % Payoff screen
     payoff_sum = sum(nansum(payoff))/10;
