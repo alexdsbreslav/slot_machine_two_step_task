@@ -16,7 +16,7 @@ function main_task(trials, block)
     PsychDefaultSetup(1);
 
     %create file name string for sub with leading zeros
-    filename_subnum = pad(num2str(sub), 3, 'left', '0')
+    filename_subnum = pad(num2str(sub), 3, 'left', '0');
 
     % check block
      if block == 0
