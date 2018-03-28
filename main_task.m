@@ -15,14 +15,16 @@ function main_task(trials, block)
     %HideCursor; %ALTERED FOR DEBUGGING
     PsychDefaultSetup(1);
 
+    %create file name string for sub with leading zeros
+    filename_subnum = pad(num2str(sub), 3, 'left', '0')
 
     % check block
      if block == 0
-         results_file_name = ['sub' sub '_practice'];
+         results_file_name = ['sub' filename_subnum '_practice'];
      elseif block == 1
-         results_file_name = ['sub' sub '_money'];
+         results_file_name = ['sub' filename_subnum '_money'];
      else
-         results_file_name = ['sub' sub '_food'];
+         results_file_name = ['sub' filename_subnum '_food'];
      end
 
     % Check to prevent overwriting previous data
@@ -137,7 +139,7 @@ function main_task(trials, block)
         end
 
     elseif block == 2 % block == 2 is food
-        A = exist(['sub' sub '_money.mat'], 'file');
+        A = exist(['sub' num2str(sub) '_money.mat'], 'file');
         if A
             part = 2;
             % Screen 1a if we are on block 2
@@ -176,7 +178,7 @@ function main_task(trials, block)
         end
 
     else % block = 1 is money
-        A = exist(['sub' sub '_food.mat'], 'file');
+        A = exist(['sub' num2str(sub) '_food.mat'], 'file');
         if A
             part = 2;
             % Screen 1a if we are on block 2
