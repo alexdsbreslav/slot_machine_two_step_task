@@ -7,7 +7,7 @@
 
 function main_task(trials, block)
 
-    global w rect A1 B1 A2 B2 A3 B3 sub pay stim_color_step1 stim_colors_step2 stim_prac_symbol stim_symbol rng_seed
+    global w rect A1 B1 A2 B2 A3 B3 sub pay stim_color_step1 stim_colors_step2 stim_step2_color_select stim_prac_symbol stim_symbol rng_seed
 
     % some setups
     Screen('Preference', 'SkipSyncTests', 1); % ALTERED FOR DEBUGGING
@@ -63,7 +63,20 @@ function main_task(trials, block)
 
     % loading images
     if block == 0
-        A1 = imread('1AP.png','png');
+      folder = 'practice';
+      A1_symbol = stim_prac_symbol(1)
+      B1_symbol = stim_prace_symbol(2)
+
+    else
+      folder = 'main_task';
+      A1_symbol = stim_symbol(1)
+      B1_symbol = stim_symbol(2)
+
+    A1B1_color = stim_color_step1(block+1);
+
+    if block == 0
+        A1 = imread(['stimuli/practice/' char(stim_colors_step2) '/' char(stim_step2_color_select) '/' ...
+          char(stim_prac_symbol(1)) '.png'],'png');
         B1 = imread('1BP.png','png');
 
         A2 = imread('2AP.png','png');
