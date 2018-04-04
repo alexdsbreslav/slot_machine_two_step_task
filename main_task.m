@@ -64,8 +64,6 @@ function main_task(trials, block)
 
     % loading images from the randomized permutations
 
-    % change A1 and B1 because we only need the one color!
-
     if block == 0
         A1 = imread(['stimuli/practice/' char(stim_color_step1(1)) '/' ...
           char(stim_prac_symbol(1)) '.png'],'png');
@@ -100,19 +98,19 @@ function main_task(trials, block)
 
     else
         A1 = imread(['stimuli/main_task/' char(stim_color_step1(3)) '/' ...
-          char(stim_symbol(1)) '.png'],'png');
+          char(stim_symbol(7)) '.png'],'png');
         B1 = imread(['stimuli/main_task/' char(stim_color_step1(3)) '/' ...
-          char(stim_symbol(2)) '.png'],'png');
+          char(stim_symbol(8)) '.png'],'png');
 
         A2 = imread(['stimuli/main_task/' char(stim_colors_step2(3)) '/' char(stim_step2_color_select(1)) '/' ...
-          char(stim_symbol(3)) '.png'],'png');
+          char(stim_symbol(9)) '.png'],'png');
         B2 = imread(['stimuli/main_task/' char(stim_colors_step2(3)) '/' char(stim_step2_color_select(1)) '/' ...
-          char(stim_symbol(4)) '.png'],'png');
+          char(stim_symbol(10)) '.png'],'png');
 
         A3 = imread(['stimuli/main_task/' char(stim_colors_step2(3)) '/' char(stim_step2_color_select(2)) '/' ...
-          char(stim_symbol(5)) '.png'],'png');
+          char(stim_symbol(11)) '.png'],'png');
         B3 = imread(['stimuli/main_task/' char(stim_colors_step2(3)) '/' char(stim_step2_color_select(2)) '/' ...
-          char(stim_symbol(6)) '.png'],'png');
+          char(stim_symbol(12)) '.png'],'png');
     end
 
     % Keyboard
@@ -131,12 +129,12 @@ function main_task(trials, block)
     % colors
     gray = 150;
     black = 0;
-    white = 255;
+    white = [255]; % changed this to green; chosen color
     brown = [102,51,0];
+    chosen_color = [0 220 0]
 
     % indicator drawing points
     ind = [0,0,400,50];
-
     blue = [152,205,232];
     purple = [196,182,206];
 
@@ -311,6 +309,8 @@ function main_task(trials, block)
 
         Screen('DrawTexture', w, picL, [], Lpoint);
         Screen('DrawTexture', w, picR, [], Rpoint);
+        Screen('FrameRect',w,white,Lchoice,10); %outline the stimuli with white box
+        Screen('FrameRect',w,white,Rchoice,10);
         Screen('Flip', w);
 
 
@@ -337,14 +337,18 @@ function main_task(trials, block)
         if down_key == L
             Screen('DrawTexture', w, picL, [], Lpoint);
             Screen('DrawTexture', w, picR, [], Rpoint);
-            Screen('FrameRect',w,white,Lchoice);
+            Screen('FrameRect',w,chosen_color,Lchoice,10);
+            Screen('FrameRect',w,white,Rchoice,10);
+
             Screen('Flip',w);
 
        elseif down_key == R
 
            Screen('DrawTexture', w, picL, [], Lpoint);
            Screen('DrawTexture', w, picR, [], Rpoint);
-           Screen('FrameRect',w,white,Rchoice);
+           Screen('FrameRect',w,chosen_color,Rchoice,10);
+           Screen('FrameRect',w,white,Lchoice,10);
+
            Screen('Flip',w);
         end
 
@@ -399,6 +403,8 @@ function main_task(trials, block)
 
             Screen('DrawTexture', w, picL, [], Lpoint);
             Screen('DrawTexture', w, picR, [], Rpoint);
+            Screen('FrameRect',w,white,Lchoice,10); % outline the stimuli with white box
+            Screen('FrameRect',w,white,Rchoice,10);
             Screen('Flip', w);
 
             choice_on_time(trial,2) = GetSecs - t0;
@@ -432,13 +438,15 @@ function main_task(trials, block)
             if down_key == L
                 Screen('DrawTexture', w, picL, [], Lpoint);
                 Screen('DrawTexture', w, picR, [], Rpoint);
-                Screen('FrameRect',w,white,Lchoice);
+                Screen('FrameRect',w,chosen_color,Lchoice,10);
+                Screen('FrameRect',w,white,Rchoice,10);
                 Screen('Flip',w);
                WaitSecs(0.5);
            elseif down_key == R
                Screen('DrawTexture', w, picL, [], Lpoint);
                Screen('DrawTexture', w, picR, [], Rpoint);
-               Screen('FrameRect',w,white,Rchoice);
+               Screen('FrameRect',w,chosen_color,Rchoice,10);
+               Screen('FrameRect',w,white,Lchoice,10);
                Screen('Flip',w);
                WaitSecs(0.5);
            end
@@ -492,6 +500,8 @@ function main_task(trials, block)
 
             Screen('DrawTexture', w, picL, [], Lpoint);
             Screen('DrawTexture', w, picR, [], Rpoint);
+            Screen('FrameRect',w,white,Lchoice,10); % outline stimuli with white box
+            Screen('FrameRect',w,white,Rchoice,10);
             Screen('Flip', w);
 
             choice_on_time(trial,3) = GetSecs - t0;
@@ -525,13 +535,17 @@ function main_task(trials, block)
             if down_key == L
                 Screen('DrawTexture', w, picL, [], Lpoint);
                 Screen('DrawTexture', w, picR, [], Rpoint);
-                Screen('FrameRect',w,white,Lchoice);
+                Screen('FrameRect',w,chosen_color,Lchoice,10);
+                Screen('FrameRect',w,white,Rchoice,10);
+
                 Screen('Flip',w);
                 WaitSecs(0.5);
            elseif down_key == R
                Screen('DrawTexture', w, picL, [], Lpoint);
                Screen('DrawTexture', w, picR, [], Rpoint);
-               Screen('FrameRect',w,white,Rchoice);
+               Screen('FrameRect',w,chosen_color,Rchoice,10);
+               Screen('FrameRect',w,white,Lchoice,10);
+
                Screen('Flip',w);
                WaitSecs(0.5);
            end
