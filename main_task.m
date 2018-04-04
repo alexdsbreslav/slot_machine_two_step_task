@@ -7,8 +7,10 @@
 
 function main_task(trials, block)
 
-    global w rect A1 B1 A2 B2 A3 B3 sub pay stim_color_step1 ...
-    stim_colors_step2 stim_step2_color_select stim_prac_symbol stim_symbol rng_seed
+    global w rect sub pay stim_color_step1 ...
+    stim_colors_step2 stim_step2_color_select ...
+    stim_prac_symbol stim_symbol rng_seed ...
+    A1 B1 A2 B2 A3 B3
 
     % some setups
     Screen('Preference', 'SkipSyncTests', 1); % ALTERED FOR DEBUGGING
@@ -129,9 +131,9 @@ function main_task(trials, block)
     % colors
     gray = 150;
     black = 0;
-    white = [255]; % changed this to green; chosen color
+    white = [255];
     brown = [102,51,0];
-    chosen_color = [0 220 0]
+    chosen_color = [0 220 0];
 
     % indicator drawing points
     ind = [0,0,400,50];
