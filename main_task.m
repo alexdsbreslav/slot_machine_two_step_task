@@ -154,7 +154,7 @@ function main_task(trials, block)
 
     % Waiting screen
     Screen('FillRect', w, black);
-    Screen('TextSize', w, 30);
+    Screen('TextSize', w, 40);
 
     % Screen at the beginning of each block
     if block == 0
@@ -171,12 +171,15 @@ function main_task(trials, block)
         end
 
     elseif block == 2 % block == 2 is food
-        A = exist(['sub' num2str(sub) '_money.mat'], 'file');
+        A = exist(['sub' filename_subnum '_money.mat'], 'file');
         if A
             part = 2;
             % Screen 1a if we are on block 2
-            DrawFormattedText(w, ['This is part 2(of 2) of the experiment.' '\n\n'...
-            'The rules of the game are exactly the same, but the chances of winning from each reward block have been reset!'],'center', 'center', white);
+            DrawFormattedText(w, [
+                'This is part 2(of 2) of the experiment.' '\n\n'...
+                'The rules of the game are exactly the same, but the chances of' '\n' ...
+                'winning from each reward block have been reset!' ...
+                ],'center', 'center', white, [], [], [], 1.6);
             Screen(w, 'Flip');
             KbWait([],2);
         else
@@ -184,20 +187,27 @@ function main_task(trials, block)
         end
 
         % Screen 1b
-        DrawFormattedText(w, ['In this part of the experiment, you will be playing for food rewards.' '\n\n'...
-        'Each time you choose a reward box, you''ll take one bite of a snack.'],'center', 'center', white);
+        DrawFormattedText(w, [
+            'In this part of the experiment, you will be playing for food rewards.' '\n\n'...
+            'Each time you choose a reward box, you''ll take one bite of a snack.'
+            ],'center', 'center', white, [], [], [], 1.6);
         Screen(w, 'Flip');
         KbWait([],2);
 
         % Screen 2
-        DrawFormattedText(w, ['You can choose either snack as much or as little as you like.' '\n\n'...
-          'We have given you enough of each snack to make sure that you cannot run out.'],'center', 'center', white);
+        DrawFormattedText(w, [
+            'You can choose either snack as much or as little as you like.' '\n\n'...
+            'We have given you enough of each snack to' '\n' ...
+            'make sure that you cannot run out.' ...
+            ],'center', 'center', white, [], [], [], 1.6);
         Screen(w, 'Flip');
         KbWait([],2);
 
         % Screen 3
 
-        DrawFormattedText(w, ['Press b to begin part ' num2str(part) '(of 2) of the experiment.'], 'center', 'center', white);
+        DrawFormattedText(w, [
+            'Press b to begin part ' num2str(part) '(of 2) of the experiment.' ...
+            ], 'center', 'center', white);
         Screen(w, 'Flip');
 
         while 1 %wait for response and allow exit if necessesary
@@ -210,12 +220,15 @@ function main_task(trials, block)
         end
 
     else % block = 1 is money
-        A = exist(['sub' num2str(sub) '_food.mat'], 'file');
+        A = exist(['sub' filename_subnum '_food.mat'], 'file');
         if A
             part = 2;
             % Screen 1a if we are on block 2
-            DrawFormattedText(w, ['This is part 2(of 2) of the experiment.' '\n\n'...
-            'The rules of the game are exactly the same, but the chances of winning from each reward block have been reset!'],'center', 'center', white);
+            DrawFormattedText(w, [
+                'This is part 2(of 2) of the experiment.' '\n\n'...
+                'The rules of the game are exactly the same, but the chances' '\n' ...
+                'of winning from each reward block have been reset!' ...
+                ],'center', 'center', white, [], [], [], 1.6);
             Screen(w, 'Flip');
             KbWait([],2);
         else
@@ -223,24 +236,34 @@ function main_task(trials, block)
         end
 
         % Screen 1
-        DrawFormattedText(w, ['In this part of the experiment, you will be playing for money.' '\n\n'...
-        'Each time you choose a reward box, you''ll win 10 cents.'],'center', 'center', white);
+        DrawFormattedText(w, [
+            'In this part of the experiment, you will be playing for money.' '\n\n'...
+            'Each time you choose a reward box, you''ll win 10 cents.' ...
+            ],'center', 'center', white, [], [], [], 1.6);
         Screen(w, 'Flip');
         KbWait([],2);
 
         % Screen 2
-        DrawFormattedText(w, ['Each time you win 10 cents, you''ll take a dime out of one of the two bowls and place it in your bank.'],'center', 'center', white);
+        DrawFormattedText(w, [
+            'Each time you win 10 cents, you''ll take a dime out of one' '\n' ...
+            'of the two bowls and place it in your bank.' ...
+            ],'center', 'center', white, [], [], [], 1.6);
         Screen(w, 'Flip');
         KbWait([],2);
 
         % Screen 3
-        DrawFormattedText(w, ['You can choose from either bowl as much or as little as you like.' '\n\n'...
-          'We have given you enough dimes in each bowl to make sure that you cannot run out.'],'center', 'center', white);
+        DrawFormattedText(w, [
+            'You can choose from either bowl as much or as little as you like.' '\n\n'...
+            'We have given you enough dimes in each bowl.' '\n' ...
+            'to make sure that you cannot run out.' ...
+            ],'center', 'center', white, [], [], [], 1.6);
         Screen(w, 'Flip');
         KbWait([],2);
 
         % Screen 4
-        DrawFormattedText(w, ['Press b to begin part ' num2str(part) '(of 2) of the experiment.'], 'center', 'center', white);
+        DrawFormattedText(w, [
+            'Press b to begin part ' num2str(part) '(of 2) of the experiment.'
+            ], 'center', 'center', white);
         Screen(w, 'Flip');
 
         while 1 %wait for response and allow exit if necessesary
@@ -280,8 +303,10 @@ function main_task(trials, block)
 
             if trial == (trials/3) + 1 || trial == (2*trials/3) + 1
                 Screen('FillRect', w, black);
-                Screen('TextSize', w, 30);
-                DrawFormattedText(w, 'You can take a short break. Press left or right to continue', 'center', 'center', white);
+                Screen('TextSize', w, 40);
+                DrawFormattedText(w, [
+                    'You can take a short break. Press left or right to continue' ...
+                    ],'center', 'center', white);
                 Screen(w, 'Flip');
                 KbWait([],2);
             end
@@ -377,9 +402,6 @@ function main_task(trials, block)
 
 
         WaitSecs(1);
-
-        % state 2 (blue state) and 3 (purple state)
-
 
 
         if state(trial,1) == 2
@@ -625,9 +647,9 @@ function main_task(trials, block)
 
     if block == 0 % practice
         Screen(w, 'FillRect', black);
-        Screen('TextSize', w, 30);
+        Screen('TextSize', w, 40);
         DrawFormattedText(w, 'You have completed the practice round.', 'center', 'center', white);
-        DrawFormattedText(w, 'Press c to continue to the experiment', 'center', rect(4)*0.8, white);
+        DrawFormattedText(w, 'Press c to continue to the experiment', 'center', rect(4)*0.75, white);
         Screen(w, 'Flip');
         WaitSecs(1);
 
@@ -642,10 +664,10 @@ function main_task(trials, block)
 
     elseif block == 1 % money block
         Screen(w, 'FillRect', black);
-        Screen('TextSize', w, 30);
+        Screen('TextSize', w, 40);
         DrawFormattedText(w, 'This part of the experiment is complete. You earned:', 'center', 'center', white);
         DrawFormattedText(w,  ['$' sprintf('%.2f', payoff_sum)], 'center', rect(4)*0.6, white);
-        DrawFormattedText(w, 'Press c to continue to the next part', 'center', rect(4)*0.8, white);
+        DrawFormattedText(w, 'Press c to continue to the next part', 'center', rect(4)*0.75, white);
         Screen(w, 'Flip');
         WaitSecs(1);
 
@@ -660,7 +682,7 @@ function main_task(trials, block)
 
     elseif block == 2 % food block
         Screen(w, 'FillRect', black);
-        Screen('TextSize', w, 30);
+        Screen('TextSize', w, 40);
         DrawFormattedText(w, ['This part of the experiment is complete.' '\n\n'...
           'Press c to contine to the next part.'], 'center', 'center', white);
         Screen(w, 'Flip');
