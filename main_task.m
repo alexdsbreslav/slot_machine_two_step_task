@@ -13,6 +13,7 @@ function main_task(trials, block)
     A1 B1 A2 B2 A3 B3
 
     % some setups
+    Screen('Preference', 'VisualDebugLevel', 1);% change psych toolbox screen check to black
     Screen('Preference', 'SkipSyncTests', 1); % ALTERED FOR DEBUGGING
     FlushEvents;
     %HideCursor; %ALTERED FOR DEBUGGING
