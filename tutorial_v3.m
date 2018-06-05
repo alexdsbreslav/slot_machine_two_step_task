@@ -139,13 +139,16 @@ state2_token = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(s
    'token.png'],'png');
 state3_token = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(2)) '/' ...
   'token.png'],'png');
+spent_token = imread(['stimuli/practice/spent token.png'],'png');
 
-% slot machine
-slot = imread(['stimuli/practice/Slot Machine.png'],'png');
+% slot machines
+step1_slot = imread(['stimuli/practice/' char(stim_color_step1(1)) '/Slot Machine.png'],'png');
+state2_slot = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(1)) '/Slot Machine.png'],'png');
+state3_slot = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(2)) '/Slot Machine.png'],'png');
 
 % rooms
-room_one = imread(['stimuli/practice/Room One.png'],'png');
-room_two = imread(['stimuli/practice/Room Two.png'],'png');
+token_room = imread(['stimuli/practice/' char(stim_color_step1(1)) '/token room.png'],'png');
+prize_room = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/prize room.png'],'png');
 
 % win/lose
 win = imread(['stimuli/practice/win.png'],'png');
@@ -157,11 +160,18 @@ A2 = Screen('MakeTexture', w, A2);
 B2 = Screen('MakeTexture', w, B2);
 A3 = Screen('MakeTexture', w, A3);
 B3 = Screen('MakeTexture', w, B3);
+
 state2_token = Screen('MakeTexture', w, state2_token);
 state3_token = Screen('MakeTexture', w, state3_token);
-slot = Screen('MakeTexture', w, slot);
-room_one = Screen('MakeTexture', w, room_one);
-room_two = Screen('MakeTexture', w, room_two);
+spent_token = Screen('MakeTexture', w, spent_token);
+
+step1_slot = Screen('MakeTexture', w, step1_slot);
+state2_slot = Screen('MakeTexture', w, state2_slot);
+state3_slot = Screen('MakeTexture', w, state3_slot);
+
+token_room = Screen('MakeTexture', w, token_room);
+prize_room = Screen('MakeTexture', w, prize_room);
+
 win = Screen('MakeTexture', w, win);
 lose = Screen('MakeTexture', w, lose);
 
@@ -209,7 +219,7 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % screen 4
-Screen('DrawTexture', w, slot, [], slot_Upoint);
+Screen('DrawTexture', w, step1_slot, [], slot_Upoint);
 Screen('FrameRect',w,white,slot_label_Uframe,10);
 DrawFormattedText(w,[
     'In this strategy game, there are six slot machines' ...
@@ -219,7 +229,7 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % screen 5
-Screen('DrawTexture', w, slot, [], slot_Upoint);
+Screen('DrawTexture', w, step1_slot, [], slot_Upoint);
 Screen('FrameRect',w,white,slot_label_Uframe,10);
 DrawFormattedText(w,[
     'During the game, you''ll play these slot' '\n' ...
@@ -230,7 +240,7 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % screen 6
-Screen('DrawTexture', w, slot, [], slot_Upoint);
+Screen('DrawTexture', w, step1_slot, [], slot_Upoint);
 Screen('FrameRect',w,white,slot_label_Uframe,10);
 DrawFormattedText(w,[
     'The goal of the game is to find the best slot machine.' '\n' ...
@@ -241,7 +251,7 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % screen 7
-Screen('DrawTexture', w, slot, [], slot_Upoint);
+Screen('DrawTexture', w, step1_slot, [], slot_Upoint);
 Screen('FrameRect',w,white,slot_label_Uframe,10);
 DrawFormattedText(w,[
     'To win rewards in this strategy game, you''ll need to pay close' '\n' ...
@@ -252,8 +262,8 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % screen 8
-Screen('DrawTexture', w, room_one, [], room_Lpoint);
-Screen('DrawTexture', w, room_two, [], room_Rpoint);
+Screen('DrawTexture', w, token_room, [], room_Lpoint);
+Screen('DrawTexture', w, prize_room, [], room_Rpoint);
 DrawFormattedText(w,[
      'The six slot machines are split up into two rooms.' ...
      ],'center',rect(4)*0.75, [], [], [], [], 1.6);
@@ -262,17 +272,17 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % screen 9.1
-Screen('DrawTexture', w, room_one, [], room_Upoint);
+Screen('DrawTexture', w, token_room, [], room_Upoint);
 DrawFormattedText(w,[
-    'In ROOM ONE, there are TWO SLOT MACHINES...' ...
+    'In the TOKEN ROOM, there are TWO SLOT MACHINES...' ...
     ],'center',rect(4)*0.75, [], [], [], [], 1.6);
 Screen('Flip',w);
 WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % screen 9.2
-Screen('DrawTexture', w, slot, [], slot_Lpoint);
-Screen('DrawTexture', w, slot, [], slot_Rpoint);
+Screen('DrawTexture', w, step1_slot, [], slot_Lpoint);
+Screen('DrawTexture', w, step1_slot, [], slot_Rpoint);
 Screen('DrawTexture', w, A1, [], slot_label_Lpoint);
 Screen('DrawTexture', w, B1, [], slot_label_Rpoint);
 Screen('FrameRect',w,white,slot_label_Lframe,10);
@@ -285,17 +295,17 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % screen 10.1
-Screen('DrawTexture', w, room_two, [], room_Upoint);
+Screen('DrawTexture', w, prize_room, [], room_Upoint);
 DrawFormattedText(w,[
-    'In ROOM TWO, there are FOUR SLOT MACHINES...' ...
+    'In the PRIZE ROOM, there are FOUR SLOT MACHINES...' ...
     ],'center',rect(4)*0.75, [], [], [], [], 1.6);
 Screen('Flip',w);
 WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % screen 10.2
-Screen('DrawTexture', w, slot, [], slot_Lpoint);
-Screen('DrawTexture', w, slot, [], slot_Rpoint);
+Screen('DrawTexture', w, state2_slot, [], slot_Lpoint);
+Screen('DrawTexture', w, state2_slot, [], slot_Rpoint);
 Screen('DrawTexture', w, A2, [], slot_label_Lpoint);
 Screen('DrawTexture', w, B2, [], slot_label_Rpoint);
 Screen('FrameRect',w,white,slot_label_Lframe,10);
@@ -308,8 +318,8 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % screen 10.3
-Screen('DrawTexture', w, slot, [], slot_Lpoint);
-Screen('DrawTexture', w, slot, [], slot_Rpoint);
+Screen('DrawTexture', w, state3_slot, [], slot_Lpoint);
+Screen('DrawTexture', w, state3_slot, [], slot_Rpoint);
 Screen('DrawTexture', w, A3, [], slot_label_Lpoint);
 Screen('DrawTexture', w, B3, [], slot_label_Rpoint);
 Screen('FrameRect',w,white,slot_label_Lframe,10);
@@ -322,8 +332,8 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % screen 11.1
-Screen('DrawTexture', w, slot, [], slot_Lpoint);
-Screen('DrawTexture', w, slot, [], slot_Rpoint);
+Screen('DrawTexture', w, step1_slot, [], slot_Lpoint);
+Screen('DrawTexture', w, step1_slot, [], slot_Rpoint);
 Screen('FrameRect',w,white,slot_label_Lframe,10);
 Screen('FrameRect',w,white,slot_label_Rframe,10);
 DrawFormattedText(w,[
@@ -335,14 +345,14 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % screen 11.2
-Screen('DrawTexture', w, slot, [], slot_Lpoint);
-Screen('DrawTexture', w, slot, [], slot_Rpoint);
+Screen('DrawTexture', w, step1_slot, [], slot_Lpoint);
+Screen('DrawTexture', w, step1_slot, [], slot_Rpoint);
 Screen('DrawTexture', w, B1, [], slot_label_Lpoint);
 Screen('DrawTexture', w, A1, [], slot_label_Rpoint);
 Screen('FrameRect',w,white,slot_label_Lframe,10);
 Screen('FrameRect',w,white,slot_label_Rframe,10);
 DrawFormattedText(w,[
-    'ROOM ONE has:' '\n' ...
+    'The TOKEN ROOM has:' '\n' ...
     'Two ' step1_color ' slot machines, with two different symbols'
     ],'center',rect(4)*0.75, [], [], [], [], 1.6);
 Screen('Flip',w);
@@ -350,14 +360,14 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % screen 11.3
-Screen('DrawTexture', w, slot, [], slot_Lpoint);
-Screen('DrawTexture', w, slot, [], slot_Rpoint);
+Screen('DrawTexture', w, state3_slot, [], slot_Lpoint);
+Screen('DrawTexture', w, state3_slot, [], slot_Rpoint);
 Screen('DrawTexture', w, B3, [], slot_label_Lpoint);
 Screen('DrawTexture', w, A3, [], slot_label_Rpoint);
 Screen('FrameRect',w,white,slot_label_Lframe,10);
 Screen('FrameRect',w,white,slot_label_Rframe,10);
 DrawFormattedText(w,[
-    'ROOM TWO has:' '\n' ...
+    'The PRIZE ROOM has:' '\n' ...
     'Two ' state3_color ' slot machines, with two different symbols, and...'
     ],'center',rect(4)*0.75, [], [], [], [], 1.6);
 Screen('Flip',w);
@@ -365,8 +375,8 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % screen 11.4
-Screen('DrawTexture', w, slot, [], slot_Lpoint);
-Screen('DrawTexture', w, slot, [], slot_Rpoint);
+Screen('DrawTexture', w, state2_slot, [], slot_Lpoint);
+Screen('DrawTexture', w, state2_slot, [], slot_Rpoint);
 Screen('DrawTexture', w, B2, [], slot_label_Lpoint);
 Screen('DrawTexture', w, A2, [], slot_label_Rpoint);
 Screen('FrameRect',w,white,slot_label_Lframe,10);
@@ -379,23 +389,23 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % screen 12.1
-Screen('DrawTexture', w, room_one, [], room_Upoint);
+Screen('DrawTexture', w, token_room, [], room_Upoint);
 DrawFormattedText(w,[
-    'You will start each round in ROOM ONE...' ...
+    'You will start each round in the TOKEN ROOM...' ...
     ],'center',rect(4)*0.75, [], [], [], [], 1.6);
 Screen('Flip',w);
 WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % screen 12.2
-Screen('DrawTexture', w, slot, [], slot_Lpoint);
-Screen('DrawTexture', w, slot, [], slot_Rpoint);
+Screen('DrawTexture', w, step1_slot, [], slot_Lpoint);
+Screen('DrawTexture', w, step1_slot, [], slot_Rpoint);
 Screen('DrawTexture', w, A1, [], slot_label_Lpoint);
 Screen('DrawTexture', w, B1, [], slot_label_Rpoint);
 Screen('FrameRect',w,white,slot_label_Lframe,10);
 Screen('FrameRect',w,white,slot_label_Rframe,10);
 DrawFormattedText(w,[
-    'In ROOM ONE, you will choose to play' '\n' ...
+    'In the TOKEN ROOM, you will choose to play' '\n' ...
     'one of the two slot machines.' ...
     ],'center',rect(4)*0.75, [], [], [], [], 1.6);
 Screen('Flip',w);
@@ -406,7 +416,7 @@ KbWait([],2);
 Screen('DrawTexture', w, state2_token, [], Lpoint);
 Screen('DrawTexture', w, state3_token, [], Rpoint);
 DrawFormattedText(w,[
-    'Every time you play a slot machine in ROOM ONE, you will win' '\n' ...
+    'Every time you play a slot machine in the TOKEN ROOM, you will win' '\n' ...
     a_an_2 state2_color ' token' ' or ' a_an_3 state3_color ' token...'
     ],'center',rect(4)*0.6, [], [], [], [], 1.6);
 Screen('Flip',w);
@@ -418,7 +428,7 @@ Screen('DrawTexture', w, state2_token, [], Lpoint);
 Screen('DrawTexture', w, state3_token, [], Rpoint);
 DrawFormattedText(w,[
     'If you win ' a_an_2 state2_color ' token, you''ll get one chance to play' '\n' ...
-    a_an_2 state2_color ' slot machine in ROOM TWO...'
+    a_an_2 state2_color ' slot machine in the PRIZE ROOM...'
     ],'center',rect(4)*0.6, [], [], [], [], 1.6);
 Screen('Flip',w);
 WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
@@ -429,7 +439,7 @@ Screen('DrawTexture', w, state2_token, [], Lpoint);
 Screen('DrawTexture', w, state3_token, [], Rpoint);
 DrawFormattedText(w,[
     'If you win ' a_an_3 state3_color ' token, you''ll get one chance to play' '\n' ...
-     a_an_3 state3_color ' slot machine in ROOM TWO.'
+     a_an_3 state3_color ' slot machine in the PRIZE ROOM.'
     ],'center',rect(4)*0.6, [], [], [], [], 1.6);
 Screen('Flip',w);
 WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
@@ -445,28 +455,28 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % screen 14.2
-Screen('DrawTexture', w, slot, [], slot_Lpoint);
-Screen('DrawTexture', w, slot, [], slot_Rpoint);
+Screen('DrawTexture', w, state2_slot, [], slot_Lpoint);
+Screen('DrawTexture', w, state2_slot, [], slot_Rpoint);
 Screen('DrawTexture', w, A2, [], slot_label_Lpoint);
 Screen('DrawTexture', w, B2, [], slot_label_Rpoint);
 Screen('FrameRect',w,white,slot_label_Lframe,10);
 Screen('FrameRect',w,white,slot_label_Rframe,10);
 DrawFormattedText(w,[
-    'so we will take you to the ' state2_color ' slot machines in ROOM TWO.' ...
+    'so we will take you to the ' state2_color ' slot machines in the PRIZE ROOM.' ...
     ],'center',rect(4)*0.75, [], [], [], [], 1.6);
 Screen('Flip',w);
 WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % screen 15
-Screen('DrawTexture', w, slot, [], slot_Lpoint);
-Screen('DrawTexture', w, slot, [], slot_Rpoint);
+Screen('DrawTexture', w, state2_slot, [], slot_Lpoint);
+Screen('DrawTexture', w, state2_slot, [], slot_Rpoint);
 Screen('DrawTexture', w, A2, [], slot_label_Lpoint);
 Screen('DrawTexture', w, B2, [], slot_label_Rpoint);
 Screen('FrameRect',w,white,slot_label_Lframe,10);
 Screen('FrameRect',w,white,slot_label_Rframe,10);
 DrawFormattedText(w,[
-    'All of the slot machines in ROOM TWO' '\n' ...
+    'All of the slot machines in the PRIZE ROOM' '\n' ...
     'pay out in rewards!' ...
     ],'center',rect(4)*0.75, [], [], [], [], 1.6);
 Screen('Flip',w);
@@ -474,14 +484,14 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % screen 16
-Screen('DrawTexture', w, slot, [], slot_Lpoint);
-Screen('DrawTexture', w, slot, [], slot_Rpoint);
+Screen('DrawTexture', w, state2_slot, [], slot_Lpoint);
+Screen('DrawTexture', w, state2_slot, [], slot_Rpoint);
 Screen('DrawTexture', w, A2, [], slot_label_Lpoint);
 Screen('DrawTexture', w, B2, [], slot_label_Rpoint);
 Screen('FrameRect',w,white,slot_label_Lframe,10);
 Screen('FrameRect',w,white,slot_label_Rframe,10);
 DrawFormattedText(w,[
-    'In ROOM TWO, you will choose to play one of the slot machines' '\n' ...
+    'In the PRIZE ROOM, you will choose to play one of the slot machines' '\n' ...
     'that matches the color of your token.' ...
     ],'center',rect(4)*0.75, [], [], [], [], 1.6);
 Screen('Flip',w);
@@ -498,8 +508,8 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % screen 18
-Screen('DrawTexture', w, slot, [], slot_Lpoint);
-Screen('DrawTexture', w, slot, [], slot_Rpoint);
+Screen('DrawTexture', w, step1_slot, [], slot_Lpoint);
+Screen('DrawTexture', w, step1_slot, [], slot_Rpoint);
 Screen('DrawTexture', w, A1, [], slot_label_Lpoint);
 Screen('DrawTexture', w, B1, [], slot_label_Rpoint);
 Screen('FrameRect',w,white,slot_label_Lframe,10);
@@ -521,8 +531,8 @@ FlushEvents;
 down_key = find(key_code,1);
 
 if down_key == L
-      Screen('DrawTexture', w, slot, [], slot_Lpoint);
-      Screen('DrawTexture', w, slot, [], slot_Rpoint);
+      Screen('DrawTexture', w, step1_slot, [], slot_Lpoint);
+      Screen('DrawTexture', w, step1_slot, [], slot_Rpoint);
       Screen('DrawTexture', w, A1, [], slot_label_Lpoint);
       Screen('DrawTexture', w, B1, [], slot_label_Rpoint);
       Screen('FrameRect',w,green,slot_label_Lframe,10);
@@ -538,8 +548,8 @@ if down_key == L
       KbWait([],2);
 
 elseif down_key == R
-      Screen('DrawTexture', w, slot, [], slot_Lpoint);
-      Screen('DrawTexture', w, slot, [], slot_Rpoint);
+      Screen('DrawTexture', w, step1_slot, [], slot_Lpoint);
+      Screen('DrawTexture', w, step1_slot, [], slot_Rpoint);
       Screen('DrawTexture', w, A1, [], slot_label_Lpoint);
       Screen('DrawTexture', w, B1, [], slot_label_Rpoint);
       Screen('FrameRect',w,white,slot_label_Lframe,10);
@@ -564,7 +574,7 @@ WaitSecs(1);
 Screen('DrawTexture', w, state2_token, [], Mpoint);
 DrawFormattedText(w,[
 'You won ' a_an_2 state2_color ' token, so we will take you ' '\n' ...
-'to the ' state2_color ' slot machines in ROOM TWO.' '\n\n' ...
+'to the ' state2_color ' slot machines in the PRIZE ROOM.' '\n\n' ...
 'Press any key to continue.' ...
 ],'center',rect(4)*0.75, [], [], [], [], 1.6);
 Screen('Flip',w);
@@ -598,8 +608,8 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % screen 20
-Screen('DrawTexture', w, slot, [], slot_Lpoint);
-Screen('DrawTexture', w, slot, [], slot_Rpoint);
+Screen('DrawTexture', w, state2_slot, [], slot_Lpoint);
+Screen('DrawTexture', w, state2_slot, [], slot_Rpoint);
 Screen('DrawTexture', w, A2, [], slot_label_Lpoint);
 Screen('DrawTexture', w, B2, [], slot_label_Rpoint);
 Screen('FrameRect',w,white,slot_label_Lframe,10);
@@ -616,8 +626,8 @@ FlushEvents;
 down_key = find(key_code,1);
 
 if down_key == L
-      Screen('DrawTexture', w, slot, [], slot_Lpoint);
-      Screen('DrawTexture', w, slot, [], slot_Rpoint);
+      Screen('DrawTexture', w, state2_slot, [], slot_Lpoint);
+      Screen('DrawTexture', w, state2_slot, [], slot_Rpoint);
       Screen('DrawTexture', w, A2, [], slot_label_Lpoint);
       Screen('DrawTexture', w, B2, [], slot_label_Rpoint);
       Screen('FrameRect',w,green,slot_label_Lframe,10);
@@ -635,8 +645,8 @@ if down_key == L
       WaitSecs(1.5)
 
 elseif down_key == R
-      Screen('DrawTexture', w, slot, [], slot_Lpoint);
-      Screen('DrawTexture', w, slot, [], slot_Rpoint);
+      Screen('DrawTexture', w, state2_slot, [], slot_Lpoint);
+      Screen('DrawTexture', w, state2_slot, [], slot_Rpoint);
       Screen('DrawTexture', w, A2, [], slot_label_Lpoint);
       Screen('DrawTexture', w, B2, [], slot_label_Rpoint);
       Screen('FrameRect',w,white,slot_label_Lframe,10);
@@ -671,8 +681,8 @@ Screen(w, 'Flip');
 WaitSecs(.5)
 
 % screen 23
-Screen('DrawTexture', w, slot, [], slot_Lpoint);
-Screen('DrawTexture', w, slot, [], slot_Rpoint);
+Screen('DrawTexture', w, step1_slot, [], slot_Lpoint);
+Screen('DrawTexture', w, step1_slot, [], slot_Rpoint);
 Screen('DrawTexture', w, B1, [], slot_label_Lpoint);
 Screen('DrawTexture', w, A1, [], slot_label_Rpoint);
 Screen('FrameRect',w,white,slot_label_Lframe,10);
@@ -690,8 +700,8 @@ FlushEvents;
 down_key = find(key_code,1);
 
 if down_key == L
-      Screen('DrawTexture', w, slot, [], slot_Lpoint);
-      Screen('DrawTexture', w, slot, [], slot_Rpoint);
+      Screen('DrawTexture', w, step1_slot, [], slot_Lpoint);
+      Screen('DrawTexture', w, step1_slot, [], slot_Rpoint);
       Screen('DrawTexture', w, B1, [], slot_label_Lpoint);
       Screen('DrawTexture', w, A1, [], slot_label_Rpoint);
       Screen('FrameRect',w,green,slot_label_Lframe,10);
@@ -701,8 +711,8 @@ if down_key == L
       WaitSecs(1)
 
 elseif down_key == R
-      Screen('DrawTexture', w, slot, [], slot_Lpoint);
-      Screen('DrawTexture', w, slot, [], slot_Rpoint);
+      Screen('DrawTexture', w, step1_slot, [], slot_Lpoint);
+      Screen('DrawTexture', w, step1_slot, [], slot_Rpoint);
       Screen('DrawTexture', w, B1, [], slot_label_Lpoint);
       Screen('DrawTexture', w, A1, [], slot_label_Rpoint);
       Screen('FrameRect',w,white,slot_label_Lframe,10);
@@ -721,7 +731,7 @@ WaitSecs(1);
 Screen('DrawTexture', w, state3_token, [], Mpoint);
 DrawFormattedText(w,[
 'You won ' a_an_3 state3_color ' token, so we will take you ' '\n' ...
-'to the ' state3_color ' slot machines in ROOM TWO.' '\n\n' ...
+'to the ' state3_color ' slot machines in the PRIZE ROOM.' '\n\n' ...
 'Press any key to continue.' ...
 ],'center',rect(4)*0.75, [], [], [], [], 1.6);
 Screen('Flip',w);
@@ -737,8 +747,8 @@ Screen(w, 'Flip');
 WaitSecs(.5)
 
 % screen 25
-Screen('DrawTexture', w, slot, [], slot_Lpoint);
-Screen('DrawTexture', w, slot, [], slot_Rpoint);
+Screen('DrawTexture', w, state3_slot, [], slot_Lpoint);
+Screen('DrawTexture', w, state3_slot, [], slot_Rpoint);
 Screen('DrawTexture', w, B3, [], slot_label_Lpoint);
 Screen('DrawTexture', w, A3, [], slot_label_Rpoint);
 Screen('FrameRect',w,white,slot_label_Lframe,10);
@@ -755,8 +765,8 @@ FlushEvents;
 down_key = find(key_code,1);
 
 if down_key == L
-      Screen('DrawTexture', w, slot, [], slot_Lpoint);
-      Screen('DrawTexture', w, slot, [], slot_Rpoint);
+      Screen('DrawTexture', w, state3_slot, [], slot_Lpoint);
+      Screen('DrawTexture', w, state3_slot, [], slot_Rpoint);
       Screen('DrawTexture', w, B3, [], slot_label_Lpoint);
       Screen('DrawTexture', w, A3, [], slot_label_Rpoint);
       Screen('FrameRect',w,green,slot_label_Lframe,10);
@@ -774,8 +784,8 @@ if down_key == L
       WaitSecs(1.5)
 
 elseif down_key == R
-      Screen('DrawTexture', w, slot, [], slot_Lpoint);
-      Screen('DrawTexture', w, slot, [], slot_Rpoint);
+      Screen('DrawTexture', w, state3_slot, [], slot_Lpoint);
+      Screen('DrawTexture', w, state3_slot, [], slot_Rpoint);
       Screen('DrawTexture', w, B3, [], slot_label_Lpoint);
       Screen('DrawTexture', w, A3, [], slot_label_Rpoint);
       Screen('FrameRect',w,white,slot_label_Lframe,10);
@@ -816,23 +826,23 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % Screen 28
-Screen('DrawTexture', w, room_one, [], room_Upoint);
+Screen('DrawTexture', w, token_room, [], room_Upoint);
 DrawFormattedText(w,[
-    'Let''s start in ROOM ONE.' ...
+    'Let''s start in the TOKEN ROOM.' ...
     ],'center',rect(4)*0.75, [], [], [], [], 1.6);
 Screen('Flip',w);
 WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % Screen 29.1
-Screen('DrawTexture', w, slot, [], slot_Lpoint);
-Screen('DrawTexture', w, slot, [], slot_Rpoint);
+Screen('DrawTexture', w, step1_slot, [], slot_Lpoint);
+Screen('DrawTexture', w, step1_slot, [], slot_Rpoint);
 Screen('DrawTexture', w, B1, [], slot_label_Lpoint);
 Screen('DrawTexture', w, A1, [], slot_label_Rpoint);
 Screen('FrameRect',w,white,slot_label_Lframe,10);
 Screen('FrameRect',w,white,slot_label_Rframe,10);
 DrawFormattedText(w,[
-    'Each slot machine in ROOM ONE has its own chance' '\n' ...
+    'Each slot machine in the TOKEN ROOM has its own chance' '\n' ...
     'of winning each color token.'
     ],'center',rect(4)*0.75, [], [], [], [], 1.6);
 Screen('Flip',w);
@@ -840,7 +850,7 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % Screen 29.2
-Screen('DrawTexture', w, slot, [], slot_Lpoint);
+Screen('DrawTexture', w, step1_slot, [], slot_Lpoint);
 Screen('DrawTexture', w, A1, [], slot_label_Lpoint);
 Screen('FrameRect',w,white,slot_label_Lframe,10);
 
@@ -856,7 +866,7 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % Screen 29.3
-Screen('DrawTexture', w, slot, [], slot_Lpoint);
+Screen('DrawTexture', w, step1_slot, [], slot_Lpoint);
 Screen('DrawTexture', w, B1, [], slot_label_Lpoint);
 Screen('FrameRect',w,white,slot_label_Lframe,10);
 
@@ -872,8 +882,8 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % Screen 29.4
-Screen('DrawTexture', w, slot, [], slot_Lpoint);
-Screen('DrawTexture', w, slot, [], slot_Rpoint);
+Screen('DrawTexture', w, step1_slot, [], slot_Lpoint);
+Screen('DrawTexture', w, step1_slot, [], slot_Rpoint);
 Screen('DrawTexture', w, B1, [], slot_label_Lpoint);
 Screen('DrawTexture', w, A1, [], slot_label_Rpoint);
 Screen('FrameRect',w,white,slot_label_Lframe,10);
@@ -888,18 +898,18 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % Screen 30
-Screen('DrawTexture', w, room_two, [], room_Upoint);
+Screen('DrawTexture', w, prize_room, [], room_Upoint);
 DrawFormattedText(w,[
-    'Now, let''s move to ROOM TWO.' ...
+    'Now, let''s move to the PRIZE ROOM.' ...
     ],'center',rect(4)*0.75, [], [], [], [], 1.6);
 Screen('Flip',w);
 WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % Screen 31.1
-Screen('DrawTexture', w, room_two, [], room_Upoint);
+Screen('DrawTexture', w, prize_room, [], room_Upoint);
 DrawFormattedText(w,[
-    'Each slot machine in ROOM TWO has its' '\n' ...
+    'Each slot machine in the PRIZE ROOM has its' '\n' ...
     'own chance of winning a reward.'
     ],'center',rect(4)*0.75, [], [], [], [], 1.6);
 Screen('Flip',w);
@@ -907,7 +917,7 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % Screen 31.2
-Screen('DrawTexture', w, slot, [], slot_Lpoint);
+Screen('DrawTexture', w, state2_slot, [], slot_Lpoint);
 Screen('DrawTexture', w, B2, [], slot_label_Lpoint);
 Screen('FrameRect',w,white,slot_label_Lframe,10);
 
@@ -923,7 +933,7 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % Screen 31.3
-Screen('DrawTexture', w, slot, [], slot_Lpoint);
+Screen('DrawTexture', w, state3_slot, [], slot_Lpoint);
 Screen('DrawTexture', w, A3, [], slot_label_Lpoint);
 Screen('FrameRect',w,white,slot_label_Lframe,10);
 
@@ -939,7 +949,7 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % Screen 31.4
-Screen('DrawTexture', w, slot, [], slot_Lpoint);
+Screen('DrawTexture', w, state2_slot, [], slot_Lpoint);
 Screen('DrawTexture', w, A2, [], slot_label_Lpoint);
 Screen('FrameRect',w,white,slot_label_Lframe,10);
 
@@ -955,7 +965,7 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % Screen 31.5
-Screen('DrawTexture', w, slot, [], slot_Lpoint);
+Screen('DrawTexture', w, state3_slot, [], slot_Lpoint);
 Screen('DrawTexture', w, B3, [], slot_label_Lpoint);
 Screen('FrameRect',w,white,slot_label_Lframe,10);
 
@@ -971,9 +981,9 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % Screen 31.5
-Screen('DrawTexture', w, room_two, [], room_Upoint);
+Screen('DrawTexture', w, prize_room, [], room_Upoint);
 DrawFormattedText(w,[
-    'Just like the slot machines in ROOM ONE,' '\n' ...
+    'Just like the slot machines in the TOKEN ROOM,' '\n' ...
     'we will not tell you what the actual chances are.' ...
     ],'center',rect(4)*0.75, [], [], [], [], 1.6);
 Screen('Flip',w);
@@ -1003,9 +1013,9 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % Screen 34.1
-Screen('DrawTexture', w, room_one, [], room_Upoint);
+Screen('DrawTexture', w, token_room, [], room_Upoint);
 DrawFormattedText(w,[
-    'The slot machines in ROOM ONE' '\n' ...
+    'The slot machines in the TOKEN ROOM' '\n' ...
     'were programmed in a simple way.' ...
     ],'center',rect(4)*0.7, [], [], [], [], 1.6);
 Screen('Flip',w);
@@ -1013,9 +1023,9 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % Screen 34.2
-Screen('DrawTexture', w, room_one, [], room_Upoint);
+Screen('DrawTexture', w, token_room, [], room_Upoint);
 DrawFormattedText(w,[
-    'When you play the slot machines in ROOM ONE,' '\n' ...
+    'When you play the slot machines in the TOKEN ROOM,' '\n' ...
     'the chance that you win a token of any one color' '\n' ...
     'WILL NOT CHANGE at any point.' ...
     ],'center',rect(4)*0.7, [], [], [], [], 1.6);
@@ -1024,9 +1034,9 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % Screen 35.1
-Screen('DrawTexture', w, room_two, [], room_Upoint);
+Screen('DrawTexture', w, prize_room, [], room_Upoint);
 DrawFormattedText(w,[
-    'The slot machines in ROOM TWO' '\n' ...
+    'The slot machines in the PRIZE ROOM' '\n' ...
     'were programmed in a special way.' ...
     ],'center',rect(4)*0.7, [], [], [], [], 1.6);
 Screen('Flip',w);
@@ -1034,7 +1044,7 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % Screen 35.2
-Screen('DrawTexture', w, room_two, [], room_Upoint);
+Screen('DrawTexture', w, prize_room, [], room_Upoint);
 DrawFormattedText(w,[
     'The chance that you win a reward from any one' '\n' ...
     'slot machine WILL CHANGE during the experiment.'
@@ -1044,13 +1054,13 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % Screen 36.1
-Screen('DrawTexture', w, slot, [], slot_Lpoint);
+Screen('DrawTexture', w, state2_slot, [], slot_Lpoint);
 Screen('DrawTexture', w, B2, [], slot_label_Lpoint);
 Screen('FrameRect',w,white,slot_label_Lframe,10);
 Screen('DrawTexture', w, win, [], CenterRectOnPoint([0,0,533*.6,387*.6], 3*rect(3)/4, rect(4)*0.3));
 Screen('DrawTexture', w, lose, [], CenterRectOnPoint([0,0,533*.4,387*.4], 3*rect(3)/4, rect(4)*0.5));
 DrawFormattedText(w,[
-    'The slot machine in ROOM TWO that started' '\n' ...
+    'The slot machine in the PRIZE ROOM that started' '\n' ...
     'with the highest chance of winning a reward' '\n' ...
     'may have a worse chance later on.' ...
     ],'center',rect(4)*0.7, [], [], [], [], 1.6);
@@ -1059,7 +1069,7 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % Screen 36.2
-Screen('DrawTexture', w, slot, [], slot_Lpoint);
+Screen('DrawTexture', w, state2_slot, [], slot_Lpoint);
 Screen('DrawTexture', w, B2, [], slot_label_Lpoint);
 Screen('FrameRect',w,white,slot_label_Lframe,10);
 Screen('DrawTexture', w, win, [], CenterRectOnPoint([0,0,533*.6,387*.6], 3*rect(3)/4, rect(4)*0.3));
@@ -1073,7 +1083,7 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % Screen 36.3
-Screen('DrawTexture', w, slot, [], slot_Lpoint);
+Screen('DrawTexture', w, state2_slot, [], slot_Lpoint);
 Screen('DrawTexture', w, B2, [], slot_label_Lpoint);
 Screen('FrameRect',w,white,slot_label_Lframe,10);
 Screen('DrawTexture', w, win, [], CenterRectOnPoint([0,0,533*.6,387*.6], 3*rect(3)/4, rect(4)*0.3));
@@ -1096,7 +1106,7 @@ for trial = trial_num
         size_prob(trial+1) = size_prob(trial);
     end
 
-    Screen('DrawTexture', w, slot, [], slot_Lpoint);
+    Screen('DrawTexture', w, state2_slot, [], slot_Lpoint);
     Screen('DrawTexture', w, B2, [], slot_label_Lpoint);
     Screen('FrameRect',w,white,slot_label_Lframe,10);
 
@@ -1108,7 +1118,7 @@ for trial = trial_num
 end
 
 % Screen 36.4
-Screen('DrawTexture', w, slot, [], slot_Lpoint);
+Screen('DrawTexture', w, state2_slot, [], slot_Lpoint);
 Screen('DrawTexture', w, B2, [], slot_label_Lpoint);
 Screen('FrameRect',w,white,slot_label_Lframe,10);
 
@@ -1125,20 +1135,20 @@ WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % Screen 37.1
-Screen('DrawTexture', w, room_two, [], room_Upoint);
+Screen('DrawTexture', w, prize_room, [], room_Upoint);
 DrawFormattedText(w,[
     'This means that you will have to pay close attention to' '\n' ...
-    'figure out which slot machine in ROOM TWO is the best!' ...
+    'figure out which slot machine in the PRIZE ROOM is the best!' ...
     ],'center',rect(4)*0.7, [], [], [], [], 1.6);
 Screen('Flip',w);
 WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
 KbWait([],2);
 
 % Screen 37.2
-Screen('DrawTexture', w, room_two, [], room_Upoint);
+Screen('DrawTexture', w, prize_room, [], room_Upoint);
 DrawFormattedText(w,[
     'During the task, which slot machine in' '\n' ...
-    'ROOM TWO is the best may change!' ...
+    'the PRIZE ROOM is the best may change!' ...
     ],'center',rect(4)*0.7, [], [], [], [], 1.6);
 Screen('Flip',w);
 WaitSecs(1) %force respondents to spend at least 1 seconds on each screen
@@ -1169,7 +1179,7 @@ DrawFormattedText(w,[
     'To make the strategy game faster to play:' '\n\n' ...
     '1.  We removed the outlines of the slot machines.' '\n\n' ...
     '2.  We will not show you the color token that you won. We will' '\n' ...
-    '     just take you to the correct slot machines in ROOM TWO.' '\n\n' ...
+    '     just take you to the correct slot machines in the PRIZE ROOM.' '\n\n' ...
     'Press any key to start the practice trials.'...
     ],'center','center', [], [], [], [], 1.6);
 Screen('Flip',w);

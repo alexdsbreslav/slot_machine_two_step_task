@@ -31,7 +31,7 @@ stim_symbol = symbols(randperm(numel(symbols)));
 
 %practice
 rng(66);
-tutorial_ads_v2;
+tutorial_v3;
 
 % main task
 rng(rng_seed);
