@@ -238,6 +238,7 @@ next_arrow = Screen('MakeTexture', w, next_arrow);
 KbName('UnifyKeyNames');
 L = KbName('LeftArrow');
 R = KbName('RightArrow');
+exitKeys = KbName({'ESCAPE'});
 
 white = [255 255 255];
 black = [0 0 0];
@@ -277,6 +278,16 @@ Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
 Screen('Flip',w);
 WaitSecs(1)
 KbWait([],2);
+
+% allow exit if necessesary
+while 1
+  [keyIsDown, ~, keyCode] = KbCheck;
+  if keyIsDown && any(keyCode(exitKeys))
+      sca; return
+  else
+      break
+  end
+end
 % -----------------------------------------------------------------------------
 % 2 - Game structure
 
@@ -296,8 +307,10 @@ DrawFormattedText(w,[
     'During the game, you''ll play these slot' '\n' ...
     'machines many times to try to win prizes.' ...
     ],'center',rect(4)*0.75, [], [], [], [], 1.6);
-Screen('Flip',w, [], 1);
-Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);WaitSecs(1)
+Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
+Screen('Flip',w);
+WaitSecs(1)
+KbWait([],2);
 
 
 Screen('DrawTexture', w, step1_slot_L, [], slot_Upoint);
@@ -748,7 +761,7 @@ Screen(w, 'FillRect', black);
 Screen('TextSize', w, 60);
 DrawFormattedText(w, '+', 'center', 'center', white);
 Screen('TextSize', w, 40);
-Screen('Flip',w);
+Screen(w, 'Flip');
 WaitSecs(.5)
 
 % --- token room choice
@@ -810,6 +823,7 @@ Screen(w, 'FillRect', black);
 Screen('TextSize', w, 60);
 DrawFormattedText(w, '+', 'center', 'center', white);
 Screen('TextSize', w, 40);
+Screen(w, 'Flip');
 WaitSecs(.5)
 
 % ---- prize room choice
@@ -1024,6 +1038,16 @@ DrawFormattedText(w,[
 Screen('Flip',w);
 WaitSecs(1)
 KbWait([],2);
+
+% allow exit if necessesary
+while 1
+  [keyIsDown, ~, keyCode] = KbCheck;
+  if keyIsDown && any(keyCode(exitKeys))
+      sca; return
+  else
+      break
+  end
+end
 
 % -----------------------------------------------------------------------------
 % 8 - Token room programming
@@ -1250,6 +1274,16 @@ DrawFormattedText(w,[
 Screen('Flip',w);
 WaitSecs(1)
 KbWait([],2);
+
+% allow exit if necessesary
+while 1
+  [keyIsDown, ~, keyCode] = KbCheck;
+  if keyIsDown && any(keyCode(exitKeys))
+      sca; return
+  else
+      break
+  end
+end
 
 % -----------------------------------------------------------------------------
 % 9 - Prize room programming
