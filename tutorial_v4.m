@@ -71,7 +71,7 @@ end
 
 doublebuffer=1;
 screens = Screen('Screens'); %count the screen
-whichScreen = min(screens); %select the screen ALTERED FOR DEBUGGING
+whichScreen = max(screens); %select the screen ALTERED FOR DEBUGGING
 [w,rect] = Screen('OpenWindow', whichScreen, 0,[], 32, ...
         doublebuffer+1,[],[],kPsychNeedFastBackingStore);
 
@@ -1000,7 +1000,7 @@ if down_key == L
       Screen('DrawTexture', w, B3, [], Mpoint);
       Screen('FrameRect',w,white,Mframe,10);
       DrawFormattedText(w,[
-          'Lose' ...
+          'Win!' ...
           ],'center',rect(4)*0.75, [], [], [], [], 1.6);
       Screen('Flip',w);
       WaitSecs(1.5)
@@ -1021,7 +1021,7 @@ elseif down_key == R
       Screen('DrawTexture', w, A3, [], Mpoint);
       Screen('FrameRect',w,white,Mframe,10);
       DrawFormattedText(w,[
-          'Lose' ...
+          'Win!' ...
           ],'center',rect(4)*0.75, [], [], [], [], 1.6);
       Screen('Flip',w);
       WaitSecs(1.5)
@@ -1095,33 +1095,9 @@ Screen('FrameRect',w,white,slot_label_Lframe,10);
 Screen('FrameRect',w,white,slot_label_Rframe,10);
 
 DrawFormattedText(w,[
-    'To best understand how they were programmed,' '\n' ...
-    'imagine that we have four big token bags.' '\n' ...
-    ],'center',rect(4)*0.8, [], [], [], [], 1.6);
-Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
-Screen('Flip',w);
-WaitSecs(1)
-KbWait([],2);
-
-Screen('DrawTexture', w, step1_slot_L, [], slot_Lpoint);
-Screen('DrawTexture', w, A1, [], slot_label_Lpoint);
-Screen('FrameRect',w,white,slot_label_Lframe,10);
-Screen('DrawTexture', w, B1_blank_token_bag, [], R1point);
-Screen('DrawTexture', w, B1_blank_token_bag, [], R2point);
-
-DrawFormattedText(w,[
-    'There are two bags for each slot machine...'
-    ],'center',rect(4)*0.8, [], [], [], [], 1.6);
-Screen('Flip',w);
-WaitSecs(1)
-
-Screen('DrawTexture', w, A1_blank_token_bag, [], L1point);
-Screen('DrawTexture', w, A1_blank_token_bag, [], L2point);
-Screen('DrawTexture', w, B1_blank_token_bag, [], R1point);
-Screen('DrawTexture', w, B1_blank_token_bag, [], R2point);
-
-DrawFormattedText(w,[
-    'There are two bags for each slot machine...'
+    'To best understand how they were' '\n' ...
+    'programmed, imagine that before the' '\n' ...
+    'game starts, the slot machines are empty.' ...
     ],'center',rect(4)*0.8, [], [], [], [], 1.6);
 Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
 Screen('Flip',w);
@@ -1132,10 +1108,39 @@ KbWait([],2);
 Screen('DrawTexture', w, step1_slot_L, [], slot_Lpoint);
 Screen('DrawTexture', w, A1, [], slot_label_Lpoint);
 Screen('FrameRect',w,white,slot_label_Lframe,10);
+Screen('DrawTexture', w, A1_blank_token_bag, [], R1point);
+Screen('DrawTexture', w, A1_blank_token_bag, [], R2point);
+DrawFormattedText(w,[
+    'Before the game started, the slot' '\n' ...
+    'machine operator grabbed two large' '\n' ...
+    'token bags for the first slot machine.' ...
+    ],'center',rect(4)*0.8, [], [], [], [], 1.6);
+Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
+Screen('Flip',w);
+WaitSecs(1)
+KbWait([],2);
+
+Screen('DrawTexture', w, step1_slot_L, [], slot_Lpoint);
+Screen('DrawTexture', w, A1, [], slot_label_Lpoint);
+Screen('FrameRect',w,white,slot_label_Lframe,10);
+Screen('DrawTexture', w, A1_blank_token_bag, [], R1point);
+Screen('DrawTexture', w, A1_blank_token_bag, [], R2point);
+DrawFormattedText(w,[
+    'Notice that the slot machine and the' '\n' ...
+    'bags are labeled with the same symbol.' ...
+    ],'center',rect(4)*0.8, [], [], [], [], 1.6);
+Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
+Screen('Flip',w);
+WaitSecs(1)
+KbWait([],2);
+
+Screen('DrawTexture', w, step1_slot_L, [], slot_Lpoint);
+Screen('DrawTexture', w, A1, [], slot_label_Lpoint);
+Screen('FrameRect',w,white,slot_label_Lframe,10);
 Screen('DrawTexture', w, A1_S2_token_bag, [], R1point);
 Screen('DrawTexture', w, A1_blank_token_bag, [], R2point);
 DrawFormattedText(w,[
-    'For the first slot machine, we filled the top bag with a' '\n' ...
+    'Then the operator filled the top bag with a' '\n' ...
     'large, random, number of ' state2_color ' tokens...' ...
     ],'center',rect(4)*0.8, [], [], [], [], 1.6);
 Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
@@ -1149,7 +1154,7 @@ Screen('FrameRect',w,white,slot_label_Lframe,10);
 Screen('DrawTexture', w, A1_S2_token_bag, [], R1point);
 Screen('DrawTexture', w, A1_S3_token_bag, [], R2point);
 DrawFormattedText(w,[
-    'And the bottom bag with a large,' '\n' ...
+    'And the bottom bag with a different, large,' '\n' ...
     'random, number of ' state3_color ' tokens...' ...
     ],'center',rect(4)*0.8, [], [], [], [], 1.6);
 Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
@@ -1163,7 +1168,8 @@ Screen('FrameRect',w,white,slot_label_Lframe,10);
 Screen('DrawTexture', w, A1_S2_token_bag, [], R1point);
 Screen('DrawTexture', w, A1_S3_token_bag, [], R2point);
 DrawFormattedText(w,[
-    'And then we dumped them in the slot machine!'
+    'And then the operator dumped them' '\n' ...
+    'into the first slot machine!' ...
     ],'center',rect(4)*0.8, [], [], [], [], 1.6);
 Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
 Screen('Flip',w);
@@ -1174,11 +1180,39 @@ KbWait([],2);
 Screen('DrawTexture', w, step1_slot_L, [], slot_Lpoint);
 Screen('DrawTexture', w, B1, [], slot_label_Lpoint);
 Screen('FrameRect',w,white,slot_label_Lframe,10);
+Screen('DrawTexture', w, B1_blank_token_bag, [], R1point);
+Screen('DrawTexture', w, B1_blank_token_bag, [], R2point);
+DrawFormattedText(w,[
+    'The slot machine operator then grabbed two' '\n' ...
+    'large token bags for the second slot machine.' ...
+    ],'center',rect(4)*0.8, [], [], [], [], 1.6);
+Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
+Screen('Flip',w);
+WaitSecs(1)
+KbWait([],2);
+
+Screen('DrawTexture', w, step1_slot_L, [], slot_Lpoint);
+Screen('DrawTexture', w, B1, [], slot_label_Lpoint);
+Screen('FrameRect',w,white,slot_label_Lframe,10);
+Screen('DrawTexture', w, B1_blank_token_bag, [], R1point);
+Screen('DrawTexture', w, B1_blank_token_bag, [], R2point);
+DrawFormattedText(w,[
+    'Notice that the slot machine and the' '\n' ...
+    'bags are labeled with the same symbol.' ...
+    ],'center',rect(4)*0.8, [], [], [], [], 1.6);
+Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
+Screen('Flip',w);
+WaitSecs(1)
+KbWait([],2);
+
+Screen('DrawTexture', w, step1_slot_L, [], slot_Lpoint);
+Screen('DrawTexture', w, B1, [], slot_label_Lpoint);
+Screen('FrameRect',w,white,slot_label_Lframe,10);
 Screen('DrawTexture', w, B1_S2_token_bag, [], R1point);
 Screen('DrawTexture', w, B1_blank_token_bag, [], R2point);
 DrawFormattedText(w,[
-    'For the second slot machine, we filled the top bag with a' '\n' ...
-    'large, random, number of ' state2_color ' tokens...' ...
+    'Then the operator filled the top bag with a large,' '\n' ...
+    'random, number of ' state2_color ' tokens...' ...
     ],'center',rect(4)*0.8, [], [], [], [], 1.6);
 Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
 Screen('Flip',w);
@@ -1191,7 +1225,7 @@ Screen('FrameRect',w,white,slot_label_Lframe,10);
 Screen('DrawTexture', w, B1_S2_token_bag, [], R1point);
 Screen('DrawTexture', w, B1_S3_token_bag, [], R2point);
 DrawFormattedText(w,[
-    'And the bottom bag with a large,' '\n' ...
+    'And the bottom bag with a different, large,' '\n' ...
     'random, number of ' state3_color ' tokens...' ...
     ],'center',rect(4)*0.8, [], [], [], [], 1.6);
 Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
@@ -1205,7 +1239,8 @@ Screen('FrameRect',w,white,slot_label_Lframe,10);
 Screen('DrawTexture', w, B1_S2_token_bag, [], R1point);
 Screen('DrawTexture', w, B1_S3_token_bag, [], R2point);
 DrawFormattedText(w,[
-    'And then we dumped them into the slot machine!'
+    'And then the operator dumped them' '\n' ...
+    'into the second slot machine!' ...
     ],'center',rect(4)*0.8, [], [], [], [], 1.6);
 Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
 Screen('Flip',w);
@@ -1239,8 +1274,8 @@ Screen('FrameRect',w,white,slot_label_Lframe,10);
 Screen('FrameRect',w,white,slot_label_Rframe,10);
 
 DrawFormattedText(w,[
-    'Each time you win a token, we''ll put it back' '\n' ...
-    'in the slot machine that it came from...' ...
+    'Each time you win a token, the operator puts' '\n' ...
+    'it back in the slot machine that it came from...' ...
     ],'center',rect(4)*0.8, [], [], [], [], 1.6);
 Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
 Screen('Flip',w);
@@ -1297,7 +1332,7 @@ Screen('Flip',w);
 WaitSecs(1)
 KbWait([],2);
 
-% ---- Slot machines independent
+% ---- Slot machines independent, same as TOKEN ROOM
 Screen('DrawTexture', w, prize_room, [], room_Upoint);
 DrawFormattedText(w,[
     'There are two important things about how the' '\n' ...
@@ -1318,10 +1353,31 @@ Screen('Flip',w);
 WaitSecs(1)
 KbWait([],2);
 
-% ---- Slot machines probabilities will change
 Screen('DrawTexture', w, prize_room, [], room_Upoint);
 DrawFormattedText(w,[
-    'Second: Your chance of winning, at each slot' '\n' ...
+    'This part of the programming is the same for the' '\n' ...
+    'slot machines in PRIZE ROOM and in the TOKEN ROOM.' ...
+    ],'center',rect(4)*0.7, [], [], [], [], 1.6);
+Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
+Screen('Flip',w);
+WaitSecs(1)
+KbWait([],2);
+
+Screen('DrawTexture', w, token_room, [], room_Upoint);
+DrawFormattedText(w,[
+    'Remember: at each slot machine in the' '\n'...
+    'TOKEN ROOM you have a different, unknown,' '\n' ...
+    'chance of winning each color token.' ...
+    ],'center',rect(4)*0.7, [], [], [], [], 1.6);
+Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
+Screen('Flip',w);
+WaitSecs(1)
+KbWait([],2);
+
+% ---- Slot machines probabilities will change, different from TOKEN ROOM
+Screen('DrawTexture', w, prize_room, [], room_Upoint);
+DrawFormattedText(w,[
+    'Second: Your chance of winning at each slot' '\n' ...
     'machine in the PRIZE ROOM, WILL CHANGE!' ...
     ],'center',rect(4)*0.7, [], [], [], [], 1.6);
 Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
@@ -1331,8 +1387,8 @@ KbWait([],2);
 
 Screen('DrawTexture', w, prize_room, [], room_Upoint);
 DrawFormattedText(w,[
-    'This makes the slot machines in the PRIZE ROOM a' '\n' ...
-    'bit more complicated than those in the TOKEN ROOM.' ...
+    'This is what makes the slot machines in the' '\n' ...
+    'PRIZE ROOM different from those in TOKEN ROOM.' ...
     ],'center',rect(4)*0.7, [], [], [], [], 1.6);
 Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
 Screen('Flip',w);
@@ -1349,6 +1405,7 @@ Screen('Flip',w);
 WaitSecs(1)
 KbWait([],2);
 
+% ---- how will chances change
 Screen('DrawTexture', w, prize_room, [], room_Upoint);
 DrawFormattedText(w,[
     'To best understand how your chances of' '\n' ...
@@ -1361,8 +1418,8 @@ KbWait([],2);
 
 Screen('DrawTexture', w, prize_room, [], room_Upoint);
 DrawFormattedText(w,[
-    'Each time you leave the PRIZE ROOM, we' '\n' ...
-    'make a TINY, random, tweak to your' '\n' ...
+    'Each time you leave the PRIZE ROOM, the' '\n' ...
+    'operator makes a TINY, random, tweak to your' '\n' ...
     'chances of winning at each slot machine.' ...
     ],'center',rect(4)*0.7, [], [], [], [], 1.6);
 Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
@@ -1460,7 +1517,8 @@ KbWait([],2);
 % ---- directionality of change
 Screen('DrawTexture', w, prize_room, [], room_Upoint);
 DrawFormattedText(w,[
-    'Remember: These TINY tweaks are RANDOM...' ...
+    'Remember: The TINY tweaks that the slot' '\n' ...
+    'machine operator makes are RANDOM...' ...
     ],'center',rect(4)*0.7, [], [], [], [], 1.6);
 Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
 Screen('Flip',w);
