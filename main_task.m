@@ -8,18 +8,22 @@
 
 function main_task(trials, block)
 
+% 1 - Initial setup
+
+% ---- Pull global stimuli from start function
     global w rect sub pay stim_color_step1 ...
     stim_colors_step2 stim_step2_color_select ...
     stim_prac_symbol stim_symbol rng_seed ...
     A1 B1 A2 B2 A3 B3
 
-    % some setups
+% ---- Screen setup
     Screen('Preference', 'VisualDebugLevel', 1);% change psych toolbox screen check to black
     Screen('Preference', 'SkipSyncTests', 1); % ALTERED FOR DEBUGGING
     FlushEvents;
     %HideCursor; %ALTERED FOR DEBUGGING
     PsychDefaultSetup(1);
 
+% ---- File setup
     %create file name string for sub with leading zeros
     filename_subnum = pad(num2str(sub), 3, 'left', '0');
 
@@ -46,36 +50,55 @@ function main_task(trials, block)
         disp('Try again then')
     case 1
 
-
-
-    % Open the screen
+% ---- Screen selection
     doublebuffer=1; %????
     screens = Screen('Screens'); %count the screen
     whichScreen = min(screens); %select the screen; ALTERED THIS BECAUSE IT KEPT SHOWING UP ON MY LAPTOP INSTEAD OF THE ATTACHED MONITOR
     [w, rect] = Screen('OpenWindow', whichScreen, 0,[], 32, ...
         doublebuffer+1,[],[],kPsychNeedFastBackingStore); %???
 
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% 2 - Define image locations
 
-    % display coordinates setup
+% ---- display coordinates setup
     r = [0,0,400,290]; %stimuli rectangle
     rc = [0,0,420,310]; %choice rectangle
     slot_r = [0,0,600,480]; % slot rectangle
     r_spenttoken = [0,0,400*.4, 290*.4]; % spent token rectangle
     r_coinslot = [0,0,400*.8, 290*.8]; % coin slot rectangle
 
-    %drawingpoints on screen
-    Lpoint = CenterRectOnPoint(r, rect(3)*.25, rect(4)*0.3);
-    Rpoint = CenterRectOnPoint(r, rect(3)*.75, rect(4)*0.3);
+% ---- locations of original stimuli alone
     Upoint = CenterRectOnPoint(r, rect(3)*.5, rect(4)*0.3);
     Mpoint = CenterRectOnPoint(r, rect(3)*.5, rect(4)*0.5);
 
+% ---- slot machine locations
+    slot_Lpoint = CenterRectOnPoint(slot_r, rect(3)*0.2, rect(4)*0.375);
+    slot_Rpoint = CenterRectOnPoint(slot_r, rect(3)*0.8, rect(4)*0.375);
 
-    Lchoice = CenterRectOnPoint(rc, rect(3)/4, rect(4)*0.3); %drawingpoints on screen
-    Rchoice = CenterRectOnPoint(rc, 3*rect(3)/4, rect(4)*0.3);
+% ---- stimuli within slot locations
+    slot_label_Lpoint = CenterRectOnPoint(r, rect(3)*0.2, rect(4)*0.4);
+    slot_label_Rpoint = CenterRectOnPoint(r, rect(3)*0.8, rect(4)*0.4);
 
-    % loading images from the randomized permutations
+% ---- frames - white during every trial; green when chosen
+    Mframe = CenterRectOnPoint(rc, rect(3)/2, rect(4)*0.5);
+    slot_label_Lframe = CenterRectOnPoint(rc, rect(3)*0.2, rect(4)*0.4);
+    slot_label_Rframe = CenterRectOnPoint(rc, rect(3)*0.8, rect(4)*0.4);
 
+% ---- coin/coin slot locations
+    coinslot_Lpoint = CenterRectOnPoint(r_coinslot, rect(3)*0.2, rect(4)*0.8);
+    coinslot_Rpoint = CenterRectOnPoint(r_coinslot, rect(3)*0.8, rect(4)*0.8);
+    spent_token_Mpoint = CenterRectOnPoint(r_spenttoken, rect(3)*0.5, rect(4)*0.8);
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% 3 - Load images for practice block
     if block == 0
+% --- Basic stimuli
         A1 = imread(['stimuli/practice/' char(stim_color_step1(1)) '/' ...
           char(stim_prac_symbol(1)) '.png'],'png');
         B1 = imread(['stimuli/practice/' char(stim_color_step1(1)) '/' ...
@@ -91,7 +114,26 @@ function main_task(trials, block)
         B3 = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(2)) '/' ...
           char(stim_prac_symbol(6)) '.png'],'png');
 
+% ---- slot machine files
+        step1_slot_L = imread(['stimuli/practice/' char(stim_color_step1(1)) '/Slot Machine_L.png'],'png');
+        step1_slot_R = imread(['stimuli/practice/' char(stim_color_step1(1)) '/Slot Machine_R.png'],'png');
+
+        state2_slot_L = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(1)) '/Slot Machine_L.png'],'png');
+        state2_slot_R = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(1)) '/Slot Machine_R.png'],'png');
+
+        state3_slot_L = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(2)) '/Slot Machine_L.png'],'png');
+        state3_slot_R = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(2)) '/Slot Machine_R.png'],'png');
+
+% ---- coin slot files
+        state2_coin_slot = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(1)) '/coin slot.png'],'png');
+        state3_coin_slot = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(2)) '/coin slot.png'],'png');
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% 4 - Load and create images for money block
     elseif block == 1
+% --- Basic stimuli
         A1 = imread(['stimuli/main_task/' char(stim_color_step1(2)) '/' ...
           char(stim_symbol(1)) '.png'],'png');
         B1 = imread(['stimuli/main_task/' char(stim_color_step1(2)) '/' ...
@@ -107,7 +149,27 @@ function main_task(trials, block)
         B3 = imread(['stimuli/main_task/' char(stim_colors_step2(2)) '/' char(stim_step2_color_select(2)) '/' ...
           char(stim_symbol(6)) '.png'],'png');
 
+% ---- slot machine files
+        step1_slot_L = imread(['stimuli/main_task/' char(stim_color_step1(2)) '/Slot Machine_L.png'],'png');
+        step1_slot_R = imread(['stimuli/main_task/' char(stim_color_step1(2)) '/Slot Machine_R.png'],'png');
+
+        state2_slot_L = imread(['stimuli/main_task/' char(stim_colors_step2(2)) '/' char(stim_step2_color_select(1)) '/Slot Machine_L.png'],'png');
+        state2_slot_R = imread(['stimuli/main_task/' char(stim_colors_step2(2)) '/' char(stim_step2_color_select(1)) '/Slot Machine_R.png'],'png');
+
+        state3_slot_L = imread(['stimuli/main_task/' char(stim_colors_step2(2)) '/' char(stim_step2_color_select(2)) '/Slot Machine_L.png'],'png');
+        state3_slot_R = imread(['stimuli/main_task/' char(stim_colors_step2(2)) '/' char(stim_step2_color_select(2)) '/Slot Machine_R.png'],'png');
+
+% ---- coin slot files
+        state2_coin_slot = imread(['stimuli/main_task/' char(stim_colors_step2(2)) '/' char(stim_step2_color_select(1)) '/coin slot.png'],'png');
+        state3_coin_slot = imread(['stimuli/main_task/' char(stim_colors_step2(2)) '/' char(stim_step2_color_select(2)) '/coin slot.png'],'png');
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% 5 - Load and create images for food block
     else
+% --- Basic stimuli
         A1 = imread(['stimuli/main_task/' char(stim_color_step1(3)) '/' ...
           char(stim_symbol(7)) '.png'],'png');
         B1 = imread(['stimuli/main_task/' char(stim_color_step1(3)) '/' ...
@@ -122,34 +184,48 @@ function main_task(trials, block)
           char(stim_symbol(11)) '.png'],'png');
         B3 = imread(['stimuli/main_task/' char(stim_colors_step2(3)) '/' char(stim_step2_color_select(2)) '/' ...
           char(stim_symbol(12)) '.png'],'png');
+
+% ---- slot machine files
+        step1_slot_L = imread(['stimuli/main_task/' char(stim_color_step1(3)) '/Slot Machine_L.png'],'png');
+        step1_slot_R = imread(['stimuli/main_task/' char(stim_color_step1(3)) '/Slot Machine_R.png'],'png');
+
+        state2_slot_L = imread(['stimuli/main_task/' char(stim_colors_step2(3)) '/' char(stim_step2_color_select(1)) '/Slot Machine_L.png'],'png');
+        state2_slot_R = imread(['stimuli/main_task/' char(stim_colors_step2(3)) '/' char(stim_step2_color_select(1)) '/Slot Machine_R.png'],'png');
+
+        state3_slot_L = imread(['stimuli/main_task/' char(stim_colors_step2(3)) '/' char(stim_step2_color_select(2)) '/Slot Machine_L.png'],'png');
+        state3_slot_R = imread(['stimuli/main_task/' char(stim_colors_step2(3)) '/' char(stim_step2_color_select(2)) '/Slot Machine_R.png'],'png');
+
+% ---- coin slot files
+        state2_coin_slot = imread(['stimuli/main_task/' char(stim_colors_step2(3)) '/' char(stim_step2_color_select(1)) '/coin slot.png'],'png');
+        state3_coin_slot = imread(['stimuli/main_task/' char(stim_colors_step2(3)) '/' char(stim_step2_color_select(2)) '/coin slot.png'],'png');
     end
 
-    % Keyboard
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% 6 - Additional set up
+% ---- Keyboard
     KbName('UnifyKeyNames');
     L = KbName('LeftArrow');
     R = KbName('RightArrow');
-    exitKeys = KbName({'e', 'E'});
+    exitKeys = KbName({'ESCAPE'});
     spaceKey = KbName('space');
     startFirstKeys = KbName({'b', 'B'});
     continueKeys = KbName({'c', 'C'});
 
-    % Variables
+% ---- Transition variables
     a = 0.4 + 0.6.*rand(trials,2); %transition probabilities
     r = rand(trials, 2); %transition determinant
 
-    % colors
+% ---- Colors
     gray = 150;
     black = 0;
     white = [255];
     brown = [102,51,0];
     chosen_color = [0 220 0];
 
-    % indicator drawing points
-    ind = [0,0,400,50];
-    blue = [152,205,232];
-    purple = [196,182,206];
-
-    % blank matrices for variables
+% ---- blank matrices for variables
     action = NaN(trials,3);
     choice_on_time = NaN(trials,1);
     choice_off_time = NaN(trials,1);
@@ -161,11 +237,16 @@ function main_task(trials, block)
     payoff_det = rand(trials,4);
     payoff = NaN(trials,2);
 
-    % Waiting screen
+% ---- Waiting screen
     Screen('FillRect', w, black);
     Screen('TextSize', w, 40);
 
-    % Screen at the beginning of each block
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% 7 - Task intro screens
+% ---- Intro screen for practice block
     if block == 0
         DrawFormattedText(w, 'Press b to begin the practice round', 'center', 'center', white);
         Screen(w, 'Flip');
@@ -179,6 +260,7 @@ function main_task(trials, block)
           end
         end
 
+% ---- Intro screen for food block
     elseif block == 2 % block == 2 is food
         A = exist(['sub' filename_subnum '_money.mat'], 'file');
         if A
@@ -213,7 +295,6 @@ function main_task(trials, block)
         KbWait([],2);
 
         % Screen 3
-
         DrawFormattedText(w, [
             'Press b to begin part ' num2str(part) '(of 2) of the experiment.' ...
             ], 'center', 'center', white);
@@ -228,6 +309,7 @@ function main_task(trials, block)
           end
         end
 
+% ---- Intro screen for money block
     else % block = 1 is money
         A = exist(['sub' filename_subnum '_food.mat'], 'file');
         if A
@@ -288,7 +370,11 @@ function main_task(trials, block)
 
     Screen('CloseAll');
 
-
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% 8 - Begin trials
 
     Screen('Preference', 'SkipSyncTests', 1); % ALTERED FOR DEBUGGING
     %HideCursor; ALTERED FOR DEBUGGING
@@ -622,7 +708,12 @@ function main_task(trials, block)
 
     RestrictKeysForKbCheck([]);
 
-    %saving data
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% 9 - Saving data
+
     task_data = struct;
     task_data.rng_seed = rng_seed;
     task_data.subject = sub; %*ones(trials,1);
@@ -651,9 +742,14 @@ function main_task(trials, block)
 
     save(results_file_name, 'task_data', '-v6');
 
-    % Payoff screen
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% 9 - Payoff screens
     payoff_sum = sum(nansum(payoff))/10;
 
+% ---- Practice block
     if block == 0 % practice
         Screen(w, 'FillRect', black);
         Screen('TextSize', w, 40);
@@ -671,6 +767,7 @@ function main_task(trials, block)
           end
         end
 
+% ---- Money block
     elseif block == 1 % money block
         Screen(w, 'FillRect', black);
         Screen('TextSize', w, 40);
@@ -689,6 +786,7 @@ function main_task(trials, block)
           end
         end
 
+% ---- Food block
     elseif block == 2 % food block
         Screen(w, 'FillRect', black);
         Screen('TextSize', w, 40);
@@ -712,8 +810,8 @@ function main_task(trials, block)
        pay = 7 + payoff_sum; % base pay for my task is $7
     end
 
-%     Screen('Close',w);
-     Screen('CloseAll');
+    Screen('Close',w);
+    Screen('CloseAll');
     FlushEvents;
 %   jheapcl; ALTERED FOR DEBUGGING; THIS FUNCTION HELPS PREVENT MEMORY
 %   EXCEPTIOINS
