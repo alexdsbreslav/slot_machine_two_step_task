@@ -7,7 +7,7 @@ function tutorial_v4
 % for my own purposes.
 
 % Please do not share or use this code without my written permission.
-% Author: Alex Stine
+% Author: Alex Breslav
 
 %clear all
 
@@ -103,13 +103,6 @@ slot_label_Bpoint = CenterRectOnPoint(r, rect(3)*0.5, rect(4)*0.575);
 spent_token_Mpoint = CenterRectOnPoint(r_spenttoken, rect(3)*0.5, rect(4)*0.8);
 
 %frames - white during every trial; green when chosen
-Lchoice = CenterRectOnPoint(rc, rect(3)/4, rect(4)*0.3); %drawingpoints on screen
-Rchoice = CenterRectOnPoint(rc, 3*rect(3)/4, rect(4)*0.3);
-Uchoice = CenterRectOnPoint(rc, rect(3)/2, rect(4)*0.3);
-L1frame = CenterRectOnPoint(rc, rect(3)/4, rect(4)*0.2);
-L2frame = CenterRectOnPoint(rc, rect(3)/4, rect(4)*0.5);
-R1frame = CenterRectOnPoint(rc, 3*rect(3)/4, rect(4)*0.2);
-R2frame = CenterRectOnPoint(rc, 3*rect(3)/4, rect(4)*0.5);
 Mframe = CenterRectOnPoint(rc, rect(3)/2, rect(4)*0.5);
 slot_label_Uframe = CenterRectOnPoint(rc, rect(3)*0.5, rect(4)*0.4);
 slot_label_Lframe = CenterRectOnPoint(rc, rect(3)*0.2, rect(4)*0.4);

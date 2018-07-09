@@ -4,6 +4,7 @@
 % from a script written by Nikki Sullivan, PhD (Duke University) with her permission.
 
 % Please do not share or use this script without the permission of all invovled parties.
+% Author: Alex Breslav
 
 function main_task(trials, block)
 
@@ -56,12 +57,19 @@ function main_task(trials, block)
 
 
     % display coordinates setup
-    r = [0,0,400,290];
+    r = [0,0,400,290]; %stimuli rectangle
     rc = [0,0,420,310]; %choice rectangle
-    Lpoint = CenterRectOnPoint(r, rect(3)/4, rect(4)*0.3); %drawingpoints on screen
-    Rpoint = CenterRectOnPoint(r, 3*rect(3)/4, rect(4)*0.3);
-    Upoint = CenterRectOnPoint(r, rect(3)/2, rect(4)*0.2);
-    Mpoint = CenterRectOnPoint(r, rect(3)/2, rect(4)*0.5);
+    slot_r = [0,0,600,480]; % slot rectangle
+    r_spenttoken = [0,0,400*.4, 290*.4]; % spent token rectangle
+    r_coinslot = [0,0,400*.8, 290*.8]; % coin slot rectangle
+
+    %drawingpoints on screen
+    Lpoint = CenterRectOnPoint(r, rect(3)*.25, rect(4)*0.3);
+    Rpoint = CenterRectOnPoint(r, rect(3)*.75, rect(4)*0.3);
+    Upoint = CenterRectOnPoint(r, rect(3)*.5, rect(4)*0.3);
+    Mpoint = CenterRectOnPoint(r, rect(3)*.5, rect(4)*0.5);
+
+
     Lchoice = CenterRectOnPoint(rc, rect(3)/4, rect(4)*0.3); %drawingpoints on screen
     Rchoice = CenterRectOnPoint(rc, 3*rect(3)/4, rect(4)*0.3);
 
