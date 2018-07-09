@@ -71,7 +71,7 @@ end
 
 doublebuffer=1;
 screens = Screen('Screens'); %count the screen
-whichScreen = max(screens); %select the screen ALTERED FOR DEBUGGING
+whichScreen = min(screens); %select the screen ALTERED FOR DEBUGGING
 [w,rect] = Screen('OpenWindow', whichScreen, 0,[], 32, ...
         doublebuffer+1,[],[],kPsychNeedFastBackingStore);
 
@@ -82,6 +82,7 @@ room_r = [0,0,620*.9,500*.9]; % room rectangle
 r_spenttoken = [0,0,400*.4, 290*.4];
 r_coinslot = [0,0,400*.8, 290*.8];
 r_next_arrow = [0,0,150,108.75];
+r_tokendump = [0,0,800,290];
 
 % Original stimuli locations
 Lpoint = CenterRectOnPoint(r, rect(3)*.25, rect(4)*0.3); %drawingpoints on screen
@@ -92,11 +93,13 @@ R1point = CenterRectOnPoint(r, rect(3)*.75, rect(4)*0.2);
 R2point = CenterRectOnPoint(r, rect(3)*.75, rect(4)*0.5);
 Upoint = CenterRectOnPoint(r, rect(3)*.5, rect(4)*0.3);
 Mpoint = CenterRectOnPoint(r, rect(3)*.5, rect(4)*0.5);
+Tpoint_wide = CenterRectOnPoint(r_tokendump, rect(3)*.5, rect(4)*0.15);
 
 % stimli in slot locations
 slot_label_Upoint = CenterRectOnPoint(r, rect(3)*0.5, rect(4)*0.4);
 slot_label_Lpoint = CenterRectOnPoint(r, rect(3)*0.2, rect(4)*0.4);
 slot_label_Rpoint = CenterRectOnPoint(r, rect(3)*0.8, rect(4)*0.4);
+slot_label_Bpoint = CenterRectOnPoint(r, rect(3)*0.5, rect(4)*0.575);
 spent_token_Mpoint = CenterRectOnPoint(r_spenttoken, rect(3)*0.5, rect(4)*0.8);
 
 %frames - white during every trial; green when chosen
@@ -111,11 +114,13 @@ Mframe = CenterRectOnPoint(rc, rect(3)/2, rect(4)*0.5);
 slot_label_Uframe = CenterRectOnPoint(rc, rect(3)*0.5, rect(4)*0.4);
 slot_label_Lframe = CenterRectOnPoint(rc, rect(3)*0.2, rect(4)*0.4);
 slot_label_Rframe = CenterRectOnPoint(rc, rect(3)*0.8, rect(4)*0.4);
+slot_label_Bframe = CenterRectOnPoint(rc, rect(3)*0.5, rect(4)*0.575);
 
 % slot machine locations
 slot_Upoint = CenterRectOnPoint(slot_r, rect(3)*0.5, rect(4)*0.375);
 slot_Lpoint = CenterRectOnPoint(slot_r, rect(3)*0.2, rect(4)*0.375);
 slot_Rpoint = CenterRectOnPoint(slot_r, rect(3)*0.8, rect(4)*0.375);
+slot_Bpoint = CenterRectOnPoint(slot_r, rect(3)*0.5, rect(4)*0.55);
 
 % coin slot locations
 coinslot_Lpoint = CenterRectOnPoint(r_coinslot, rect(3)*0.2, rect(4)*0.8);
@@ -165,6 +170,12 @@ B1_S2_token_bag = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' cha
 B1_S3_token_bag = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(2)) '/' ...
   char(stim_prac_symbol(2)) '_token bag.png'],'png');
 
+% read token dump files
+A1_tokendump = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' ...
+  char(stim_prac_symbol(1)) '_dump.png'],'png');
+B1_tokendump = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' ...
+  char(stim_prac_symbol(2)) '_dump.png'],'png');
+
 % read slot machine files
 step1_slot_L = imread(['stimuli/practice/' char(stim_color_step1(1)) '/Slot Machine_L.png'],'png');
 state2_slot_L = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(1)) '/Slot Machine_L.png'],'png');
@@ -210,6 +221,10 @@ A1_S3_token_bag = Screen('MakeTexture', w, A1_S3_token_bag);
 B1_S2_token_bag = Screen('MakeTexture', w, B1_S2_token_bag);
 B1_S3_token_bag = Screen('MakeTexture', w, B1_S3_token_bag);
 
+% create token dump images
+A1_tokendump = Screen('MakeTexture', w, A1_tokendump);
+B1_tokendump = Screen('MakeTexture', w, B1_tokendump);
+
 % create slot machines
 step1_slot_L = Screen('MakeTexture', w, step1_slot_L);
 state2_slot_L = Screen('MakeTexture', w, state2_slot_L);
@@ -250,6 +265,9 @@ Screen('TextColor',w,[255 255 255]);
 Screen('TextFont',w,'Helvetica');
 
 % -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
 % 1 - Intro
 
 DrawFormattedText(w,[
@@ -265,7 +283,6 @@ DrawFormattedText(w,[
     'This is part one of the study.' '\n\n' ...
     'This tutorial teaches you the rules of the strategy game.' ...
     ], 'center','center', [], [], [], [], 1.6);
-Screen('Flip',w, [], 1);
 Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
 Screen('Flip',w);
 KbWait([],2);
@@ -289,12 +306,15 @@ while 1
   end
 end
 % -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
 % 2 - Game structure
 
 Screen('DrawTexture', w, step1_slot_L, [], slot_Upoint);
 Screen('FrameRect',w,white,slot_label_Uframe,10);
 DrawFormattedText(w,[
-    'In this strategy game, there are six slot machines' ...
+    'In this strategy game, there are six slot machines.' ...
     ],'center', rect(4)*0.75, [], [], [], [], 1.6);
 Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
 Screen('Flip',w);
@@ -335,6 +355,9 @@ Screen('Flip',w);
 WaitSecs(1)
 KbWait([],2);
 
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % 3 - Slot Layout
 % ---- Token room
@@ -472,6 +495,9 @@ WaitSecs(1)
 KbWait([],2);
 
 % -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
 % 4 - Game progression
 
 Screen('DrawTexture', w, token_room, [], room_Upoint);
@@ -585,6 +611,9 @@ Screen('Flip',w);
 WaitSecs(1)
 KbWait([],2);
 
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % 5 - Walk through #1
 
@@ -746,6 +775,9 @@ elseif down_key == R
 end
 
 % -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
 % 6 - Walk through #2
 
 DrawFormattedText(w,[
@@ -888,6 +920,9 @@ elseif down_key == R
       WaitSecs(1.5)
 end
 
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % 7 - Practice round #3, no walk through
 
@@ -1050,6 +1085,9 @@ while 1
 end
 
 % -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
 % 8 - Token room programming
 
 DrawFormattedText(w,[
@@ -1095,9 +1133,9 @@ Screen('FrameRect',w,white,slot_label_Lframe,10);
 Screen('FrameRect',w,white,slot_label_Rframe,10);
 
 DrawFormattedText(w,[
-    'To best understand how they were' '\n' ...
-    'programmed, imagine that before the' '\n' ...
-    'game starts, the slot machines are empty.' ...
+    'To best understand how they were programmed,' '\n' ...
+    'imagine that, before the game starts,' '\n'...
+    'the slot machines are empty.' ...
     ],'center',rect(4)*0.8, [], [], [], [], 1.6);
 Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
 Screen('Flip',w);
@@ -1111,7 +1149,7 @@ Screen('FrameRect',w,white,slot_label_Lframe,10);
 Screen('DrawTexture', w, A1_blank_token_bag, [], R1point);
 Screen('DrawTexture', w, A1_blank_token_bag, [], R2point);
 DrawFormattedText(w,[
-    'Before the game started, the slot' '\n' ...
+    'Before the game started, a slot' '\n' ...
     'machine operator grabbed two large' '\n' ...
     'token bags for the first slot machine.' ...
     ],'center',rect(4)*0.8, [], [], [], [], 1.6);
@@ -1162,15 +1200,14 @@ Screen('Flip',w);
 WaitSecs(1)
 KbWait([],2);
 
-Screen('DrawTexture', w, step1_slot_L, [], slot_Lpoint);
-Screen('DrawTexture', w, A1, [], slot_label_Lpoint);
-Screen('FrameRect',w,white,slot_label_Lframe,10);
-Screen('DrawTexture', w, A1_S2_token_bag, [], R1point);
-Screen('DrawTexture', w, A1_S3_token_bag, [], R2point);
+Screen('DrawTexture', w, step1_slot_L, [], slot_Bpoint);
+Screen('DrawTexture', w, A1, [], slot_label_Bpoint);
+Screen('FrameRect',w,white,slot_label_Bframe,10);
+Screen('DrawTexture', w, A1_tokendump, [], Tpoint_wide);
 DrawFormattedText(w,[
     'And then the operator dumped them' '\n' ...
     'into the first slot machine!' ...
-    ],'center',rect(4)*0.8, [], [], [], [], 1.6);
+    ],'center',rect(4)*0.85, [], [], [], [], 1.6);
 Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
 Screen('Flip',w);
 WaitSecs(1)
@@ -1233,15 +1270,14 @@ Screen('Flip',w);
 WaitSecs(1)
 KbWait([],2);
 
-Screen('DrawTexture', w, step1_slot_L, [], slot_Lpoint);
-Screen('DrawTexture', w, B1, [], slot_label_Lpoint);
-Screen('FrameRect',w,white,slot_label_Lframe,10);
-Screen('DrawTexture', w, B1_S2_token_bag, [], R1point);
-Screen('DrawTexture', w, B1_S3_token_bag, [], R2point);
+Screen('DrawTexture', w, step1_slot_L, [], slot_Bpoint);
+Screen('DrawTexture', w, B1, [], slot_label_Bpoint);
+Screen('FrameRect',w,white,slot_label_Bframe,10);
+Screen('DrawTexture', w, B1_tokendump, [], Tpoint_wide);
 DrawFormattedText(w,[
     'And then the operator dumped them' '\n' ...
     'into the second slot machine!' ...
-    ],'center',rect(4)*0.8, [], [], [], [], 1.6);
+    ],'center',rect(4)*.85, [], [], [], [], 1.6);
 Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
 Screen('Flip',w);
 WaitSecs(1)
@@ -1320,6 +1356,9 @@ while 1
   end
 end
 
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % 9 - Prize room programming
 
