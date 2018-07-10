@@ -390,9 +390,12 @@ function main_task(trials, block)
 
     for trial = 1:trials
 
-        % First stage
-
-        % short break
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% 9.1 - Stage 1
+% ---- Signal a short break every 50 trials on blocks 1,2
 
         if block ~= 0
 
@@ -407,37 +410,38 @@ function main_task(trials, block)
             end
         end
 
-        % Fixation screen
+% ---- Fixation screen
         Screen(w, 'FillRect', black);
         Screen('TextSize', w, 60);
         DrawFormattedText(w, '+', 'center', 'center', white);
         Screen(w, 'Flip');
         WaitSecs(.5);
 
-        % Draw indicators
-
+% ---- Draw indicators
         Screen(w, 'FillRect', black);
-
-
         position(trial,1) = round(rand); %randomizing images positions
-
         type = position(trial,1);
 
-        % Draw stimuli
-
-
+% ---- Draw original stimuli using a function that Arkady wrote: drawimage
         picL = drawimage(type,1);
         picR = drawimage(1-type,1);
 
-        Screen('DrawTexture', w, picL, [], Lpoint);
-        Screen('DrawTexture', w, picR, [], Rpoint);
-        Screen('FrameRect',w,white,Lchoice,10); %outline the stimuli with white box
-        Screen('FrameRect',w,white,Rchoice,10);
+% ---- Draw trial screen
+        % draw slots
+        Screen('DrawTexture', w, step1_slot_L, [], slot_Lpoint);
+        Screen('DrawTexture', w, step1_slot_R, [], slot_Rpoint);
+        % draw original stimuli
+        Screen('DrawTexture', w, picL, [], slot_label_Lpoint);
+        Screen('DrawTexture', w, picR, [], slot_label_Rpoint);
+        % draw frames around original stimuli
+        Screen('FrameRect',w,white,slot_label_Lframe,10);
+        Screen('FrameRect',w,white,slot_label_Rframe,10);
         Screen('Flip', w);
 
-
+% ---- start reaction timer
         choice_on_time(trial,1) = GetSecs - t0;
 
+% ---- capture key press
         key_is_down = 0;
         FlushEvents;
         [key_is_down, secs, key_code] = KbCheck;
@@ -446,8 +450,10 @@ function main_task(trials, block)
                 [key_is_down, secs, key_code] = KbCheck;
         end
 
+% ---- stop reaction timer
         choice_off_time(trial,1) = GetSecs - t0;
 
+% ---- capture selection
         down_key = find(key_code,1);
 
         if (down_key==L && type == 0) || (down_key==R && type == 1)
@@ -456,31 +462,42 @@ function main_task(trials, block)
             action(trial,1)=1;
         end
 
+% ---- feedback screen
         if down_key == L
-            Screen('DrawTexture', w, picL, [], Lpoint);
-            Screen('DrawTexture', w, picR, [], Rpoint);
-            Screen('FrameRect',w,chosen_color,Lchoice,10);
-            Screen('FrameRect',w,white,Rchoice,10);
-
-            Screen('Flip',w);
+            % draw slots
+            Screen('DrawTexture', w, step1_slot_L, [], slot_Lpoint);
+            Screen('DrawTexture', w, step1_slot_R, [], slot_Rpoint);
+            % draw original stimuli
+            Screen('DrawTexture', w, picL, [], slot_label_Lpoint);
+            Screen('DrawTexture', w, picR, [], slot_label_Rpoint);
+            % draw frames around original stimuli
+            Screen('FrameRect',w,chosen_color,slot_label_Lframe,10);
+            Screen('FrameRect',w,white,slot_label_Rframe,10);
+            Screen('Flip', w);
 
        elseif down_key == R
 
-           Screen('DrawTexture', w, picL, [], Lpoint);
-           Screen('DrawTexture', w, picR, [], Rpoint);
-           Screen('FrameRect',w,chosen_color,Rchoice,10);
-           Screen('FrameRect',w,white,Lchoice,10);
+           % draw slots
+           Screen('DrawTexture', w, step1_slot_L, [], slot_Lpoint);
+           Screen('DrawTexture', w, step1_slot_R, [], slot_Rpoint);
+           % draw original stimuli
+           Screen('DrawTexture', w, picL, [], slot_label_Lpoint);
+           Screen('DrawTexture', w, picR, [], slot_label_Rpoint);
+           % draw frames around original stimuli
+           Screen('FrameRect',w,white,slot_label_Lframe,10);
+           Screen('FrameRect',w,chose_color,slot_label_Rframe,10);
+           Screen('Flip', w);
 
-           Screen('Flip',w);
         end
 
 
-        % second stage transition randomization
-
-        % a is a Gaussian distribution from 0.4 - 1.0 (mean = 0.7).
-        % r is a Guassian distribution from 0 - 1 (mean = 0.5).
-        % this code basically says that when you choose A, go to state 2 70% of the time;
-        % when you choose B, goes to state 2 30% of the time
+% ---- Determine the state for the second state
+    % ---- a ~ U[0.4,1]
+    % ---- r ~ U[0,1]
+    % ---- p(r < a) = 0.70
+    % ---- p(r > a) = 0.30
+    % ---- If we discretize the "a" distribution, remember that there is a 1/7
+    % ---- chance of "a" taking the any value [0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
 
         if action(trial,1) == 0
             if  r(trial, 1) < a(trial,1)
@@ -494,40 +511,49 @@ function main_task(trials, block)
             end
         end
 
-
-
+% ---- wait 1 second on the feedback screen
         WaitSecs(1);
 
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% 9.2A State 2
 
         if state(trial,1) == 2
 
-
-            % Fixation screen
+% ---- Fixation screen
             Screen(w, 'FillRect', black);
             Screen('TextSize', w, 60);
             DrawFormattedText(w, '+', 'center', 'center', white);
             Screen(w, 'Flip');
             WaitSecs(.5);
 
-            %choice screen
+% ---- Randomize the left/right position of the original stimuli
             Screen(w, 'FillRect', black);
-
-            position(trial,2) = round(rand); %randomizing images positions
+            position(trial,2) = round(rand);
             type = position(trial,2);
 
-
+% ---- Draw original stimuli using a function that Arkady wrote: drawimage
             picL = drawimage(type,2);
             picR = drawimage(1-type,2);
 
-
-            Screen('DrawTexture', w, picL, [], Lpoint);
-            Screen('DrawTexture', w, picR, [], Rpoint);
-            Screen('FrameRect',w,white,Lchoice,10); % outline the stimuli with white box
-            Screen('FrameRect',w,white,Rchoice,10);
+% ---- Draw trial screen
+            % draw slots
+            Screen('DrawTexture', w, state2_slot_L, [], slot_Lpoint);
+            Screen('DrawTexture', w, state2_slot_R, [], slot_Rpoint);
+            % draw original stimuli
+            Screen('DrawTexture', w, picL, [], slot_label_Lpoint);
+            Screen('DrawTexture', w, picR, [], slot_label_Rpoint);
+            % draw frames around original stimuli
+            Screen('FrameRect',w,white,slot_label_Lframe,10);
+            Screen('FrameRect',w,white,slot_label_Rframe,10);
             Screen('Flip', w);
 
+% ---- start reaction timer
             choice_on_time(trial,2) = GetSecs - t0;
 
+% ---- capture key press
             key_is_down = 0;
             FlushEvents;
             oldenablekeys = RestrictKeysForKbCheck([L,R]);
@@ -536,8 +562,10 @@ function main_task(trials, block)
                     [key_is_down, secs, key_code] = KbCheck(-3);
             end
 
+% ---- stop reaction timer
             choice_off_time(trial,2) = GetSecs - t0;
 
+% ---- capture selection and determine payoff
             down_key = find(key_code,1);
 
             if (down_key==L && type == 0) || (down_key==R && type == 1)
@@ -554,26 +582,36 @@ function main_task(trials, block)
                 end
             end
 
+% ---- feedback screen
             if down_key == L
-                Screen('DrawTexture', w, picL, [], Lpoint);
-                Screen('DrawTexture', w, picR, [], Rpoint);
-                Screen('FrameRect',w,chosen_color,Lchoice,10);
-                Screen('FrameRect',w,white,Rchoice,10);
-                Screen('Flip',w);
-               WaitSecs(0.5);
+              % draw slots
+              Screen('DrawTexture', w, state2_slot_L, [], slot_Lpoint);
+              Screen('DrawTexture', w, state2_slot_R, [], slot_Rpoint);
+              % draw original stimuli
+              Screen('DrawTexture', w, picL, [], slot_label_Lpoint);
+              Screen('DrawTexture', w, picR, [], slot_label_Rpoint);
+              % draw frames around original stimuli
+              Screen('FrameRect',w,chosen_color,slot_label_Lframe,10);
+              Screen('FrameRect',w,white,slot_label_Rframe,10);
+              Screen('Flip', w);
+              WaitSecs(0.5);
+
            elseif down_key == R
-               Screen('DrawTexture', w, picL, [], Lpoint);
-               Screen('DrawTexture', w, picR, [], Rpoint);
-               Screen('FrameRect',w,chosen_color,Rchoice,10);
-               Screen('FrameRect',w,white,Lchoice,10);
-               Screen('Flip',w);
-               WaitSecs(0.5);
+              % draw slots
+              Screen('DrawTexture', w, state2_slot_L, [], slot_Lpoint);
+              Screen('DrawTexture', w, state2_slot_R, [], slot_Rpoint);
+              % draw original stimuli
+              Screen('DrawTexture', w, picL, [], slot_label_Lpoint);
+              Screen('DrawTexture', w, picR, [], slot_label_Rpoint);
+              % draw frames around original stimuli
+              Screen('FrameRect',w,white,slot_label_Lframe,10);
+              Screen('FrameRect',w,chosen_color,slot_label_Rframe,10);
+              Screen('Flip', w);
+              WaitSecs(0.5);
            end
 
-
-            % choice - payoff screen
-
-            % separate reward statements depending on block
+% ---- payoff screen
+    % ---- determine reward based on block
             if block == 0
                 reward = 'Win!';
                 noreward = 'Try again';
@@ -585,6 +623,7 @@ function main_task(trials, block)
                 noreward = 'Try again';
             end
 
+    % ---- determine second step choice
             picD = drawimage(action(trial,2),2);
             Screen('DrawTexture', w, picD, [], Mpoint);
             if payoff(trial,1) == 1
@@ -593,38 +632,51 @@ function main_task(trials, block)
                 DrawFormattedText(w, noreward, 'center', rect(4)*0.8, white);
             end
 
+    % ---- show feedback
             Screen('Flip', w);
+
+    % ---- show feedback for 1 second
             WaitSecs(1);
 
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% 9.2B State 3
 
         else
-
-             % Fixation screen
+% ---- Fixation screen
             Screen(w, 'FillRect', black);
             Screen('TextSize', w, 60);
             DrawFormattedText(w, '+', 'center', 'center', white);
             Screen(w, 'Flip');
             WaitSecs(.5);
 
-            %choice screen
-
+% Randomize the left/right position of the original stimuli
             Screen(w, 'FillRect', black);
-
-            position(trial,3) = round(rand); %randomizing images positions
+            position(trial,3) = round(rand);
             type = position(trial,3);
 
+% ---- Draw original stimuli using a function that Arkady wrote: drawimage
             picL = drawimage(type,3);
             picR = drawimage(1-type,3);
 
-
-            Screen('DrawTexture', w, picL, [], Lpoint);
-            Screen('DrawTexture', w, picR, [], Rpoint);
-            Screen('FrameRect',w,white,Lchoice,10); % outline stimuli with white box
-            Screen('FrameRect',w,white,Rchoice,10);
+% ---- Draw trial screen
+            % draw slots
+            Screen('DrawTexture', w, state3_slot_L, [], slot_Lpoint);
+            Screen('DrawTexture', w, state3_slot_R, [], slot_Rpoint);
+            % draw original stimuli
+            Screen('DrawTexture', w, picL, [], slot_label_Lpoint);
+            Screen('DrawTexture', w, picR, [], slot_label_Rpoint);
+            % draw frames around original stimuli
+            Screen('FrameRect',w,white,slot_label_Lframe,10);
+            Screen('FrameRect',w,white,slot_label_Rframe,10);
             Screen('Flip', w);
 
+% ---- start reaction timer
             choice_on_time(trial,3) = GetSecs - t0;
 
+% ---- capture key press
             key_is_down = 0;
             FlushEvents;
             oldenablekeys = RestrictKeysForKbCheck([L,R]);
@@ -633,10 +685,12 @@ function main_task(trials, block)
                     [key_is_down, secs, key_code] = KbCheck(-3);
             end
 
+% ---- stop reaction timer
             choice_off_time(trial,3) = GetSecs - t0;
 
             down_key = find(key_code,1);
 
+% ---- capture selection and determine payoff
             if (down_key==L && type == 0) || (down_key==R && type == 1)
                 action(trial,3)=0;
                 if payoff_det(trial, 3) <  payoff_prob(trial,3)
@@ -651,36 +705,48 @@ function main_task(trials, block)
                 end
             end
 
+% ---- feedback screen
             if down_key == L
-                Screen('DrawTexture', w, picL, [], Lpoint);
-                Screen('DrawTexture', w, picR, [], Rpoint);
-                Screen('FrameRect',w,chosen_color,Lchoice,10);
-                Screen('FrameRect',w,white,Rchoice,10);
+              % draw slots
+              Screen('DrawTexture', w, state3_slot_L, [], slot_Lpoint);
+              Screen('DrawTexture', w, state3_slot_R, [], slot_Rpoint);
+              % draw original stimuli
+              Screen('DrawTexture', w, picL, [], slot_label_Lpoint);
+              Screen('DrawTexture', w, picR, [], slot_label_Rpoint);
+              % draw frames around original stimuli
+              Screen('FrameRect',w,chosen_color,slot_label_Lframe,10);
+              Screen('FrameRect',w,white,slot_label_Rframe,10);
+              Screen('Flip', w);
+              WaitSecs(0.5);
 
-                Screen('Flip',w);
-                WaitSecs(0.5);
-           elseif down_key == R
-               Screen('DrawTexture', w, picL, [], Lpoint);
-               Screen('DrawTexture', w, picR, [], Rpoint);
-               Screen('FrameRect',w,chosen_color,Rchoice,10);
-               Screen('FrameRect',w,white,Lchoice,10);
+            elseif down_key == R
+              % draw slots
+              Screen('DrawTexture', w, state3_slot_L, [], slot_Lpoint);
+              Screen('DrawTexture', w, state3_slot_R, [], slot_Rpoint);
+              % draw original stimuli
+              Screen('DrawTexture', w, picL, [], slot_label_Lpoint);
+              Screen('DrawTexture', w, picR, [], slot_label_Rpoint);
+              % draw frames around original stimuli
+              Screen('FrameRect',w,white,slot_label_Lframe,10);
+              Screen('FrameRect',w,chosen_color,slot_label_Rframe,10);
+              Screen('Flip', w);
+              WaitSecs(0.5);
+            end
 
-               Screen('Flip',w);
-               WaitSecs(0.5);
-           end
-
-           % separate reward statements depending on block
-           if block == 0
+% ---- payoff screen
+    % ---- determine reward based on block
+            if block == 0
                reward = 'Win!';
                noreward = 'Try again';
-           elseif block == 1
+            elseif block == 1
                reward = '+10 cents';
                noreward = '0 cents';
-           else
+            else
                reward = 'Take one bite of a snack';
                noreward = 'Try again';
-           end
+            end
 
+    % ---- determine second step choice
             picD = drawimage(action(trial,3),3);
             Screen('DrawTexture', w, picD, [], Mpoint);
             if payoff(trial,2) == 1
@@ -689,22 +755,22 @@ function main_task(trials, block)
                 DrawFormattedText(w, noreward, 'center', rect(4)*0.8, white);
             end
 
+    % ---- show feedback
             Screen('Flip', w);
+
+    % ---- show feedback for 1 second
             WaitSecs(1);
 
+        end % close the if/else for state
 
-
-        end
-
+% ---- update the payoff proability
         for i = 1:4
             payoff_prob(trial+1,i) = payoff_prob(trial,i) + 0.025*randn;
             if (payoff_prob(trial+1,i) < 0.25) || (payoff_prob(trial+1,i) > 0.75)
                 payoff_prob(trial+1,i) = payoff_prob(trial,i);
             end
         end
-
-
-    end
+    end % close the entire for loop
 
     RestrictKeysForKbCheck([]);
 
