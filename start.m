@@ -31,20 +31,20 @@ stim_symbol = symbols(randperm(numel(symbols)));
 
 %practice
 rng(66);
-tutorial_v4;
+% tutorial_v4;
 
 % main task
 rng(rng_seed);
-%main_task(2,0); %block is set to 0 to indicate that it is the practice
+main_task(2,0); %block is set to 0 to indicate that it is the practice
 %hints;
 
 block1 = randi([1,2]); %1 = money, 2 = food
 block2 = 3 - block1;
 
 %part 1
-%main_task(2,block1);
+main_task(2,block1);
 %part 2
-%main_task(2,block2);
+main_task(2,block2);
 
 fprintf('\n\n\n\n\n\n\n\n\n\nYour total earnings (show up fee included) = $ %.2f\n\nThank you for your participation\n\n\n', pay);
 end

@@ -53,7 +53,7 @@ function main_task(trials, block)
 % ---- Screen selection
     doublebuffer=1; %????
     screens = Screen('Screens'); %count the screen
-    whichScreen = min(screens); %select the screen; ALTERED THIS BECAUSE IT KEPT SHOWING UP ON MY LAPTOP INSTEAD OF THE ATTACHED MONITOR
+    whichScreen = max(screens); %select the screen; ALTERED THIS BECAUSE IT KEPT SHOWING UP ON MY LAPTOP INSTEAD OF THE ATTACHED MONITOR
     [w, rect] = Screen('OpenWindow', whichScreen, 0,[], 32, ...
         doublebuffer+1,[],[],kPsychNeedFastBackingStore); %???
 
@@ -98,7 +98,7 @@ function main_task(trials, block)
 % -----------------------------------------------------------------------------
 % 3 - Load images for practice block
     if block == 0
-% --- Basic stimuli
+% --- load basic stimuli
         A1 = imread(['stimuli/practice/' char(stim_color_step1(1)) '/' ...
           char(stim_prac_symbol(1)) '.png'],'png');
         B1 = imread(['stimuli/practice/' char(stim_color_step1(1)) '/' ...
@@ -114,7 +114,7 @@ function main_task(trials, block)
         B3 = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(2)) '/' ...
           char(stim_prac_symbol(6)) '.png'],'png');
 
-% ---- slot machine files
+% ---- load slot machine files
         step1_slot_L = imread(['stimuli/practice/' char(stim_color_step1(1)) '/Slot Machine_L.png'],'png');
         step1_slot_R = imread(['stimuli/practice/' char(stim_color_step1(1)) '/Slot Machine_R.png'],'png');
 
@@ -124,16 +124,23 @@ function main_task(trials, block)
         state3_slot_L = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(2)) '/Slot Machine_L.png'],'png');
         state3_slot_R = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(2)) '/Slot Machine_R.png'],'png');
 
-% ---- coin slot files
+% ---- load coin slot files
         state2_coin_slot = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(1)) '/coin slot.png'],'png');
         state3_coin_slot = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(2)) '/coin slot.png'],'png');
+
+% ---- read token files
+        state2_token = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(1)) '/' ...
+           'token.png'],'png');
+        state3_token = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(2)) '/' ...
+          'token.png'],'png');
+        spent_token = imread(['stimuli/practice/spent token.png'],'png');
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % 4 - Load and create images for money block
     elseif block == 1
-% --- Basic stimuli
+% --- load basic stimuli files
         A1 = imread(['stimuli/main_task/' char(stim_color_step1(2)) '/' ...
           char(stim_symbol(1)) '.png'],'png');
         B1 = imread(['stimuli/main_task/' char(stim_color_step1(2)) '/' ...
@@ -149,7 +156,7 @@ function main_task(trials, block)
         B3 = imread(['stimuli/main_task/' char(stim_colors_step2(2)) '/' char(stim_step2_color_select(2)) '/' ...
           char(stim_symbol(6)) '.png'],'png');
 
-% ---- slot machine files
+% ---- load slot machine files
         step1_slot_L = imread(['stimuli/main_task/' char(stim_color_step1(2)) '/Slot Machine_L.png'],'png');
         step1_slot_R = imread(['stimuli/main_task/' char(stim_color_step1(2)) '/Slot Machine_R.png'],'png');
 
@@ -159,9 +166,16 @@ function main_task(trials, block)
         state3_slot_L = imread(['stimuli/main_task/' char(stim_colors_step2(2)) '/' char(stim_step2_color_select(2)) '/Slot Machine_L.png'],'png');
         state3_slot_R = imread(['stimuli/main_task/' char(stim_colors_step2(2)) '/' char(stim_step2_color_select(2)) '/Slot Machine_R.png'],'png');
 
-% ---- coin slot files
+% ---- load coin slot files
         state2_coin_slot = imread(['stimuli/main_task/' char(stim_colors_step2(2)) '/' char(stim_step2_color_select(1)) '/coin slot.png'],'png');
         state3_coin_slot = imread(['stimuli/main_task/' char(stim_colors_step2(2)) '/' char(stim_step2_color_select(2)) '/coin slot.png'],'png');
+
+% ---- read token files
+        state2_token = imread(['stimuli/main_task/' char(stim_colors_step2(2)) '/' char(stim_step2_color_select(1)) '/' ...
+           'token.png'],'png');
+        state3_token = imread(['stimuli/main_task/' char(stim_colors_step2(2)) '/' char(stim_step2_color_select(2)) '/' ...
+          'token.png'],'png');
+        spent_token = imread(['stimuli/main_task/spent token.png'],'png');
 
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
@@ -169,7 +183,7 @@ function main_task(trials, block)
 % -----------------------------------------------------------------------------
 % 5 - Load and create images for food block
     else
-% --- Basic stimuli
+% --- load basic stimuli
         A1 = imread(['stimuli/main_task/' char(stim_color_step1(3)) '/' ...
           char(stim_symbol(7)) '.png'],'png');
         B1 = imread(['stimuli/main_task/' char(stim_color_step1(3)) '/' ...
@@ -185,7 +199,7 @@ function main_task(trials, block)
         B3 = imread(['stimuli/main_task/' char(stim_colors_step2(3)) '/' char(stim_step2_color_select(2)) '/' ...
           char(stim_symbol(12)) '.png'],'png');
 
-% ---- slot machine files
+% ---- load slot machine files
         step1_slot_L = imread(['stimuli/main_task/' char(stim_color_step1(3)) '/Slot Machine_L.png'],'png');
         step1_slot_R = imread(['stimuli/main_task/' char(stim_color_step1(3)) '/Slot Machine_R.png'],'png');
 
@@ -195,9 +209,17 @@ function main_task(trials, block)
         state3_slot_L = imread(['stimuli/main_task/' char(stim_colors_step2(3)) '/' char(stim_step2_color_select(2)) '/Slot Machine_L.png'],'png');
         state3_slot_R = imread(['stimuli/main_task/' char(stim_colors_step2(3)) '/' char(stim_step2_color_select(2)) '/Slot Machine_R.png'],'png');
 
-% ---- coin slot files
+% ---- load coin slot files
         state2_coin_slot = imread(['stimuli/main_task/' char(stim_colors_step2(3)) '/' char(stim_step2_color_select(1)) '/coin slot.png'],'png');
         state3_coin_slot = imread(['stimuli/main_task/' char(stim_colors_step2(3)) '/' char(stim_step2_color_select(2)) '/coin slot.png'],'png');
+
+% ---- read token files
+        state2_token = imread(['stimuli/main_task/' char(stim_colors_step2(3)) '/' char(stim_step2_color_select(1)) '/' ...
+           'token.png'],'png');
+        state3_token = imread(['stimuli/main_task/' char(stim_colors_step2(3)) '/' char(stim_step2_color_select(2)) '/' ...
+          'token.png'],'png');
+        spent_token = imread(['stimuli/main_task/spent token.png'],'png');
+
     end
 
 % -----------------------------------------------------------------------------
@@ -205,12 +227,30 @@ function main_task(trials, block)
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % 6 - Additional set up
+% ---- create image files to draw that are not randomized later on (i.e. the original stimuli)
+    % ---- create slot machines
+    step1_slot_L = Screen('MakeTexture', w, step1_slot_L);
+    state2_slot_L = Screen('MakeTexture', w, state2_slot_L);
+    state3_slot_L = Screen('MakeTexture', w, state3_slot_L);
+
+    step1_slot_R = Screen('MakeTexture', w, step1_slot_R);
+    state2_slot_R = Screen('MakeTexture', w, state2_slot_R);
+    state3_slot_R = Screen('MakeTexture', w, state3_slot_R);
+
+    % ---- create coin slots
+    state2_coin_slot = Screen('MakeTexture', w, state2_coin_slot);
+    state3_coin_slot = Screen('MakeTexture', w, state3_coin_slot);
+
+    % ---- create tokens
+    state2_token = Screen('MakeTexture', w, state2_token);
+    state3_token = Screen('MakeTexture', w, state3_token);
+    spent_token = Screen('MakeTexture', w, spent_token);
+
 % ---- Keyboard
     KbName('UnifyKeyNames');
     L = KbName('LeftArrow');
     R = KbName('RightArrow');
-    exitKeys = KbName({'ESCAPE'});
-    spaceKey = KbName('space');
+    exitKeys = KbName('ESCAPE');
     startFirstKeys = KbName({'b', 'B'});
     continueKeys = KbName({'c', 'C'});
 
@@ -219,11 +259,17 @@ function main_task(trials, block)
     r = rand(trials, 2); %transition determinant
 
 % ---- Colors
-    gray = 150;
+    gray = 203;
     black = 0;
-    white = [255];
-    brown = [102,51,0];
+    white = [253 252 250];
     chosen_color = [0 220 0];
+
+    % --- set the frame color to gray if the stimuli are white
+    if strcmp(stim_color_step1(block+1), 'white') == 1
+      step1_frame_color = gray
+    else
+      step1_frame_color = white
+    end
 
 % ---- blank matrices for variables
     action = NaN(trials,3);
@@ -368,21 +414,15 @@ function main_task(trials, block)
 
     end
 
-    Screen('CloseAll');
-
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % 8 - Begin trials
 
-    Screen('Preference', 'SkipSyncTests', 1); % ALTERED FOR DEBUGGING
     %HideCursor; ALTERED FOR DEBUGGING
 
     WaitSecs(0.1);
-
-    [w, rect] = Screen('OpenWindow', whichScreen, 0,[], 32, ...
-        doublebuffer+1,[],[],kPsychNeedFastBackingStore);
 
     % Trial loop
 
@@ -417,7 +457,7 @@ function main_task(trials, block)
         Screen(w, 'Flip');
         WaitSecs(.5);
 
-% ---- Draw indicators
+% ---- Drawimage indicators
         Screen(w, 'FillRect', black);
         position(trial,1) = round(rand); %randomizing images positions
         type = position(trial,1);
@@ -434,8 +474,8 @@ function main_task(trials, block)
         Screen('DrawTexture', w, picL, [], slot_label_Lpoint);
         Screen('DrawTexture', w, picR, [], slot_label_Rpoint);
         % draw frames around original stimuli
-        Screen('FrameRect',w,white,slot_label_Lframe,10);
-        Screen('FrameRect',w,white,slot_label_Rframe,10);
+        Screen('FrameRect',w,step1_frame_color,slot_label_Lframe,10);
+        Screen('FrameRect',w,step1_frame_color,slot_label_Rframe,10);
         Screen('Flip', w);
 
 % ---- start reaction timer
@@ -472,7 +512,7 @@ function main_task(trials, block)
             Screen('DrawTexture', w, picR, [], slot_label_Rpoint);
             % draw frames around original stimuli
             Screen('FrameRect',w,chosen_color,slot_label_Lframe,10);
-            Screen('FrameRect',w,white,slot_label_Rframe,10);
+            Screen('FrameRect',w,step1_frame_color,slot_label_Rframe,10);
             Screen('Flip', w);
 
        elseif down_key == R
@@ -484,8 +524,8 @@ function main_task(trials, block)
            Screen('DrawTexture', w, picL, [], slot_label_Lpoint);
            Screen('DrawTexture', w, picR, [], slot_label_Rpoint);
            % draw frames around original stimuli
-           Screen('FrameRect',w,white,slot_label_Lframe,10);
-           Screen('FrameRect',w,chose_color,slot_label_Rframe,10);
+           Screen('FrameRect',w,step1_frame_color,slot_label_Lframe,10);
+           Screen('FrameRect',w,chosen_color,slot_label_Rframe,10);
            Screen('Flip', w);
 
         end
@@ -548,6 +588,9 @@ function main_task(trials, block)
             % draw frames around original stimuli
             Screen('FrameRect',w,white,slot_label_Lframe,10);
             Screen('FrameRect',w,white,slot_label_Rframe,10);
+            % draw token
+            Screen('DrawTexture', w, state2_token, [], spent_token_Mpoint);
+
             Screen('Flip', w);
 
 % ---- start reaction timer
@@ -593,8 +636,11 @@ function main_task(trials, block)
               % draw frames around original stimuli
               Screen('FrameRect',w,chosen_color,slot_label_Lframe,10);
               Screen('FrameRect',w,white,slot_label_Rframe,10);
+              % draw coinslot and spent token
+              Screen('DrawTexture', w, spent_token, [], spent_token_Mpoint);
+              Screen('DrawTexture', w, state2_coin_slot, [], coinslot_Lpoint);
               Screen('Flip', w);
-              WaitSecs(0.5);
+              WaitSecs(1);
 
            elseif down_key == R
               % draw slots
@@ -606,8 +652,11 @@ function main_task(trials, block)
               % draw frames around original stimuli
               Screen('FrameRect',w,white,slot_label_Lframe,10);
               Screen('FrameRect',w,chosen_color,slot_label_Rframe,10);
+              % draw coinslot and spent token
+              Screen('DrawTexture', w, spent_token, [], spent_token_Mpoint);
+              Screen('DrawTexture', w, state2_coin_slot, [], coinslot_Rpoint);
               Screen('Flip', w);
-              WaitSecs(0.5);
+              WaitSecs(1);
            end
 
 % ---- payoff screen
@@ -635,8 +684,8 @@ function main_task(trials, block)
     % ---- show feedback
             Screen('Flip', w);
 
-    % ---- show feedback for 1 second
-            WaitSecs(1);
+    % ---- show feedback for 1.5 seconds
+            WaitSecs(1.5);
 
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
@@ -671,6 +720,8 @@ function main_task(trials, block)
             % draw frames around original stimuli
             Screen('FrameRect',w,white,slot_label_Lframe,10);
             Screen('FrameRect',w,white,slot_label_Rframe,10);
+            % draw token
+            Screen('DrawTexture', w, state3_token, [], spent_token_Mpoint);
             Screen('Flip', w);
 
 % ---- start reaction timer
@@ -716,8 +767,11 @@ function main_task(trials, block)
               % draw frames around original stimuli
               Screen('FrameRect',w,chosen_color,slot_label_Lframe,10);
               Screen('FrameRect',w,white,slot_label_Rframe,10);
+              % draw spent token and coin slot
+              Screen('DrawTexture', w, spent_token, [], spent_token_Mpoint);
+              Screen('DrawTexture', w, state3_coin_slot, [], coinslot_Lpoint);
               Screen('Flip', w);
-              WaitSecs(0.5);
+              WaitSecs(1);
 
             elseif down_key == R
               % draw slots
@@ -729,8 +783,11 @@ function main_task(trials, block)
               % draw frames around original stimuli
               Screen('FrameRect',w,white,slot_label_Lframe,10);
               Screen('FrameRect',w,chosen_color,slot_label_Rframe,10);
+              % draw spent token and coin slot
+              Screen('DrawTexture', w, spent_token, [], spent_token_Mpoint);
+              Screen('DrawTexture', w, state3_coin_slot, [], coinslot_Rpoint);
               Screen('Flip', w);
-              WaitSecs(0.5);
+              WaitSecs(1);
             end
 
 % ---- payoff screen
