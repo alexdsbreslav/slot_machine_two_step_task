@@ -220,6 +220,8 @@ function main_task(trials, block)
           'token.png'],'png');
         spent_token = imread(['stimuli/main_task/spent token.png'],'png');
 
+% ---- read next arrow file
+        next_arrow = imread(['stimuli/main_task/next arrow.png'],'png');
     end
 
 % -----------------------------------------------------------------------------
@@ -245,6 +247,9 @@ function main_task(trials, block)
     state2_token = Screen('MakeTexture', w, state2_token);
     state3_token = Screen('MakeTexture', w, state3_token);
     spent_token = Screen('MakeTexture', w, spent_token);
+
+    % ---- create next arrow
+    next_arrow = Screen('MakeTexture', w, next_arrow);
 
 % ---- Keyboard
     KbName('UnifyKeyNames');
@@ -294,7 +299,23 @@ function main_task(trials, block)
 % 7 - Task intro screens
 % ---- Intro screen for practice block
     if block == 0
-        DrawFormattedText(w, 'Press b to begin the practice round', 'center', 'center', white);
+        DrawFormattedText(w,[
+            'This is the last part of the tutorial.' '\n' ...
+            'You''ll get to play 15 practice rounds.' ....
+            ], 'center','center', [], [], [], [], 1.6);
+        Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
+        Screen('Flip',w);
+        KbWait([],2);
+
+        DrawFormattedText(w,[
+            'After you finish the practice rounds,' '\n' ...
+            'you''ll play the strategy game for real rewards!' ....
+            ], 'center','center', [], [], [], [], 1.6);
+        Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
+        Screen('Flip',w);
+        KbWait([],2);
+
+        DrawFormattedText(w, 'Press b to begin the practice rounds.', 'center', 'center', white);
         Screen(w, 'Flip');
 
         while 1 %wait for response and allow exit if necessesary
@@ -872,12 +893,15 @@ function main_task(trials, block)
 % 9 - Payoff screens
     payoff_sum = sum(nansum(payoff))/10;
 
-% ---- Practice block
+% ---- Practice block end screens
     if block == 0 % practice
         Screen(w, 'FillRect', black);
         Screen('TextSize', w, 40);
-        DrawFormattedText(w, 'You have completed the practice round.', 'center', 'center', white);
-        DrawFormattedText(w, 'Press c to continue to the experiment', 'center', rect(4)*0.75, white);
+        DrawFormattedText(w,[
+            'You have completed the practice rounds!' '\n' ...
+            'Please alert the experimenter, and' '\n' ...
+            'press c to close to practice game.'
+            ],'center','center', white, [], [], [], 1.6);
         Screen(w, 'Flip');
         WaitSecs(1);
 
@@ -890,7 +914,7 @@ function main_task(trials, block)
           end
         end
 
-% ---- Money block
+% ---- Money block end screen
     elseif block == 1 % money block
         Screen(w, 'FillRect', black);
         Screen('TextSize', w, 40);
@@ -909,7 +933,7 @@ function main_task(trials, block)
           end
         end
 
-% ---- Food block
+% ---- Food block end screen
     elseif block == 2 % food block
         Screen(w, 'FillRect', black);
         Screen('TextSize', w, 40);

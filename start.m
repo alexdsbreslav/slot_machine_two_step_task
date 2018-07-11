@@ -29,6 +29,7 @@ stim_step2_color_select = step2_color(randperm(numel(step2_color)));
 stim_prac_symbol = prac_symbols(randperm(numel(prac_symbols)));
 stim_symbol = symbols(randperm(numel(symbols)));
 
+
 %practice
 rng(66);
 % tutorial_v4;
@@ -36,14 +37,57 @@ rng(66);
 % main task
 rng(rng_seed);
 main_task(2,0); %block is set to 0 to indicate that it is the practice
-%hints;
 
+% randomize the block order
 block1 = randi([1,2]); %1 = money, 2 = food
 block2 = 3 - block1;
+if block1 == 1
+  block1_text = 'Food'
+  block2_text = 'Money'
+else
+  block1_text = 'Money'
+  block2_text = 'Food'
+
+KbName('UnifyKeyNames');
+start_game_key = KbName('S');
+exitKeys = KbName('ESCAPE');
 
 %part 1
+DrawFormattedText(w,[
+    'Please wait while the experimenter prepares' '\n' ...
+    'the room for the first version of the game.' '\n\n' ...
+    'Version 1 = ' block1_text
+    ], 'center','center', [], [], [], [], 1.6);
+Screen('Flip',w);
+
+while 1 %wait for response and allow exit if necessesary
+  [keyIsDown, ~, keyCode] = KbCheck;
+  if keyIsDown && any(keyCode(exitKeys))
+      sca; return
+  elseif keyIsDown && any(keyCode(start_game_key))
+      break
+  end
+end
+
 main_task(2,block1);
+
 %part 2
+DrawFormattedText(w,[
+    'Please wait while the experimenter prepares' '\n' ...
+    'the space for the first version of the game.' '\n\n' ...
+    'Version 1 = ' block2_text
+    ], 'center','center', [], [], [], [], 1.6);
+Screen('Flip',w);
+
+while 1 %wait for response and allow exit if necessesary
+  [keyIsDown, ~, keyCode] = KbCheck;
+  if keyIsDown && any(keyCode(exitKeys))
+      sca; return
+  elseif keyIsDown && any(keyCode(start_game_key))
+      break
+  end
+end
+
 main_task(2,block2);
 
 fprintf('\n\n\n\n\n\n\n\n\n\nYour total earnings (show up fee included) = $ %.2f\n\nThank you for your participation\n\n\n', pay);
