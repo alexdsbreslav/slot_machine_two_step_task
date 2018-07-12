@@ -37,7 +37,7 @@ function start
                 block1_text = 'Food'
                 block2_text = 'Money'
             end
-            
+
             disp([fprintf('\n\n\n\n') ...
             'The following files already exist: ' ls(data_file_path)]);
 
@@ -58,8 +58,7 @@ function start
                 case 1
                 % ---- TASK
                     % ---- 1: Tutorial
-                        rng(66); % set the rng so everyone sees the same video
-                        % tutorial_v4;
+                        % tutorial_v4(initialization_struct);
 
                     % ---- 2: practice trials (Block 0 in code)
                         main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1));
@@ -145,8 +144,7 @@ function start
 
     % ---- TASK
         % ---- 1: Tutorial
-            rng(66); % set the rng so everyone sees the same video
-            % tutorial_v4;
+            % tutorial_v4(initialization_struct);
 
         % ---- 2: practice trials (Block 0 in code)
             main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1));

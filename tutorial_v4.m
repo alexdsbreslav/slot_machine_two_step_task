@@ -1,4 +1,4 @@
-function tutorial_v4
+function tutorial_v4(initialization_struct)
 
 % The tutorial for this task was initially developed for Daw et al. (2011) Neuron and
 % used for other implementations of the task such as Konovalov (2016) Nature Communications.
@@ -10,6 +10,7 @@ function tutorial_v4
 % Author: Alex Breslav
 
 %clear all
+rng(66); %set the rng seed so everyone sees the same probability changing video
 
 Screen('Preference', 'SkipSyncTests', 1); % ALTERED FOR DEBUGGING
 FlushEvents;
@@ -20,26 +21,22 @@ Screen('Close');
 
 %HideCursor; ALTERED FOR DEBUGGING
 
-global rect sub stim_color_step1 ...
-stim_colors_step2 stim_step2_color_select ...
-stim_prac_symbol stim_symbol
-
 % Need to define the color name
-if strcmp(char(stim_color_step1(1)), 'dark_grey') == 1
+if strcmp(char(initialization_struct.stim_color_step1(1)), 'dark_grey') == 1
     step1_color = 'dark grey';
-elseif strcmp(char(stim_color_step1(1)), 'white') == 1
+elseif strcmp(char(initialization_struct.stim_color_step1(1)), 'white') == 1
     step1_color = 'white';
 else
     step1_color = 'grey';
 end
 
-if strcmp(char(stim_step2_color_select(1)), 'warm') == 1
-    if strcmp(char(stim_colors_step2(1)), 'red_blue') == 1
+if strcmp(char(initialization_struct.stim_step2_color_select(1)), 'warm') == 1
+    if strcmp(char(initialization_struct.stim_colors_step2(1)), 'red_blue') == 1
         state2_color = 'red';
         state3_color = 'blue';
         a_an_2 = 'a ';
         a_an_3 = 'a ';
-    elseif strcmp(char(stim_colors_step2(1)), 'orange_purple') == 1
+    elseif strcmp(char(initialization_struct.stim_colors_step2(1)), 'orange_purple') == 1
         state2_color = 'orange';
         state3_color = 'purple';
         a_an_2 = 'an ';
@@ -51,12 +48,12 @@ if strcmp(char(stim_step2_color_select(1)), 'warm') == 1
         a_an_3 = 'a ';
     end
 else
-    if strcmp(char(stim_colors_step2(1)), 'red_blue') == 1
+    if strcmp(char(initialization_struct.stim_colors_step2(1)), 'red_blue') == 1
         state2_color = 'blue';
         state3_color = 'red';
         a_an_2 = 'a '; % enables me to refer to the tokens with the proper pronouns
         a_an_3 = 'a ';
-    elseif strcmp(char(stim_colors_step2(1)), 'orange_purple') == 1
+    elseif strcmp(char(initialization_struct.stim_colors_step2(1)), 'orange_purple') == 1
         state2_color = 'purple';
         state3_color = 'orange';
         a_an_2 = 'a ';
@@ -128,63 +125,63 @@ room_Rpoint = CenterRectOnPoint(room_r, 3*rect(3)*.25, rect(4)*0.3);
 next_arrow_loc = CenterRectOnPoint(r_next_arrow, rect(3)*0.9, rect(4)*0.9);
 
 % read basic stimuli files
-A1 = imread(['stimuli/practice/' char(stim_color_step1(1)) '/' ...
-  char(stim_prac_symbol(1)) '.png'],'png');
-B1 = imread(['stimuli/practice/' char(stim_color_step1(1)) '/' ...
-  char(stim_prac_symbol(2)) '.png'],'png');
+A1 = imread(['stimuli/practice/' char(initialization_struct.stim_color_step1(1)) '/' ...
+  char(initialization_struct.stim_prac_symbol(1)) '.png'],'png');
+B1 = imread(['stimuli/practice/' char(initialization_struct.stim_color_step1(1)) '/' ...
+  char(initialization_struct.stim_prac_symbol(2)) '.png'],'png');
 
-A2 = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(1)) '/' ...
-  char(stim_prac_symbol(3)) '.png'],'png');
-B2 = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(1)) '/' ...
-  char(stim_prac_symbol(4)) '.png'],'png');
+A2 = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(1)) '/' ...
+  char(initialization_struct.stim_prac_symbol(3)) '.png'],'png');
+B2 = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(1)) '/' ...
+  char(initialization_struct.stim_prac_symbol(4)) '.png'],'png');
 
-A3 = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(2)) '/' ...
-  char(stim_prac_symbol(5)) '.png'],'png');
-B3 = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(2)) '/' ...
-  char(stim_prac_symbol(6)) '.png'],'png');
+A3 = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(2)) '/' ...
+  char(initialization_struct.stim_prac_symbol(5)) '.png'],'png');
+B3 = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(2)) '/' ...
+  char(initialization_struct.stim_prac_symbol(6)) '.png'],'png');
 
 % read token files
-state2_token = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(1)) '/' ...
+state2_token = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(1)) '/' ...
    'token.png'],'png');
-state3_token = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(2)) '/' ...
+state3_token = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(2)) '/' ...
   'token.png'],'png');
 spent_token = imread(['stimuli/practice/spent token.png'],'png');
 
 % read token bag files
-A1_blank_token_bag = imread(['stimuli/practice/blank token bags/' char(stim_prac_symbol(1)) '.png'],'png');
-B1_blank_token_bag = imread(['stimuli/practice/blank token bags/' char(stim_prac_symbol(2)) '.png'],'png');
+A1_blank_token_bag = imread(['stimuli/practice/blank token bags/' char(initialization_struct.stim_prac_symbol(1)) '.png'],'png');
+B1_blank_token_bag = imread(['stimuli/practice/blank token bags/' char(initialization_struct.stim_prac_symbol(2)) '.png'],'png');
 
-A1_S2_token_bag = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(1)) '/' ...
-  char(stim_prac_symbol(1)) '_token bag.png'],'png');
-A1_S3_token_bag = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(2)) '/' ...
-  char(stim_prac_symbol(1)) '_token bag.png'],'png');
-B1_S2_token_bag = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(1)) '/' ...
-  char(stim_prac_symbol(2)) '_token bag.png'],'png');
-B1_S3_token_bag = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(2)) '/' ...
-  char(stim_prac_symbol(2)) '_token bag.png'],'png');
+A1_S2_token_bag = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(1)) '/' ...
+  char(initialization_struct.stim_prac_symbol(1)) '_token bag.png'],'png');
+A1_S3_token_bag = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(2)) '/' ...
+  char(initialization_struct.stim_prac_symbol(1)) '_token bag.png'],'png');
+B1_S2_token_bag = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(1)) '/' ...
+  char(initialization_struct.stim_prac_symbol(2)) '_token bag.png'],'png');
+B1_S3_token_bag = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(2)) '/' ...
+  char(initialization_struct.stim_prac_symbol(2)) '_token bag.png'],'png');
 
 % read token dump files
-A1_tokendump = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' ...
-  char(stim_prac_symbol(1)) '_dump.png'],'png');
-B1_tokendump = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' ...
-  char(stim_prac_symbol(2)) '_dump.png'],'png');
+A1_tokendump = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' ...
+  char(initialization_struct.stim_prac_symbol(1)) '_dump.png'],'png');
+B1_tokendump = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' ...
+  char(initialization_struct.stim_prac_symbol(2)) '_dump.png'],'png');
 
 % read slot machine files
-step1_slot_L = imread(['stimuli/practice/' char(stim_color_step1(1)) '/Slot Machine_L.png'],'png');
-state2_slot_L = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(1)) '/Slot Machine_L.png'],'png');
-state3_slot_L = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(2)) '/Slot Machine_L.png'],'png');
+step1_slot_L = imread(['stimuli/practice/' char(initialization_struct.stim_color_step1(1)) '/Slot Machine_L.png'],'png');
+state2_slot_L = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(1)) '/Slot Machine_L.png'],'png');
+state3_slot_L = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(2)) '/Slot Machine_L.png'],'png');
 
-step1_slot_R = imread(['stimuli/practice/' char(stim_color_step1(1)) '/Slot Machine_R.png'],'png');
-state2_slot_R = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(1)) '/Slot Machine_R.png'],'png');
-state3_slot_R = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(2)) '/Slot Machine_R.png'],'png');
+step1_slot_R = imread(['stimuli/practice/' char(initialization_struct.stim_color_step1(1)) '/Slot Machine_R.png'],'png');
+state2_slot_R = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(1)) '/Slot Machine_R.png'],'png');
+state3_slot_R = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(2)) '/Slot Machine_R.png'],'png');
 
 % read coin slot files
-state2_coin_slot = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(1)) '/coin slot.png'],'png');
-state3_coin_slot = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(2)) '/coin slot.png'],'png');
+state2_coin_slot = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(1)) '/coin slot.png'],'png');
+state3_coin_slot = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(2)) '/coin slot.png'],'png');
 
 % read room files
-token_room = imread(['stimuli/practice/' char(stim_color_step1(1)) '/token room.png'],'png');
-prize_room = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/prize room.png'],'png');
+token_room = imread(['stimuli/practice/' char(initialization_struct.stim_color_step1(1)) '/token room.png'],'png');
+prize_room = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/prize room.png'],'png');
 
 % read win/lose files
 win = imread(['stimuli/practice/win_lose/win.png'],'png');
