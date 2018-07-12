@@ -4,9 +4,7 @@
 % Please do not share or use this script without the permission of all invovled parties.
 % Author: Arkady Konovalov
 
-function f = drawimage(type,state)
-
-global w A1 B1 A2 B2 A3 B3
+function f = drawimage(w, A1, B1, A2, B2, A3, B3, type, state)
 
 if state == 1
 
