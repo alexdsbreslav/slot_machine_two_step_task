@@ -1,4 +1,4 @@
-function tutorial_v4
+function tutorial_v4(initialization_struct)
 
 % The tutorial for this task was initially developed for Daw et al. (2011) Neuron and
 % used for other implementations of the task such as Konovalov (2016) Nature Communications.
@@ -10,6 +10,7 @@ function tutorial_v4
 % Author: Alex Breslav
 
 %clear all
+rng(66); %set the rng seed so everyone sees the same probability changing video
 
 Screen('Preference', 'SkipSyncTests', 1); % ALTERED FOR DEBUGGING
 FlushEvents;
