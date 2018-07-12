@@ -1,8 +1,9 @@
-% The bulk of this task code was written by Arkady Konovalov, PhD (University of Zurich)
-% and generously shared on request. I have superficially altered the script to be amenable to
-% multiple blocks with different reward structures.
+% The code that this is based on was initially written for Konovalov (2016) Nature Communications.
+% The original code was shared with me and I have maintained some of the basic structure
+% and notation; however, I have substantially altered the code for my own purposes.
 
-% Please do not share or use this script without the permission of all invovled parties.
+% Please do not share or use this code without my written permission.
+% Author: Alex Breslav
 
 function start
     sub = input('Subject number: '); %keep sub number as a string so we can validate easily below
