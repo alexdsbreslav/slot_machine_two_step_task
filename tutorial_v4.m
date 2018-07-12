@@ -68,7 +68,7 @@ end
 
 doublebuffer=1;
 screens = Screen('Screens'); %count the screen
-whichScreen = min(screens); %select the screen ALTERED FOR DEBUGGING
+whichScreen = max(screens); %select the screen ALTERED FOR DEBUGGING
 [w,rect] = Screen('OpenWindow', whichScreen, 0,[], 32, ...
         doublebuffer+1,[],[],kPsychNeedFastBackingStore);
 
@@ -259,6 +259,7 @@ Screen('TextFont',w,'Helvetica');
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % 1 - Intro
+tic;
 
 DrawFormattedText(w,[
     'Please read the instructions carefully.' '\n\n' ...
@@ -295,11 +296,15 @@ while 1
       break
   end
 end
+
+
+intro_time = toc;
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % 2 - Game structure
+tic;
 
 Screen('DrawTexture', w, step1_slot_L, [], slot_Upoint);
 Screen('FrameRect',w,white,slot_label_Uframe,10);
@@ -321,7 +326,6 @@ Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
 Screen('Flip',w);
 WaitSecs(1)
 KbWait([],2);
-
 
 Screen('DrawTexture', w, step1_slot_L, [], slot_Upoint);
 Screen('FrameRect',w,white,slot_label_Uframe,10);
@@ -345,12 +349,15 @@ Screen('Flip',w);
 WaitSecs(1)
 KbWait([],2);
 
+
+game_structure_time = toc;
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % 3 - Slot Layout
 % ---- Token room
+tic;
 
 Screen('DrawTexture', w, token_room, [], room_Lpoint);
 Screen('DrawTexture', w, prize_room, [], room_Rpoint);
@@ -484,11 +491,14 @@ Screen('Flip',w);
 WaitSecs(1)
 KbWait([],2);
 
+
+slot_layout_time = toc;
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % 4 - Game progression
+tic;
 
 Screen('DrawTexture', w, token_room, [], room_Upoint);
 DrawFormattedText(w,[
@@ -601,11 +611,14 @@ Screen('Flip',w);
 WaitSecs(1)
 KbWait([],2);
 
+
+game_progression_time = toc;
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % 5 - Walk through #1
+tic;
 
 DrawFormattedText(w,[
     'Let''s walk through a round together to' '\n' ...
@@ -1052,7 +1065,12 @@ elseif down_key == R
       WaitSecs(1.5)
 end
 
+
+trial_walkthrough_time = toc;
+
 % ---- questions?
+tic;
+
 DrawFormattedText(w,[
     'Let''s pause for just a moment.' '\n\n' ...
     'If you have any questions at all about the strategy game,' '\n' ...
@@ -1074,11 +1092,14 @@ while 1
   end
 end
 
+
+game_rules_ques_time = toc;
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % 8 - Token room programming
+tic;
 
 DrawFormattedText(w,[
     'In order for you to win the most,' '\n' ...
@@ -1124,7 +1145,7 @@ Screen('FrameRect',w,white,slot_label_Rframe,10);
 
 DrawFormattedText(w,[
     'To best understand how they were programmed,' '\n' ...
-    'imagine that, before the game starts,' '\n'...
+    'imagine that before the game starts,' '\n'...
     'the slot machines are empty.' ...
     ],'center',rect(4)*0.8, [], [], [], [], 1.6);
 Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
@@ -1324,7 +1345,12 @@ Screen('Flip',w);
 WaitSecs(1)
 KbWait([],2);
 
+
+token_room_prog_time = toc;
+
 % ---- questions?
+tic;
+
 DrawFormattedText(w,[
     'Let''s pause for just a moment.' '\n\n' ...
     'If you have any questions at all about the strategy game,' '\n' ...
@@ -1346,11 +1372,14 @@ while 1
   end
 end
 
+
+token_room_prog_ques_time = toc;
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % 9 - Prize room programming
+tic;
 
 Screen('DrawTexture', w, prize_room, [], room_Upoint);
 DrawFormattedText(w,[
@@ -1597,7 +1626,12 @@ Screen('Flip',w);
 WaitSecs(1)
 KbWait([],2);
 
+
+prize_room_prog_time = toc;
+
 % ---- questions?
+tic;
+
 DrawFormattedText(w,[
     'Now we''ve gone over all of the rules and programming,' '\n' ...
     'but there were a lot of things to keep track of!' '\n' ...
@@ -1617,6 +1651,19 @@ Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
 Screen('Flip',w);
 WaitSecs(1)
 KbWait([],2);
+
+
+final_ques_time = toc;
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% 9 - Save timing varibales
+tutorial_timing_struct = struct;
+tutorial_timing_struct.times = [intro_time game_structure_time slot_layout_time game_progression_time trial_walkthrough_time game_rules_ques_time token_room_prog_time token_room_prog_ques_time prize_room_prog_time final_ques_time]
+tutorial_timing_struct.names = [{'intro_time'} {'game_structure_time'} {'slot_layout_time'} {'game_progression_time'} {'trial_walkthrough_time'} {'game_rules_ques_time'} {'token_room_prog_time'} {'token_room_prog_ques_time'} {'prize_room_prog_time'} {'final_ques_time'}]
+save([initialization_struct.data_file_path '/tutorial_timing'], 'tutorial_timing_struct', '-v6');
 
 ShowCursor; %ALTERED FOR DEBUGGING; THIS WAS HASHED OUT?
 Screen('Close',w); %ALTERED FOR DEBUGGING; THIS WAS HASHED OUT?

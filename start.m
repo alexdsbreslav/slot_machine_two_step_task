@@ -58,10 +58,11 @@ function start
                 case 1
                 % ---- TASK
                     % ---- 1: Tutorial
-                        % tutorial_v4(initialization_struct);
+                        tutorial_v4(initialization_struct);
 
                     % ---- 2: practice trials (Block 0 in code)
-                        main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1));
+                        load([data_file_path '/tutorial_timing.mat'])
+                        main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1), tutorial_timing_struct);
 
                     % ---- 3: Block 1 of the main experiment trials
                         main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
@@ -75,7 +76,8 @@ function start
                 case 2
                 % ---- TASK
                     % ---- 2: practice trials (Block 0 in code)
-                        main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1));
+                        load([data_file_path '/tutorial_timing.mat'])
+                        main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1), tutorial_timing_struct);
 
                     % ---- 3: Block 1 of the main experiment trials
                         main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
@@ -144,10 +146,11 @@ function start
 
     % ---- TASK
         % ---- 1: Tutorial
-            % tutorial_v4(initialization_struct);
+            tutorial_v4(initialization_struct);
 
         % ---- 2: practice trials (Block 0 in code)
-            main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1));
+            load([data_file_path '/tutorial_timing.mat'])
+            main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1), tutorial_timing_struct);
 
         % ---- 3: Block 1 of the main experiment trials
             main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));

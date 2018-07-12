@@ -6,7 +6,7 @@
 % Please do not share or use this script without the permission of all invovled parties.
 % Author: Alex Breslav
 
-function main_task(intialization_struct, trials, block)
+function main_task(intialization_struct, trials, block, tutorial_timing_struct)
 
 % 1 - Initial setup
     % ---- shuffle the rng and save the seed
@@ -893,6 +893,9 @@ function main_task(intialization_struct, trials, block)
 % ---- unique to this block
         practice_struct.block = find(intialization_struct.block == 0);
         practice_struct.stim_symbol = intialization_struct.stim_prac_symbol;
+        practice_struct.tutorial_timing_names = tutorial_timing_struct.names; % these are the times pulled during the tutorial
+        practice_struct.tutorial_timing_times = tutorial_timing_struct.times; % these are the names of the timed chunks of the tutorial
+        delete([intialization_struct.data_file_path '/tutorial_timing.mat']);
         save([intialization_struct.data_file_path '/practice'], 'practice_struct', '-v6');
 
 
