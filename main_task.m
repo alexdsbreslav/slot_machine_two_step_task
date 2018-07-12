@@ -9,6 +9,11 @@
 function main_task(intialization_struct, trials, block)
 
 % 1 - Initial setup
+    % ---- shuffle the rng and save the seed
+    rng('shuffle');
+    rng_seed = rng;
+    rng_seed = rng_seed.Seed;
+
     % ---- Screen setup
     Screen('Preference', 'VisualDebugLevel', 1);% change psych toolbox screen check to black
     Screen('Preference', 'SkipSyncTests', 1); % ALTERED FOR DEBUGGING
@@ -867,42 +872,82 @@ function main_task(intialization_struct, trials, block)
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % 9 - Saving data
+    if block == 0 % practice trials
+        practice_struct = struct;
+        practice_struct.rng_seed = rng_seed; % save the rng seed set at the top of the script
+        practice_struct.subject = intialization_struct.sub;
+        practice_struct.stim_color_step1 = intialization_struct.stim_color_step1(block+1); % stimuli are always selected where 1st item in array goes to practice, then money, then food
+        practice_struct.stim_colors_step2 = intialization_struct.stim_colors_step2(block+1);
+        practice_struct.position = position;
+        practice_struct.action = action;
+        practice_struct.on = choice_on_time;
+        practice_struct.off = choice_off_time;
+        practice_struct.rt = choice_off_time-choice_on_time;
+        practice_struct.transition_prob = a;
+        practice_struct.transition_det = r;
+        practice_struct.payoff_prob = payoff_prob;
+        practice_struct.payoff_det = payoff_det;
+        practice_struct.payoff = payoff;
+        practice_struct.state = state;
 
-    task_data = struct;
-    task_data.rng_seed = intialization_struct.rng_seed;
-    task_data.subject = intialization_struct.sub; %*ones(trials,1);
-    task_data.stim_color_step1 = intialization_struct.stim_color_step1(block+1); % stimuli are always selected where 1st item in array goes to practice, then money, then food
-    task_data.stim_colors_step2 = intialization_struct.stim_colors_step2(block+1);
+% ---- unique to this block
+        practice_struct.block = find(intialization_struct.block == 0);
+        practice_struct.stim_symbol = intialization_struct.stim_prac_symbol;
+        save([intialization_struct.data_file_path '/practice'], 'practice_struct', '-v6');
 
-    if block == 0
-        task_data.stim_symbol = intialization_struct.stim_prac_symbol;
-    elseif block == 1 % first 6 symbols always go to money block
-        task_data.stim_symbol = intialization_struct.stim_symbol(1:6);
-    else % second 6 symbols in the arrary always go to food block
-        task_data.stim_symbol = intialization_struct.stim_symbol(7:12);
-    end
 
-    task_data.position = position;
-    task_data.action = action;
-    task_data.on = choice_on_time;
-    task_data.off = choice_off_time;
-    task_data.rt = choice_off_time-choice_on_time;
-    task_data.transition_prob = a;
-    task_data.transition_det = r;
-    task_data.payoff_prob = payoff_prob;
-    task_data.payoff_det = payoff_det;
-    task_data.payoff = payoff;
-    task_data.state = state;
 
-    if block == 0
-        save([intialization_struct.data_file_path '/practice'], 'task_data', '-v6');
-    elseif block == 1
+    elseif block == 1 % money block
+        money_struct = struct;
+        money_struct.rng_seed = rng_seed; % save the rng seed set at the top of the script
+        money_struct.subject = intialization_struct.sub;
+        money_struct.stim_color_step1 = intialization_struct.stim_color_step1(block+1); % stimuli are always selected where 1st item in array goes to practice, then money, then food
+        money_struct.stim_colors_step2 = intialization_struct.stim_colors_step2(block+1);
+        money_struct.position = position;
+        money_struct.action = action;
+        money_struct.on = choice_on_time;
+        money_struct.off = choice_off_time;
+        money_struct.rt = choice_off_time-choice_on_time;
+        money_struct.transition_prob = a;
+        money_struct.transition_det = r;
+        money_struct.payoff_prob = payoff_prob;
+        money_struct.payoff_det = payoff_det;
+        money_struct.payoff = payoff;
+        money_struct.state = state;
+
+% ---- unique to this block
+        money_struct.block = find(intialization_struct.block == 1);
+        money_struct.stim_symbol = intialization_struct.stim_symbol(1:6); % first 6 symbols always go to money block
         payoff_sum = sum(nansum(payoff))/10;
-        task_data.payoff_total = 7 + payoff_sum;
+        money_struct.payoff_total = 7 + payoff_sum;
+        save([intialization_struct.data_file_path '/money'], 'money_struct', '-v6');
 
-        save([intialization_struct.data_file_path '/money'], 'task_data', '-v6');
-    else
-        save([intialization_struct.data_file_path '/food'], 'task_data', '-v6');
+
+
+    else % food block
+        food_struct = struct;
+        food_struct.rng_seed = rng_seed; % save the rng seed set at the top of the script
+        food_struct.subject = intialization_struct.sub;
+        food_struct.stim_color_step1 = intialization_struct.stim_color_step1(block+1); % stimuli are always selected where 1st item in array goes to practice, then money, then food
+        food_struct.stim_colors_step2 = intialization_struct.stim_colors_step2(block+1);
+        food_struct.position = position;
+        food_struct.action = action;
+        food_struct.on = choice_on_time;
+        food_struct.off = choice_off_time;
+        food_struct.rt = choice_off_time-choice_on_time;
+        food_struct.transition_prob = a;
+        food_struct.transition_det = r;
+        food_struct.payoff_prob = payoff_prob;
+        food_struct.payoff_det = payoff_det;
+        food_struct.payoff = payoff;
+        food_struct.state = state;
+
+% ---- unique to this block
+        food_struct.block = find(intialization_struct.block == 2);
+        food_struct.stim_symbol = intialization_struct.stim_symbol(7:12); % second 6 symbols in the arrary always go to food block
+        save([intialization_struct.data_file_path '/food'], 'food_struct', '-v6');
+
+
     end
 
 % -----------------------------------------------------------------------------

@@ -29,6 +29,15 @@ function start
            'OK, you should restart the function to try again'])
 
         case 0
+            load([data_file_path '/initialization structure.mat']);
+            if initialization_struct.block(2) == 1
+                block1_text = 'Money'
+                block2_text = 'Food'
+            else
+                block1_text = 'Food'
+                block2_text = 'Money'
+            end
+            
             disp([fprintf('\n\n\n\n') ...
             'The following files already exist: ' ls(data_file_path)]);
 
@@ -37,11 +46,9 @@ function start
             '0 = CANCEL and restart the function' '\n' ...
             '1 = Tutorial' '\n' ...
             '2 = Practice Rounds' '\n' ...
-            '3 = Block 1' '\n' ...
-            '4 = Block 2' '\n' ...
+            '3 = Block 1 (' block1_text ')' '\n' ...
+            '4 = Block 2 (' block2_text ')' '\n' ...
             'Response: ']);
-
-            load([data_file_path '/initialization structure.mat']);
 
             switch start_where
                 case 99
@@ -55,73 +62,63 @@ function start
                         % tutorial_v4;
 
                     % ---- 2: practice trials (Block 0 in code)
-                        rng(initialization_struct.rng_seed(2));
                         main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1));
 
                     % ---- 3: Block 1 of the main experiment trials
-                        rng(initialization_struct.rng_seed(3));
                         main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
 
                     % ---- 4: Block 2 of the main experiment trials
-                        rng(initialization_struct.rng_seed(4));
                         main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
 
                     % --- display winnings
                         load([data_file_path '/money.mat']);
-                        fprintf('\n\n\n\n\n\n\n\n\n\nYour total earnings (show up fee included) = $ %.2f\n\nThank you for your participation\n\n\n', task_data.payoff_total);
+                        fprintf('\n\n\n\n\n\n\n\n\n\nYour total earnings (show up fee included) = $ %.2f\n\nThank you for your participation\n\n\n', money_struct.payoff_total);
                 case 2
                 % ---- TASK
                     % ---- 2: practice trials (Block 0 in code)
-                        rng(initialization_struct.rng_seed(2)); 
                         main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1));
 
                     % ---- 3: Block 1 of the main experiment trials
-                        rng(initialization_struct.rng_seed(3));
                         main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
 
                     % ---- 4: Block 2 of the main experiment trials
-                        rng(initialization_struct.rng_seed(4));
                         main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
 
                     % --- display winnings
                         load([data_file_path '/money.mat']);
-                        fprintf('\n\n\n\n\n\n\n\n\n\nYour total earnings (show up fee included) = $ %.2f\n\nThank you for your participation\n\n\n', task_data.payoff_total);
+                        fprintf('\n\n\n\n\n\n\n\n\n\nYour total earnings (show up fee included) = $ %.2f\n\nThank you for your participation\n\n\n', money_struct.payoff_total);
                 case 3
                 % ---- TASK
                     % ---- 3: Block 1 of the main experiment trials
-                        rng(initialization_struct.rng_seed(3));
                         main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
 
                     % ---- 4: Block 2 of the main experiment trials
-                        rng(initialization_struct.rng_seed(4));
                         main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
 
                     % --- display winnings
                         load([data_file_path '/money.mat']);
-                        fprintf('\n\n\n\n\n\n\n\n\n\nYour total earnings (show up fee included) = $ %.2f\n\nThank you for your participation\n\n\n', task_data.payoff_total);
+                        fprintf('\n\n\n\n\n\n\n\n\n\nYour total earnings (show up fee included) = $ %.2f\n\nThank you for your participation\n\n\n', money_struct.payoff_total);
                 case 4
                 % ---- TASK
                     % ---- 4: Block 2 of the main experiment trials
-                        rng(initialization_struct.rng_seed(4));
                         main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
 
                     % --- display winnings
                         load([data_file_path '/money.mat']);
-                        fprintf('\n\n\n\n\n\n\n\n\n\nYour total earnings (show up fee included) = $ %.2f\n\nThank you for your participation\n\n\n', task_data.payoff_total);
+                        fprintf('\n\n\n\n\n\n\n\n\n\nYour total earnings (show up fee included) = $ %.2f\n\nThank you for your participation\n\n\n', money_struct.payoff_total);
             end
 
         case 99
             % shuffle the rng and save the seed
             rng('shuffle');
-            rng_seed = rng;
-            rng_seed = rng_seed.Seed;
-            rng_seed = [rng_seed rng_seed+1 rng_seed+2 rng_seed+3] % create 4 rng seeds, 1 used each for the initialization, practice, block1, and block2
+            init_rng_seed = rng;
+            init_rng_seed = init_rng_seed.Seed;
 
             % create stimuli structure
             initialization_struct = struct;
             initialization_struct.sub = sub; % save the subject number into the structure
             initialization_struct.data_file_path = data_file_path; % save the data file path as well
-            initialization_struct.rng_seed = rng_seed; % save the rng seeds
+            initialization_struct.rng_seed = init_rng_seed; % save the rng seed for the initialization structure
 
             % stimuli sets
             symbols = {'b', 'e', 'i', 'inf', 'l', 'n', 'o', 'r', 'ri', 'to', 'u', 'w'};
@@ -138,7 +135,7 @@ function start
             initialization_struct.stim_symbol = symbols(randperm(numel(symbols)));
 
             % randomize the block order for the food and money blocks
-            block = randi([1,2])
+            block = randi([1,2]);
             initialization_struct.block = [0 block 3-block];
 
             % input the number of trials per block; 1 = practice trials, 2 = experimental blocks
@@ -152,20 +149,17 @@ function start
             % tutorial_v4;
 
         % ---- 2: practice trials (Block 0 in code)
-            rng(initialization_struct.rng_seed(2));
             main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1));
 
         % ---- 3: Block 1 of the main experiment trials
-            rng(initialization_struct.rng_seed(3));
             main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
 
         % ---- 4: Block 2 of the main experiment trials
-            rng(initialization_struct.rng_seed(4));
             main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
 
         % --- display winnings
             load([data_file_path '/money.mat']);
-            fprintf('\n\n\n\n\n\n\n\n\n\nYour total earnings (show up fee included) = $ %.2f\n\nThank you for your participation\n\n\n', task_data.payoff_total);
+            fprintf('\n\n\n\n\n\n\n\n\n\nYour total earnings (show up fee included) = $ %.2f\n\nThank you for your participation\n\n\n', money_struct.payoff_total);
 
     end
 end
