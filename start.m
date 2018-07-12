@@ -55,13 +55,15 @@ function start
                         % tutorial_v4;
 
                     % ---- 2: practice trials (Block 0 in code)
-                        rng(initialization_struct.rng_seed); % reset the rng to the personalized shuffle
+                        rng(initialization_struct.rng_seed(2));
                         main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1));
 
                     % ---- 3: Block 1 of the main experiment trials
+                        rng(initialization_struct.rng_seed(3));
                         main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
 
                     % ---- 4: Block 2 of the main experiment trials
+                        rng(initialization_struct.rng_seed(4));
                         main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
 
                     % --- display winnings
@@ -70,13 +72,15 @@ function start
                 case 2
                 % ---- TASK
                     % ---- 2: practice trials (Block 0 in code)
-                        rng(initialization_struct.rng_seed); % reset the rng to the personalized shuffle
+                        rng(initialization_struct.rng_seed(2)); 
                         main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1));
 
                     % ---- 3: Block 1 of the main experiment trials
+                        rng(initialization_struct.rng_seed(3));
                         main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
 
                     % ---- 4: Block 2 of the main experiment trials
+                        rng(initialization_struct.rng_seed(4));
                         main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
 
                     % --- display winnings
@@ -85,9 +89,11 @@ function start
                 case 3
                 % ---- TASK
                     % ---- 3: Block 1 of the main experiment trials
+                        rng(initialization_struct.rng_seed(3));
                         main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
 
                     % ---- 4: Block 2 of the main experiment trials
+                        rng(initialization_struct.rng_seed(4));
                         main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
 
                     % --- display winnings
@@ -96,6 +102,7 @@ function start
                 case 4
                 % ---- TASK
                     % ---- 4: Block 2 of the main experiment trials
+                        rng(initialization_struct.rng_seed(4));
                         main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
 
                     % --- display winnings
@@ -108,12 +115,13 @@ function start
             rng('shuffle');
             rng_seed = rng;
             rng_seed = rng_seed.Seed;
+            rng_seed = [rng_seed rng_seed+1 rng_seed+2 rng_seed+3] % create 4 rng seeds, 1 used each for the initialization, practice, block1, and block2
 
             % create stimuli structure
             initialization_struct = struct;
             initialization_struct.sub = sub; % save the subject number into the structure
             initialization_struct.data_file_path = data_file_path; % save the data file path as well
-            initialization_struct.rng_seed = rng_seed; % save the rng seed
+            initialization_struct.rng_seed = rng_seed; % save the rng seeds
 
             % stimuli sets
             symbols = {'b', 'e', 'i', 'inf', 'l', 'n', 'o', 'r', 'ri', 'to', 'u', 'w'};
@@ -144,13 +152,15 @@ function start
             % tutorial_v4;
 
         % ---- 2: practice trials (Block 0 in code)
-            rng(initialization_struct.rng_seed); % reset the rng to the personalized shuffle
+            rng(initialization_struct.rng_seed(2));
             main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1));
 
         % ---- 3: Block 1 of the main experiment trials
+            rng(initialization_struct.rng_seed(3));
             main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
 
         % ---- 4: Block 2 of the main experiment trials
+            rng(initialization_struct.rng_seed(4));
             main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
 
         % --- display winnings
