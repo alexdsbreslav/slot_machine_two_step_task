@@ -40,6 +40,7 @@ function main_task(intialization_struct, trials, block, tutorial_timing_struct)
     r_spenttoken = [0,0,400*.4, 290*.4]; % spent token rectangle
     r_coinslot = [0,0,400*.8, 290*.8]; % coin slot rectangle
     r_next_arrow = [0,0,150,108.75]; % next arrow rectangle
+    room_r = [0,0,620*.9,500*.9]; % room rectangle
 
 % ---- locations of original stimuli alone
     Upoint = CenterRectOnPoint(r, rect(3)*.5, rect(4)*0.3);
@@ -64,8 +65,13 @@ function main_task(intialization_struct, trials, block, tutorial_timing_struct)
     spent_token_Mpoint = CenterRectOnPoint(r_spenttoken, rect(3)*0.5, rect(4)*0.8);
 
 % ---- next arrow location
-% next arrow location
     next_arrow_loc = CenterRectOnPoint(r_next_arrow, rect(3)*0.9, rect(4)*0.9);
+
+% ---- room locations
+    room_Upoint = CenterRectOnPoint(room_r, rect(3)*.5, rect(4)*0.3);
+    room_Lpoint = CenterRectOnPoint(room_r, rect(3)*.25, rect(4)*0.3);
+    room_Rpoint = CenterRectOnPoint(room_r, 3*rect(3)*.25, rect(4)*0.3);
+
 
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
@@ -112,6 +118,7 @@ function main_task(intialization_struct, trials, block, tutorial_timing_struct)
 
 % ---- read next arrow file
         next_arrow = imread(['stimuli/main_task/next arrow.png'],'png');
+
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
@@ -158,6 +165,10 @@ function main_task(intialization_struct, trials, block, tutorial_timing_struct)
 % ---- read next arrow file
         next_arrow = imread(['stimuli/main_task/next arrow.png'],'png');
 
+% ---- load room stimuli
+        token_room = imread(['stimuli/main_task/' char(intialization_struct.stim_color_step1(2)) '/token_room.png'],'png');
+        prize_room = imread(['stimuli/main_task/' char(intialization_struct.stim_colors_step2(2)) '/money prize room.png'],'png');
+
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
@@ -203,6 +214,11 @@ function main_task(intialization_struct, trials, block, tutorial_timing_struct)
 
 % ---- read next arrow file
         next_arrow = imread(['stimuli/main_task/next arrow.png'],'png');
+
+% ---- load room stimuli
+        token_room = imread(['stimuli/main_task/' char(intialization_struct.stim_color_step1(3)) '/token_room.png'],'png');
+        prize_room = imread(['stimuli/main_task/' char(intialization_struct.stim_colors_step2(3)) '/food prize room.png'],'png');
+
     end
 
 % -----------------------------------------------------------------------------
@@ -231,6 +247,10 @@ function main_task(intialization_struct, trials, block, tutorial_timing_struct)
 
     % ---- create next arrow
     next_arrow = Screen('MakeTexture', w, next_arrow);
+
+    % ---- create rooms
+    token_room = Screen('MakeTexture', w, token_room);
+    prize_room = Screen('MakeTexture', w, prize_room);
 
 % ---- Keyboard
     KbName('UnifyKeyNames');
@@ -311,46 +331,83 @@ function main_task(intialization_struct, trials, block, tutorial_timing_struct)
 
 % ---- Intro screen for food block
     elseif block == 2 % block == 2 is food
-      DrawFormattedText(w,[
-          'Please wait while the experimenter prepares' '\n' ...
-          'the room for this version of the game.' '\n\n' ...
-          'Version = Food'
-          ], 'center','center', white, [], [], [], 1.6);
-      Screen('Flip',w);
 
-      while 1 %wait for response and allow exit if necessesary
-        [keyIsDown, ~, keyCode] = KbCheck;
-        if keyIsDown && any(keyCode(exitKeys))
-            sca; return
-        elseif keyIsDown && any(keyCode(start_game_key))
-            break
-        end
-      end
+    % ---- Experimenter prep
+        DrawFormattedText(w,[
+            'Please wait while the experimenter prepares' '\n' ...
+            'the room for this version of the game.' '\n\n' ...
+            'Version = Food'
+            ], 'center','center', white, [], [], [], 1.6);
+        Screen('Flip',w);
 
-        A = exist([intialization_struct.data_file_path '_money.mat'], 'file');
-        if A
-            part = 2;
-            % Screen 1a if we are on block 2
-            DrawFormattedText(w, [
-                'This is part 2(of 2) of the experiment.' '\n\n'...
-                'The rules of the game are exactly the same, but the chances of' '\n' ...
-                'winning from each reward block have been reset!' ...
-                ],'center', 'center', white, [], [], [], 1.6);
-            Screen(w, 'Flip');
-            KbWait([],2);
-        else
-            part = 1;
+        while 1 %wait for response and allow exit if necessesary
+          [keyIsDown, ~, keyCode] = KbCheck;
+          if keyIsDown && any(keyCode(exitKeys))
+              sca; return
+          elseif keyIsDown && any(keyCode(start_game_key))
+              break
+          end
         end
 
-        % Screen 1b
+    % ---- Food version
         DrawFormattedText(w, [
-            'In this part of the experiment, you will be playing for food rewards.' '\n\n'...
-            'Each time you choose a reward box, you''ll take one bite of a snack.'
+            'In this version of the game, you will be playing for food rewards!' ...
             ],'center', 'center', white, [], [], [], 1.6);
-        Screen(w, 'Flip');
+        Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
+        Screen('Flip',w);
+        WaitSecs(1)
         KbWait([],2);
 
-        % Screen 2
+    % ---- New rooms
+        Screen('DrawTexture', w, token_room, [], room_Lpoint);
+        Screen('DrawTexture', w, prize_room, [], room_Rpoint);
+        DrawFormattedText(w, [
+            'In the food version of the game, there is' '\n' ...
+            'a new TOKEN ROOM, and a FOOD PRIZE ROOM!'
+            ],'center', rect(4)*0.75, white, [], [], [], 1.6);
+        Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
+        Screen('Flip',w);
+        WaitSecs(1)
+        KbWait([],2);
+
+    % ---- New colors and labels
+        Screen('DrawTexture', w, token_room, [], room_Lpoint);
+        Screen('DrawTexture', w, prize_room, [], room_Rpoint);
+        DrawFormattedText(w, [
+            'The slots are labeled with new colors and new symbols.' ...
+            ],'center', rect(4)*0.75, white, [], [], [], 1.6);
+        Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
+        Screen('Flip',w);
+        WaitSecs(1)
+        KbWait([],2);
+
+    % ---- Reset chances
+        Screen('DrawTexture', w, token_room, [], room_Lpoint);
+        Screen('DrawTexture', w, prize_room, [], room_Rpoint);
+        DrawFormattedText(w, [
+            'All of your chances of winning have been reset,' '\n' ...
+            'but the rules of the game and all of the' '\n' ...
+            'programming are exactly the same.'
+            ],'center', rect(4)*0.75, white, [], [], [], 1.6);
+        Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
+        Screen('Flip',w);
+        WaitSecs(1)
+        KbWait([],2);
+
+    % ---- Win = food
+        Screen('DrawTexture', w, token_room, [], room_Lpoint);
+        Screen('DrawTexture', w, prize_room, [], room_Rpoint);
+        DrawFormattedText(w, [
+            'Each time you win in the FOOD PRIZE' '\n' ...
+            'ROOM, you''ll get to take a one bite of' '\n' ...
+            'either one of your two snacks!'
+            ],'center', rect(4)*0.75, white, [], [], [], 1.6);
+        Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
+        Screen('Flip',w);
+        WaitSecs(1)
+        KbWait([],2);
+
+    % ---- Eat as much of either as you like
         DrawFormattedText(w, [
             'You can choose either snack as much or as little as you like.' '\n\n'...
             'We have given you enough of each snack to' '\n' ...
@@ -359,9 +416,12 @@ function main_task(intialization_struct, trials, block, tutorial_timing_struct)
         Screen(w, 'Flip');
         KbWait([],2);
 
-        % Screen 3
+    % ---- Questions? Begin
         DrawFormattedText(w, [
-            'Press f to begin part ' num2str(part) '(of 2) of the experiment.' ...
+            'If you have any questions at all about the the food version' '\n' ...
+            'of the game, this is a great time to ask the experimenter.' '\n\n' ...
+            'Once the experimenter has answered all of your questions,' '\n' ...
+            'press f to begin the food version of the game!' ...
             ], 'center', 'center', white);
         Screen(w, 'Flip');
 
@@ -392,49 +452,79 @@ function main_task(intialization_struct, trials, block, tutorial_timing_struct)
           end
         end
 
-        A = exist([intialization_struct.data_file_path '_food.mat'], 'file');
-        if A
-            part = 2;
-            % Screen 1a if we are on block 2
-            DrawFormattedText(w, [
-                'This is part 2(of 2) of the experiment.' '\n\n'...
-                'The rules of the game are exactly the same, but the chances' '\n' ...
-                'of winning from each reward block have been reset!' ...
-                ],'center', 'center', white, [], [], [], 1.6);
-            Screen(w, 'Flip');
-            KbWait([],2);
-        else
-            part = 1;
-        end
-
-        % Screen 1
+    % ---- Money version
         DrawFormattedText(w, [
-            'In this part of the experiment, you will be playing for money.' '\n\n'...
-            'Each time you choose a reward box, you''ll win 10 cents.' ...
+            'In this version of the game, you will be playing for money!' ...
             ],'center', 'center', white, [], [], [], 1.6);
-        Screen(w, 'Flip');
+        Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
+        Screen('Flip',w);
+        WaitSecs(1)
         KbWait([],2);
 
-        % Screen 2
+    % ---- New rooms
+        Screen('DrawTexture', w, token_room, [], room_Lpoint);
+        Screen('DrawTexture', w, prize_room, [], room_Rpoint);
         DrawFormattedText(w, [
+            'In the money version of the game, there is' '\n' ...
+            'a new TOKEN ROOM, and a MONEY PRIZE ROOM!'
+            ],'center', rect(4)*0.75, white, [], [], [], 1.6);
+        Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
+        Screen('Flip',w);
+        WaitSecs(1)
+        KbWait([],2);
+
+    % ---- New colors and labels
+        Screen('DrawTexture', w, token_room, [], room_Lpoint);
+        Screen('DrawTexture', w, prize_room, [], room_Rpoint);
+        DrawFormattedText(w, [
+            'The slots are labeled with new colors and new symbols.' ...
+            ],'center', rect(4)*0.75, white, [], [], [], 1.6);
+        Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
+        Screen('Flip',w);
+        WaitSecs(1)
+        KbWait([],2);
+
+    % ---- Reset chances
+        Screen('DrawTexture', w, token_room, [], room_Lpoint);
+        Screen('DrawTexture', w, prize_room, [], room_Rpoint);
+        DrawFormattedText(w, [
+            'All of your chances of winning have been reset,' '\n' ...
+            'but the rules of the game and all of the' '\n' ...
+            'programming are exactly the same.'
+            ],'center', rect(4)*0.75, white, [], [], [], 1.6);
+        Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
+        Screen('Flip',w);
+        WaitSecs(1)
+        KbWait([],2);
+
+    % ---- Win = food
+        Screen('DrawTexture', w, token_room, [], room_Lpoint);
+        Screen('DrawTexture', w, prize_room, [], room_Rpoint);
+        DrawFormattedText(w, [
+            'Each time you win in the MONEY PRIZE ROOM, you''ll earn 10 cents.' '\n\n' ...
             'Each time you win 10 cents, you''ll take a dime out of one' '\n' ...
             'of the two bowls and place it in your bank.' ...
+            ],'center', rect(4)*0.75, white, [], [], [], 1.6);
+        Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
+        Screen('Flip',w);
+        WaitSecs(1)
+        KbWait([],2);
+
+    % ---- Eat as much of either as you like
+        DrawFormattedText(w, [
+            'You can choose from either bowl as much or as little' '\n'...
+            'as you like. We have given you enough dimes in' '\n' ...
+            'each bowl to make sure that you cannot run out.' ...
             ],'center', 'center', white, [], [], [], 1.6);
         Screen(w, 'Flip');
         KbWait([],2);
 
-        % Screen 3
+    % ---- Questions? Begin
         DrawFormattedText(w, [
-            'You can choose from either bowl as much or as little as you like.' '\n\n'...
-            'We have given you enough dimes in each bowl.' '\n' ...
-            'to make sure that you cannot run out.' ...
-            ],'center', 'center', white, [], [], [], 1.6);
-        Screen(w, 'Flip');
-        KbWait([],2);
-
-        % Screen 4
-        DrawFormattedText(w, [
-            'Press m to begin part ' num2str(part) ' (of 2) of the experiment.'
+            'If you have any questions at all about the the money version' '\n' ...
+            'of the game, this is a great time to ask the experimenter.' '\n\n' ...
+            'Once the experimenter has answered all of your questions,' '\n' ...
+            'press m to begin the food version of the game!' ...
             ], 'center', 'center', white);
         Screen(w, 'Flip');
 
@@ -982,9 +1072,12 @@ function main_task(intialization_struct, trials, block, tutorial_timing_struct)
     elseif block == 1 % money block
         Screen(w, 'FillRect', black);
         Screen('TextSize', w, 40);
-        DrawFormattedText(w, 'This part of the experiment is complete. You earned:', 'center', 'center', white);
-        DrawFormattedText(w,  ['$' sprintf('%.2f', payoff_sum)], 'center', rect(4)*0.6, white);
-        DrawFormattedText(w, 'Press c to continue to the next part', 'center', rect(4)*0.75, white);
+        DrawFormattedText(w, [
+            'You have completed the money rounds.' '\n\n' ...
+            'You earned: $' sprintf('%.2f', payoff_sum) '\n\n' ...
+            'Please alert the experimenter, and' '\n' ...
+            'press c to close to practice game.'
+            ], 'center', 'center', white);
         Screen(w, 'Flip');
         WaitSecs(1);
 
@@ -1001,8 +1094,11 @@ function main_task(intialization_struct, trials, block, tutorial_timing_struct)
     elseif block == 2 % food block
         Screen(w, 'FillRect', black);
         Screen('TextSize', w, 40);
-        DrawFormattedText(w, ['This part of the experiment is complete.' '\n\n'...
-          'Press c to contine to the next part.'], 'center', 'center', white);
+        DrawFormattedText(w,[
+            'You have completed the food rounds!' '\n' ...
+            'Please alert the experimenter, and' '\n' ...
+            'press c to close to practice game.'
+            ],'center','center', white, [], [], [], 1.6);
         Screen(w, 'Flip');
         WaitSecs(1);
 
