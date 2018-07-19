@@ -5,9 +5,13 @@
 % Please do not share or use this code without my written permission.
 % Author: Alex Breslav
 
-function main_task(initialization_struct, trials, block, tutorial_timing_struct)
+function img_array = main_task(initialization_struct, trials, block, tutorial_timing_struct)
 
 % 1 - Initial setup
+    % ---- adjustable parameters
+    reward_feedback_len = 1;
+
+
     % ---- shuffle the rng and save the seed
     rng('shuffle');
     rng_seed = rng;
@@ -501,10 +505,11 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
         Screen('DrawTexture', w, token_room, [], room_Lpoint);
         Screen('DrawTexture', w, prize_room, [], room_Rpoint);
         DrawFormattedText(w, [
-            'Each time you win in the MONEY PRIZE ROOM, you''ll earn 10 cents.' '\n' ...
-            'Each time you win 10 cents, you''ll take a dime out of one' '\n' ...
+            'Each time you win in the MONEY PRIZE ROOM,' '\n' ...
+            'you''ll earn 10 cents. Each time you win' '\n' ...
+            '10 cents, you''ll take a dime out of one' '\n' ...
             'of the two bowls and place it in your bank.' ...
-            ],'center', rect(4)*0.75, white, [], [], [], 1.6);
+            ],'center', rect(4)*0.7, white, [], [], [], 1.6);
         Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
         Screen('Flip',w);
         WaitSecs(1)
@@ -549,7 +554,6 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
     cam = webcam(2); % when the macbook is open, the webcam is the second object
     images = {}; % cell array that the images are placed into
     total_frames = 1; % total count to ensure that images are stacked into the array
-    reward_feedback_len = 1;
 
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
@@ -589,12 +593,7 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
         Screen('TextSize', w, 60);
         DrawFormattedText(w, '+', 'center', 'center', white);
         Screen(w, 'Flip');
-        % wait 0.5 second
-        tic;
-        while(toc < 0.5)
-            images{total_frames} = snapshot(cam);
-            total_frames = total_frames + 1;
-        end
+        WaitSecs(0.5)
 
 % ---- Drawimage indicators
         Screen(w, 'FillRect', black);
@@ -695,11 +694,7 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
         end
 
 % ---- wait 1 second on the feedback screen
-        tic;
-        while(toc < 1)
-            images{total_frames} = snapshot(cam);
-            total_frames = total_frames + 1;
-        end
+        WaitSecs(1)
 
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
@@ -715,11 +710,7 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
             DrawFormattedText(w, '+', 'center', 'center', white);
             Screen(w, 'Flip');
             % wait 0.5 second
-            tic;
-            while(toc < 0.5)
-                images{total_frames} = snapshot(cam);
-                total_frames = total_frames + 1;
-            end
+            WaitSecs(0.5)
 
 % ---- Randomize the left/right position of the original stimuli
             Screen(w, 'FillRect', black);
@@ -796,11 +787,7 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
               Screen('DrawTexture', w, state2_coin_slot, [], coinslot_Lpoint);
               Screen('Flip', w);
               % wait 1 second
-              tic;
-              while(toc < 1)
-                  images{total_frames} = snapshot(cam);
-                  total_frames = total_frames + 1;
-              end
+              WaitSecs(1)
 
            elseif down_key == R
               % draw slots
@@ -817,11 +804,7 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
               Screen('DrawTexture', w, state2_coin_slot, [], coinslot_Rpoint);
               Screen('Flip', w);
               % wait 1 second
-              tic;
-              while(toc < 1)
-                  images{total_frames} = snapshot(cam);
-                  total_frames = total_frames + 1;
-              end
+              WaitSecs(1)
             end
 
 % ---- payoff screen
@@ -869,11 +852,7 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
             DrawFormattedText(w, '+', 'center', 'center', white);
             Screen(w, 'Flip');
             % wait 0.5 second
-            tic;
-            while(toc < 0.5)
-                images{total_frames} = snapshot(cam);
-                total_frames = total_frames + 1;
-            end
+            WaitSecs(0.5)
 
 % Randomize the left/right position of the original stimuli
             Screen(w, 'FillRect', black);
@@ -946,11 +925,7 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
               Screen('DrawTexture', w, state3_coin_slot, [], coinslot_Lpoint);
               Screen('Flip', w);
               % wait 1 second
-              tic;
-              while(toc < 1)
-                  images{total_frames} = snapshot(cam);
-                  total_frames = total_frames + 1;
-              end
+              WaitSecs(1)
 
             elseif down_key == R
               % draw slots
@@ -967,11 +942,7 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
               Screen('DrawTexture', w, state3_coin_slot, [], coinslot_Rpoint);
               Screen('Flip', w);
               % wait 1 second
-              tic;
-              while(toc < 1)
-                  images{total_frames} = snapshot(cam);
-                  total_frames = total_frames + 1;
-              end
+              WaitSecs(1)
             end
 
 % ---- payoff screen
@@ -1015,8 +986,10 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
             end
         end
     end % close the entire for loop
-
     RestrictKeysForKbCheck([]);
+
+% --- save video img array
+    img_array = images;
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
@@ -1048,10 +1021,6 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
         delete([initialization_struct.data_file_path '/tutorial_timing.mat']);
         save([initialization_struct.data_file_path '/practice'], 'practice_struct', '-v6');
 
-% ---- video files
-        save([initialization_struct.data_file_path '/practice_video'], 'images', '-v7.3', '-nocompression');
-
-
     elseif block == 1 % money block
         money_struct = struct;
         money_struct.rng_seed = rng_seed; % save the rng seed set at the top of the script
@@ -1077,9 +1046,6 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
         money_struct.payoff_total = 7 + payoff_sum;
         save([initialization_struct.data_file_path '/money'], 'money_struct', '-v6');
 
-% ---- video files
-        save([initialization_struct.data_file_path '/money_video'], 'images', '-v7.3', '-nocompression');
-
     else % food block
         food_struct = struct;
         food_struct.rng_seed = rng_seed; % save the rng seed set at the top of the script
@@ -1102,9 +1068,6 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
         food_struct.block = find(initialization_struct.block == 2);
         food_struct.stim_symbol = initialization_struct.stim_symbol(7:12); % second 6 symbols in the arrary always go to food block
         save([initialization_struct.data_file_path '/food'], 'food_struct', '-v6');
-
-% ---- video files
-        save([initialization_struct.data_file_path '/food_video'], 'images', '-v7.3', '-nocompression');
 
     end
 
