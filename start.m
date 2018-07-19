@@ -32,11 +32,11 @@ function start
         case 0
             load([data_file_path '/initialization structure.mat']);
             if initialization_struct.block(2) == 1
-                block1_text = 'Money'
-                block2_text = 'Food'
+                block1_text = 'Money';
+                block2_text = 'Food';
             else
-                block1_text = 'Food'
-                block2_text = 'Money'
+                block1_text = 'Food';
+                block2_text = 'Money';
             end
 
             disp([fprintf('\n\n\n\n') ...
@@ -141,13 +141,13 @@ function start
             initialization_struct.block = [0 block 3-block];
 
             % input the number of trials per block; 1 = practice trials, 2 = experimental blocks
-            initialization_struct.num_trials = [2 2];
+            initialization_struct.num_trials = [3 3];
 
             save([data_file_path '/initialization structure'], 'initialization_struct', '-v6')
 
     % ---- TASK
         % ---- 1: Tutorial
-            tutorial_v4(initialization_struct);
+            % tutorial_v4(initialization_struct);
 
         % ---- 2: practice trials (Block 0 in code)
             load([data_file_path '/tutorial_timing.mat'])
