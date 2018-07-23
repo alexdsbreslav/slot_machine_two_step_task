@@ -1,4 +1,4 @@
-function tutorial_v4
+function tutorial_v4(initialization_struct)
 
 % The tutorial for this task was initially developed for Daw et al. (2011) Neuron and
 % used for other implementations of the task such as Konovalov (2016) Nature Communications.
@@ -7,9 +7,10 @@ function tutorial_v4
 % for my own purposes.
 
 % Please do not share or use this code without my written permission.
-% Author: Alex Stine
+% Author: Alex Breslav
 
 %clear all
+rng(66); %set the rng seed so everyone sees the same probability changing video
 
 Screen('Preference', 'SkipSyncTests', 1); % ALTERED FOR DEBUGGING
 FlushEvents;
@@ -20,26 +21,22 @@ Screen('Close');
 
 %HideCursor; ALTERED FOR DEBUGGING
 
-global rect sub stim_color_step1 ...
-stim_colors_step2 stim_step2_color_select ...
-stim_prac_symbol stim_symbol
-
 % Need to define the color name
-if strcmp(char(stim_color_step1(1)), 'dark_grey') == 1
+if strcmp(char(initialization_struct.stim_color_step1(1)), 'dark_grey') == 1
     step1_color = 'dark grey';
-elseif strcmp(char(stim_color_step1(1)), 'white') == 1
+elseif strcmp(char(initialization_struct.stim_color_step1(1)), 'white') == 1
     step1_color = 'white';
 else
     step1_color = 'grey';
 end
 
-if strcmp(char(stim_step2_color_select(1)), 'warm') == 1
-    if strcmp(char(stim_colors_step2(1)), 'red_blue') == 1
+if strcmp(char(initialization_struct.stim_step2_color_select(1)), 'warm') == 1
+    if strcmp(char(initialization_struct.stim_colors_step2(1)), 'red_blue') == 1
         state2_color = 'red';
         state3_color = 'blue';
         a_an_2 = 'a ';
         a_an_3 = 'a ';
-    elseif strcmp(char(stim_colors_step2(1)), 'orange_purple') == 1
+    elseif strcmp(char(initialization_struct.stim_colors_step2(1)), 'orange_purple') == 1
         state2_color = 'orange';
         state3_color = 'purple';
         a_an_2 = 'an ';
@@ -51,12 +48,12 @@ if strcmp(char(stim_step2_color_select(1)), 'warm') == 1
         a_an_3 = 'a ';
     end
 else
-    if strcmp(char(stim_colors_step2(1)), 'red_blue') == 1
+    if strcmp(char(initialization_struct.stim_colors_step2(1)), 'red_blue') == 1
         state2_color = 'blue';
         state3_color = 'red';
         a_an_2 = 'a '; % enables me to refer to the tokens with the proper pronouns
         a_an_3 = 'a ';
-    elseif strcmp(char(stim_colors_step2(1)), 'orange_purple') == 1
+    elseif strcmp(char(initialization_struct.stim_colors_step2(1)), 'orange_purple') == 1
         state2_color = 'purple';
         state3_color = 'orange';
         a_an_2 = 'a ';
@@ -71,7 +68,7 @@ end
 
 doublebuffer=1;
 screens = Screen('Screens'); %count the screen
-whichScreen = min(screens); %select the screen ALTERED FOR DEBUGGING
+whichScreen = max(screens); %select the screen ALTERED FOR DEBUGGING
 [w,rect] = Screen('OpenWindow', whichScreen, 0,[], 32, ...
         doublebuffer+1,[],[],kPsychNeedFastBackingStore);
 
@@ -103,13 +100,6 @@ slot_label_Bpoint = CenterRectOnPoint(r, rect(3)*0.5, rect(4)*0.575);
 spent_token_Mpoint = CenterRectOnPoint(r_spenttoken, rect(3)*0.5, rect(4)*0.8);
 
 %frames - white during every trial; green when chosen
-Lchoice = CenterRectOnPoint(rc, rect(3)/4, rect(4)*0.3); %drawingpoints on screen
-Rchoice = CenterRectOnPoint(rc, 3*rect(3)/4, rect(4)*0.3);
-Uchoice = CenterRectOnPoint(rc, rect(3)/2, rect(4)*0.3);
-L1frame = CenterRectOnPoint(rc, rect(3)/4, rect(4)*0.2);
-L2frame = CenterRectOnPoint(rc, rect(3)/4, rect(4)*0.5);
-R1frame = CenterRectOnPoint(rc, 3*rect(3)/4, rect(4)*0.2);
-R2frame = CenterRectOnPoint(rc, 3*rect(3)/4, rect(4)*0.5);
 Mframe = CenterRectOnPoint(rc, rect(3)/2, rect(4)*0.5);
 slot_label_Uframe = CenterRectOnPoint(rc, rect(3)*0.5, rect(4)*0.4);
 slot_label_Lframe = CenterRectOnPoint(rc, rect(3)*0.2, rect(4)*0.4);
@@ -135,63 +125,63 @@ room_Rpoint = CenterRectOnPoint(room_r, 3*rect(3)*.25, rect(4)*0.3);
 next_arrow_loc = CenterRectOnPoint(r_next_arrow, rect(3)*0.9, rect(4)*0.9);
 
 % read basic stimuli files
-A1 = imread(['stimuli/practice/' char(stim_color_step1(1)) '/' ...
-  char(stim_prac_symbol(1)) '.png'],'png');
-B1 = imread(['stimuli/practice/' char(stim_color_step1(1)) '/' ...
-  char(stim_prac_symbol(2)) '.png'],'png');
+A1 = imread(['stimuli/practice/' char(initialization_struct.stim_color_step1(1)) '/' ...
+  char(initialization_struct.stim_prac_symbol(1)) '.png'],'png');
+B1 = imread(['stimuli/practice/' char(initialization_struct.stim_color_step1(1)) '/' ...
+  char(initialization_struct.stim_prac_symbol(2)) '.png'],'png');
 
-A2 = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(1)) '/' ...
-  char(stim_prac_symbol(3)) '.png'],'png');
-B2 = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(1)) '/' ...
-  char(stim_prac_symbol(4)) '.png'],'png');
+A2 = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(1)) '/' ...
+  char(initialization_struct.stim_prac_symbol(3)) '.png'],'png');
+B2 = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(1)) '/' ...
+  char(initialization_struct.stim_prac_symbol(4)) '.png'],'png');
 
-A3 = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(2)) '/' ...
-  char(stim_prac_symbol(5)) '.png'],'png');
-B3 = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(2)) '/' ...
-  char(stim_prac_symbol(6)) '.png'],'png');
+A3 = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(2)) '/' ...
+  char(initialization_struct.stim_prac_symbol(5)) '.png'],'png');
+B3 = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(2)) '/' ...
+  char(initialization_struct.stim_prac_symbol(6)) '.png'],'png');
 
 % read token files
-state2_token = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(1)) '/' ...
+state2_token = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(1)) '/' ...
    'token.png'],'png');
-state3_token = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(2)) '/' ...
+state3_token = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(2)) '/' ...
   'token.png'],'png');
 spent_token = imread(['stimuli/practice/spent token.png'],'png');
 
 % read token bag files
-A1_blank_token_bag = imread(['stimuli/practice/blank token bags/' char(stim_prac_symbol(1)) '.png'],'png');
-B1_blank_token_bag = imread(['stimuli/practice/blank token bags/' char(stim_prac_symbol(2)) '.png'],'png');
+A1_blank_token_bag = imread(['stimuli/practice/blank token bags/' char(initialization_struct.stim_prac_symbol(1)) '.png'],'png');
+B1_blank_token_bag = imread(['stimuli/practice/blank token bags/' char(initialization_struct.stim_prac_symbol(2)) '.png'],'png');
 
-A1_S2_token_bag = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(1)) '/' ...
-  char(stim_prac_symbol(1)) '_token bag.png'],'png');
-A1_S3_token_bag = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(2)) '/' ...
-  char(stim_prac_symbol(1)) '_token bag.png'],'png');
-B1_S2_token_bag = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(1)) '/' ...
-  char(stim_prac_symbol(2)) '_token bag.png'],'png');
-B1_S3_token_bag = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(2)) '/' ...
-  char(stim_prac_symbol(2)) '_token bag.png'],'png');
+A1_S2_token_bag = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(1)) '/' ...
+  char(initialization_struct.stim_prac_symbol(1)) '_token bag.png'],'png');
+A1_S3_token_bag = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(2)) '/' ...
+  char(initialization_struct.stim_prac_symbol(1)) '_token bag.png'],'png');
+B1_S2_token_bag = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(1)) '/' ...
+  char(initialization_struct.stim_prac_symbol(2)) '_token bag.png'],'png');
+B1_S3_token_bag = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(2)) '/' ...
+  char(initialization_struct.stim_prac_symbol(2)) '_token bag.png'],'png');
 
 % read token dump files
-A1_tokendump = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' ...
-  char(stim_prac_symbol(1)) '_dump.png'],'png');
-B1_tokendump = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' ...
-  char(stim_prac_symbol(2)) '_dump.png'],'png');
+A1_tokendump = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' ...
+  char(initialization_struct.stim_prac_symbol(1)) '_dump.png'],'png');
+B1_tokendump = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' ...
+  char(initialization_struct.stim_prac_symbol(2)) '_dump.png'],'png');
 
 % read slot machine files
-step1_slot_L = imread(['stimuli/practice/' char(stim_color_step1(1)) '/Slot Machine_L.png'],'png');
-state2_slot_L = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(1)) '/Slot Machine_L.png'],'png');
-state3_slot_L = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(2)) '/Slot Machine_L.png'],'png');
+step1_slot_L = imread(['stimuli/practice/' char(initialization_struct.stim_color_step1(1)) '/Slot Machine_L.png'],'png');
+state2_slot_L = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(1)) '/Slot Machine_L.png'],'png');
+state3_slot_L = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(2)) '/Slot Machine_L.png'],'png');
 
-step1_slot_R = imread(['stimuli/practice/' char(stim_color_step1(1)) '/Slot Machine_R.png'],'png');
-state2_slot_R = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(1)) '/Slot Machine_R.png'],'png');
-state3_slot_R = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(2)) '/Slot Machine_R.png'],'png');
+step1_slot_R = imread(['stimuli/practice/' char(initialization_struct.stim_color_step1(1)) '/Slot Machine_R.png'],'png');
+state2_slot_R = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(1)) '/Slot Machine_R.png'],'png');
+state3_slot_R = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(2)) '/Slot Machine_R.png'],'png');
 
 % read coin slot files
-state2_coin_slot = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(1)) '/coin slot.png'],'png');
-state3_coin_slot = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/' char(stim_step2_color_select(2)) '/coin slot.png'],'png');
+state2_coin_slot = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(1)) '/coin slot.png'],'png');
+state3_coin_slot = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(2)) '/coin slot.png'],'png');
 
 % read room files
-token_room = imread(['stimuli/practice/' char(stim_color_step1(1)) '/token room.png'],'png');
-prize_room = imread(['stimuli/practice/' char(stim_colors_step2(1)) '/prize room.png'],'png');
+token_room = imread(['stimuli/practice/' char(initialization_struct.stim_color_step1(1)) '/token room.png'],'png');
+prize_room = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/prize room.png'],'png');
 
 % read win/lose files
 win = imread(['stimuli/practice/win_lose/win.png'],'png');
@@ -269,6 +259,7 @@ Screen('TextFont',w,'Helvetica');
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % 1 - Intro
+tic;
 
 DrawFormattedText(w,[
     'Please read the instructions carefully.' '\n\n' ...
@@ -305,11 +296,15 @@ while 1
       break
   end
 end
+
+
+intro_time = toc;
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % 2 - Game structure
+tic;
 
 Screen('DrawTexture', w, step1_slot_L, [], slot_Upoint);
 Screen('FrameRect',w,white,slot_label_Uframe,10);
@@ -331,7 +326,6 @@ Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
 Screen('Flip',w);
 WaitSecs(1)
 KbWait([],2);
-
 
 Screen('DrawTexture', w, step1_slot_L, [], slot_Upoint);
 Screen('FrameRect',w,white,slot_label_Uframe,10);
@@ -355,12 +349,15 @@ Screen('Flip',w);
 WaitSecs(1)
 KbWait([],2);
 
+
+game_structure_time = toc;
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % 3 - Slot Layout
 % ---- Token room
+tic;
 
 Screen('DrawTexture', w, token_room, [], room_Lpoint);
 Screen('DrawTexture', w, prize_room, [], room_Rpoint);
@@ -494,11 +491,14 @@ Screen('Flip',w);
 WaitSecs(1)
 KbWait([],2);
 
+
+slot_layout_time = toc;
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % 4 - Game progression
+tic;
 
 Screen('DrawTexture', w, token_room, [], room_Upoint);
 DrawFormattedText(w,[
@@ -611,11 +611,14 @@ Screen('Flip',w);
 WaitSecs(1)
 KbWait([],2);
 
+
+game_progression_time = toc;
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % 5 - Walk through #1
+tic;
 
 DrawFormattedText(w,[
     'Let''s walk through a round together to' '\n' ...
@@ -1062,7 +1065,12 @@ elseif down_key == R
       WaitSecs(1.5)
 end
 
+
+trial_walkthrough_time = toc;
+
 % ---- questions?
+tic;
+
 DrawFormattedText(w,[
     'Let''s pause for just a moment.' '\n\n' ...
     'If you have any questions at all about the strategy game,' '\n' ...
@@ -1084,11 +1092,14 @@ while 1
   end
 end
 
+
+game_rules_ques_time = toc;
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % 8 - Token room programming
+tic;
 
 DrawFormattedText(w,[
     'In order for you to win the most,' '\n' ...
@@ -1134,7 +1145,7 @@ Screen('FrameRect',w,white,slot_label_Rframe,10);
 
 DrawFormattedText(w,[
     'To best understand how they were programmed,' '\n' ...
-    'imagine that, before the game starts,' '\n'...
+    'imagine that before the game starts,' '\n'...
     'the slot machines are empty.' ...
     ],'center',rect(4)*0.8, [], [], [], [], 1.6);
 Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
@@ -1334,7 +1345,12 @@ Screen('Flip',w);
 WaitSecs(1)
 KbWait([],2);
 
+
+token_room_prog_time = toc;
+
 % ---- questions?
+tic;
+
 DrawFormattedText(w,[
     'Let''s pause for just a moment.' '\n\n' ...
     'If you have any questions at all about the strategy game,' '\n' ...
@@ -1356,11 +1372,14 @@ while 1
   end
 end
 
+
+token_room_prog_ques_time = toc;
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % 9 - Prize room programming
+tic;
 
 Screen('DrawTexture', w, prize_room, [], room_Upoint);
 DrawFormattedText(w,[
@@ -1607,7 +1626,12 @@ Screen('Flip',w);
 WaitSecs(1)
 KbWait([],2);
 
+
+prize_room_prog_time = toc;
+
 % ---- questions?
+tic;
+
 DrawFormattedText(w,[
     'Now we''ve gone over all of the rules and programming,' '\n' ...
     'but there were a lot of things to keep track of!' '\n' ...
@@ -1627,6 +1651,19 @@ Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
 Screen('Flip',w);
 WaitSecs(1)
 KbWait([],2);
+
+
+final_ques_time = toc;
+
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+% 9 - Save timing varibales
+tutorial_timing_struct = struct;
+tutorial_timing_struct.times = [intro_time game_structure_time slot_layout_time game_progression_time trial_walkthrough_time game_rules_ques_time token_room_prog_time token_room_prog_ques_time prize_room_prog_time final_ques_time]
+tutorial_timing_struct.names = [{'intro_time'} {'game_structure_time'} {'slot_layout_time'} {'game_progression_time'} {'trial_walkthrough_time'} {'game_rules_ques_time'} {'token_room_prog_time'} {'token_room_prog_ques_time'} {'prize_room_prog_time'} {'final_ques_time'}]
+save([initialization_struct.data_file_path '/tutorial_timing'], 'tutorial_timing_struct', '-v6');
 
 ShowCursor; %ALTERED FOR DEBUGGING; THIS WAS HASHED OUT?
 Screen('Close',w); %ALTERED FOR DEBUGGING; THIS WAS HASHED OUT?
