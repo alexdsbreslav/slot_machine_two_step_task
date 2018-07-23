@@ -1,11 +1,11 @@
 function write_video(video_file_path, block, img_array)
-    vid = VideoWriter([video_file_path '/' block], 'MPEG-4');
-    vid.FrameRate = 24;
-    open(vid)
+    writer = VideoWriter([video_file_path '/' block], 'MPEG-4');
+    writer.FrameRate = 30;
+    open(writer)
 
-    for i = 1:length(img_array)
-        writeVideo(vid, img_array{i});
+    for i = 1:length(img_array(1,1,1,:))
+        writeVideo(writer, img_array(:,:,:,i));
     end
 
-    close(vid)
+    close(writer)
 end

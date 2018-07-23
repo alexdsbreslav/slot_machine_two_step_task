@@ -13,7 +13,7 @@ function start
     data_file_path = ['/Users/alex/OneDrive - Duke University/1. Research Projects/1. Huettel/17.09_MDT/6. Raw Data/MatLab/sub' filename_subnum];
     video_file_path = ['/Users/alex/OneDrive - Duke University/1. Research Projects/1. Huettel/17.09_MDT/6. Raw Data/MatLab/sub' filename_subnum '/videos'];
     [~, msg, ~] = mkdir(video_file_path);
- 
+
     folder_already_exists = strcmp(msg, 'Directory already exists.');
     if folder_already_exists
        sub_exists = input(['\n\n' ...
@@ -64,71 +64,211 @@ function start
 
                     % ---- 2: practice trials (Block 0 in code)
                         load([data_file_path '/tutorial_timing.mat'])
-                        practice_img_array = main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1), tutorial_timing_struct);
+                        video_object_practice = main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1), tutorial_timing_struct);
 
                     % ---- 3: Block 1 of the main experiment trials
-                        block1_img_array = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
+                        video_object_block1 = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
 
                     % ---- 4: Block 2 of the main experiment trials
-                        block2_img_array = ymain_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
+                        video_object_block2 = ymain_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
 
                     % --- display winnings
                         load([data_file_path '/money.mat']);
                         fprintf('\n\n\n\n\n\n\n\n\n\nYour total earnings (show up fee included) = $ %.2f\n\nThank you for your participation\n\n\n', money_struct.payoff_total);
 
                     % --- write the videos
-                        write_video(video_file_path, 'practice', practice_img_array)
-                        write_video(video_file_path, block1_text, block1_img_array)
-                        write_video(video_file_path, block2_text, block2_img_array)
+                        tic;
+                        practice_img_array = getdata(video_object_practice, video_object_practice.FramesAvailable);
+                        elapsed = toc;
+                        disp([ fprintf('\n') ...
+                        '(1/6) .... Practice data grabbed .... | '
+                        'Trials = ' num2str(initialization_struct.num_trials(1)) ' | ' ...
+                        'Frames needed (trials x 30fps x 4s) = ' num2str(initialization_struct.num_trials(1)*30*4)
+                        'Frames grabbed = ' num2str(length(practice_img_array(1,1,1,:))) ' | ' ...
+                        'Time to complete = ' num2str(elapsed)])
+
+                        tic;
+                        write_video(video_file_path, 'practice', practice_img_array);
+                        elapsed = toc;
+                        disp([ fprintf('\n') ...
+                        '(2/6) .... Practice video has finished ....' ' | ' ...
+                        'Time to complete = ' num2str(elapsed)])
+
+                        tic;
+                        block1_img_array = getdata(video_object_block1, video_object_block1.FramesAvailable);
+                        elapsed = toc;
+                        disp([ fprintf('\n') ...
+                        '(3/6) .... ' block1_text ' data grabbed:' ' | ' ...
+                        'Trials = ' num2str(initialization_struct.num_trials(2)) ' | ' ...
+                        'Frames needed (trials x 30fps x 4s) = ' num2str(initialization_struct.num_trials(2)*30*4) ' | ' ...
+                        'Frames grabbed = ' num2str(length(block1_img_array(1,1,1,:))) ' | ' ...
+                        'Time to complete = ' num2str(elapsed)])
+
+                        tic;
+                        write_video(video_file_path, block1_text, block1_img_array);
+                        elapsed = toc;
+                        disp([ fprintf('\n') ...
+                        '(4/6) .... ' block1_text ' video has finished ....' ' | ' ...
+                        'Time to complete = ' num2str(elapsed)])
+
+                        tic;
+                        block2_img_array = getdata(video_object_block2, video_object_block2.FramesAvailable);
+                        elapsed = toc;
+                        disp([ fprintf('\n') ...
+                        '(5/6) .... ' block2_text ' data grabbed:' ' | ' ...
+                        'Trials = ' num2str(initialization_struct.num_trials(2)) ' | ' ...
+                        'Frames needed (trials x 30fps x 4s) = ' num2str(initialization_struct.num_trials(2)*30*4) ' | ' ...
+                        'Frames grabbed = ' num2str(length(block2_img_array(1,1,1,:))) ' | ' ...
+                        'Time to complete = ' num2str(elapsed)])
+
+                        tic;
+                        write_video(video_file_path, block2_text, block2_img_array);
+                        elapsed = toc;
+                        disp([ fprintf('\n') ...
+                        '(6/6) .... ' block2_text ' video has finished ....' ...
+                        'Time to complete = ' num2str(elapsed)])
 
                 case 2
                 % ---- TASK
                     % ---- 2: practice trials (Block 0 in code)
                         load([data_file_path '/tutorial_timing.mat'])
-                        practice_img_array = main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1), tutorial_timing_struct);
+                        video_object_practice = main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1), tutorial_timing_struct);
 
                     % ---- 3: Block 1 of the main experiment trials
-                        block1_img_array = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
+                        video_object_block1 = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
 
                     % ---- 4: Block 2 of the main experiment trials
-                        block2_img_array = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
+                        video_object_block2 = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
 
                     % --- display winnings
                         load([data_file_path '/money.mat']);
                         fprintf('\n\n\n\n\n\n\n\n\n\nYour total earnings (show up fee included) = $ %.2f\n\nThank you for your participation\n\n\n', money_struct.payoff_total);
 
                     % --- write the videos
-                        write_video(video_file_path, 'practice', practice_img_array)
-                        write_video(video_file_path, block1_text, block1_img_array)
-                        write_video(video_file_path, block2_text, block2_img_array)
+                        tic;
+                        practice_img_array = getdata(video_object_practice, video_object_practice.FramesAvailable);
+                        elapsed = toc;
+                        disp([ fprintf('\n') ...
+                        '(1/6) .... Practice data grabbed:' ' | ' ...
+                        'Trials = ' num2str(initialization_struct.num_trials(1)) ' | ' ...
+                        'Frames needed (trials x 30fps x 4s) = ' num2str(initialization_struct.num_trials(1)*30*4) ' | ' ...
+                        'Frames grabbed = ' num2str(length(practice_img_array(1,1,1,:))) ' | ' ...
+                        'Time to complete = ' num2str(elapsed)])
+
+                        tic;
+                        write_video(video_file_path, 'practice', practice_img_array);
+                        elapsed = toc;
+                        disp([ fprintf('\n') ...
+                        '(2/6) .... Practice video has finished ....' ' | ' ...
+                        'Time to complete = ' num2str(elapsed)])
+
+                        tic;
+                        block1_img_array = getdata(video_object_block1, video_object_block1.FramesAvailable);
+                        elapsed = toc;
+                        disp([ fprintf('\n') ...
+                        '(3/6) .... ' block1_text ' data grabbed:' ' | ' ...
+                        'Trials = ' num2str(initialization_struct.num_trials(2)) ' | ' ...
+                        'Frames needed (trials x 30fps x 4s) = ' num2str(initialization_struct.num_trials(2)*30*4) ' | ' ...
+                        'Frames grabbed = ' num2str(length(block1_img_array(1,1,1,:))) ' | ' ...
+                        'Time to complete = ' num2str(elapsed)])
+
+                        tic;
+                        write_video(video_file_path, block1_text, block1_img_array);
+                        elapsed = toc;
+                        disp([ fprintf('\n') ...
+                        '(4/6) .... ' block1_text ' video has finished ....' ' | ' ...
+                        'Time to complete = ' num2str(elapsed)])
+
+                        tic;
+                        block2_img_array = getdata(video_object_block2, video_object_block2.FramesAvailable);
+                        elapsed = toc;
+                        disp([ fprintf('\n') ...
+                        '(5/6) .... ' block2_text ' data grabbed:' ' | ' ...
+                        'Trials = ' num2str(initialization_struct.num_trials(2)) ' | ' ...
+                        'Frames needed (trials x 30fps x 4s) = ' num2str(initialization_struct.num_trials(2)*30*4) ' | ' ...
+                        'Frames grabbed = ' num2str(length(block2_img_array(1,1,1,:))) ' | ' ...
+                        'Time to complete = ' num2str(elapsed)])
+
+                        tic;
+                        write_video(video_file_path, block2_text, block2_img_array);
+                        elapsed = toc;
+                        disp([ fprintf('\n') ...
+                        '(6/6) .... ' block2_text ' video has finished ....' ' | ' ...
+                        'Time to complete = ' num2str(elapsed)])
 
                 case 3
                 % ---- TASK
                     % ---- 3: Block 1 of the main experiment trials
-                        block1_img_array = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
+                        video_object_block1 = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
 
                     % ---- 4: Block 2 of the main experiment trials
-                        block2_img_array = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
+                        video_object_block2 = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
 
                     % --- display winnings
                         load([data_file_path '/money.mat']);
                         fprintf('\n\n\n\n\n\n\n\n\n\nYour total earnings (show up fee included) = $ %.2f\n\nThank you for your participation\n\n\n', money_struct.payoff_total);
 
                     % --- write the videos
-                        write_video(video_file_path, block1_text, block1_img_array)
-                        write_video(video_file_path, block2_text, block2_img_array)
+                        tic;
+                        block1_img_array = getdata(video_object_block1, video_object_block1.FramesAvailable);
+                        elapsed = toc;
+                        disp([ fprintf('\n') ...
+                        '(1/4) .... ' block1_text ' data grabbed:' ' | ' ...
+                        'Trials = ' num2str(initialization_struct.num_trials(2)) ' | ' ...
+                        'Frames needed (trials x 30fps x 4s) = ' num2str(initialization_struct.num_trials(2)*30*4) ' | ' ...
+                        'Frames grabbed = ' num2str(length(block1_img_array(1,1,1,:))) ' | ' ...
+                        'Time to complete = ' num2str(elapsed)])
+
+                        tic;
+                        write_video(video_file_path, block1_text, block1_img_array);
+                        elapsed = toc;
+                        disp([ fprintf('\n') ...
+                        '(2/4) .... ' block1_text ' video has finished ....' ' | ' ...
+                        'Time to complete = ' num2str(elapsed)])
+
+                        tic;
+                        block2_img_array = getdata(video_object_block2, video_object_block2.FramesAvailable);
+                        elapsed = toc;
+                        disp([ fprintf('\n') ...
+                        '(3/4) .... ' block2_text ' data grabbed:' ' | ' ...
+                        'Trials = ' num2str(initialization_struct.num_trials(2)) ' | ' ...
+                        'Frames needed (trials x 30fps x 4s) = ' num2str(initialization_struct.num_trials(2)*30*4) ' | ' ...
+                        'Frames grabbed = ' num2str(length(block2_img_array(1,1,1,:))) ' | ' ...
+                        'Time to complete = ' num2str(elapsed)])
+
+                        tic;
+                        write_video(video_file_path, block2_text, block2_img_array);
+                        elapsed = toc;
+                        disp([ fprintf('\n') ...
+                        '(4/4) .... ' block2_text ' video has finished ....' ' | ' ...
+                        'Time to complete = ' num2str(elapsed)])
 
                 case 4
                 % ---- TASK
                     % ---- 4: Block 2 of the main experiment trials
-                        block2_img_array = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
+                        video_object_block2 = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
 
                     % --- display winnings
                         load([data_file_path '/money.mat']);
                         fprintf('\n\n\n\n\n\n\n\n\n\nYour total earnings (show up fee included) = $ %.2f\n\nThank you for your participation\n\n\n', money_struct.payoff_total);
 
                     % --- write the videos
-                        write_video(video_file_path, block2_text, block2_img_array)
+                        tic;
+                        block2_img_array = getdata(video_object_block2, video_object_block2.FramesAvailable);
+                        elapsed = toc;
+                        disp([ fprintf('\n') ...
+                        '(1/2) .... ' block2_text ' data grabbed:' ' | ' ...
+                        'Trials = ' num2str(initialization_struct.num_trials(2)) ' | ' ...
+                        'Frames needed (trials x 30fps x 4s) = ' num2str(initialization_struct.num_trials(2)*30*4) ' | ' ...
+                        'Frames grabbed = ' num2str(length(block2_img_array(1,1,1,:))) ' | ' ...
+                        'Time to complete = ' num2str(elapsed)])
+
+                        tic;
+                        write_video(video_file_path, block2_text, block2_img_array);
+                        elapsed = toc;
+                        disp([ fprintf('\n') ...
+                        '(2/2) .... ' block2_text ' video has finished ....' ' | ' ...
+                        'Time to complete = ' num2str(elapsed)])
             end
 
         case 99
@@ -162,30 +302,77 @@ function start
             initialization_struct.block = [0 block 3-block];
 
             % input the number of trials per block; 1 = practice trials, 2 = experimental blocks
-            initialization_struct.num_trials = [5 5];
+            initialization_struct.num_trials = [15 50];
 
             save([data_file_path '/initialization structure'], 'initialization_struct', '-v6')
 
     % ---- TASK
         % ---- 1: Tutorial
-            % tutorial_v4(initialization_struct);
+            tutorial_v4(initialization_struct);
 
         % ---- 2: practice trials (Block 0 in code)
             load([data_file_path '/tutorial_timing.mat'])
-            practice_img_array = main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1), tutorial_timing_struct);
+            video_object_practice = main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1), tutorial_timing_struct);
 
         % ---- 3: Block 1 of the main experiment trials
-            block1_img_array = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
+            video_object_block1 = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
         % ---- 4: Block 2 of the main experiment trials
-            block2_img_array = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
+            video_object_block2 = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
 
         % --- display winnings
             load([data_file_path '/money.mat']);
             fprintf('\n\n\n\n\n\n\n\n\n\nYour total earnings (show up fee included) = $ %.2f\n\nThank you for your participation\n\n\n', money_struct.payoff_total);
 
-        % --- write the videos
-            write_video(video_file_path, 'practice', practice_img_array)
-            write_video(video_file_path, block1_text, block1_img_array)
-            write_video(video_file_path, block2_text, block2_img_array)
+        % --- write the videos and display diagnostics
+            tic;
+            practice_img_array = getdata(video_object_practice, video_object_practice.FramesAvailable);
+            elapsed = toc;
+            disp([ fprintf('\n') ...
+            '(1/6) .... Practice data grabbed:' ' | ' ...
+            'Trials = ' num2str(initialization_struct.num_trials(1)) ' | ' ...
+            'Frames needed (trials x 30fps x 4s) = ' num2str(initialization_struct.num_trials(1)*30*4) ' | ' ...
+            'Frames grabbed = ' num2str(length(practice_img_array(1,1,1,:))) ' | ' ...
+            'Time to complete = ' num2str(elapsed)])
+
+            tic;
+            write_video(video_file_path, 'practice', practice_img_array);
+            elapsed = toc;
+            disp([ fprintf('\n') ...
+            '(2/6) .... Practice video has finished ....' ' | ' ...
+            'Time to complete = ' num2str(elapsed)])
+
+            tic;
+            block1_img_array = getdata(video_object_block1, video_object_block1.FramesAvailable);
+            elapsed = toc;
+            disp([ fprintf('\n') ...
+            '(3/6) .... ' block1_text ' data grabbed:' ' | ' ...
+            'Trials = ' num2str(initialization_struct.num_trials(2)) ' | ' ...
+            'Frames needed (trials x 30fps x 4s) = ' num2str(initialization_struct.num_trials(2)*30*4) ' | ' ...
+            'Frames grabbed = ' num2str(length(block1_img_array(1,1,1,:))) ' | ' ...
+            'Time to complete = ' num2str(elapsed)])
+
+            tic;
+            write_video(video_file_path, block1_text, block1_img_array);
+            elapsed = toc;
+            disp([ fprintf('\n') ...
+            '(4/6) .... ' block1_text ' video has finished ....' ' | ' ...
+            'Time to complete = ' num2str(elapsed)])
+
+            tic;
+            block2_img_array = getdata(video_object_block2, video_object_block2.FramesAvailable);
+            elapsed = toc;
+            disp([ fprintf('\n') ...
+            '(5/6) .... ' block2_text ' data grabbed:' ' | ' ...
+            'Trials = ' num2str(initialization_struct.num_trials(2)) ' | ' ...
+            'Frames needed (trials x 30fps x 4s) = ' num2str(initialization_struct.num_trials(2)*30*4) ' | ' ...
+            'Frames grabbed = ' num2str(length(block2_img_array(1,1,1,:))) ' | ' ...
+            'Time to complete = ' num2str(elapsed)])
+
+            tic;
+            write_video(video_file_path, block2_text, block2_img_array);
+            elapsed = toc;
+            disp([ fprintf('\n') ...
+            '(6/6) .... ' block2_text ' video has finished ....' ' | ' ...
+            'Time to complete = ' num2str(elapsed)])
     end
 end

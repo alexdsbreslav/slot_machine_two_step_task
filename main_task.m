@@ -5,12 +5,11 @@
 % Please do not share or use this code without my written permission.
 % Author: Alex Breslav
 
-function img_array = main_task(initialization_struct, trials, block, tutorial_timing_struct)
+function video_object = main_task(initialization_struct, trials, block, tutorial_timing_struct)
 
 % 1 - Initial setup
     % ---- adjustable parameters
-    reward_feedback_len = 1;
-
+    reward_feedback_len = 3;
 
     % ---- shuffle the rng and save the seed
     rng('shuffle');
@@ -253,9 +252,10 @@ function img_array = main_task(initialization_struct, trials, block, tutorial_ti
     next_arrow = Screen('MakeTexture', w, next_arrow);
 
     % ---- create rooms
-    token_room = Screen('MakeTexture', w, token_room);
-    prize_room = Screen('MakeTexture', w, prize_room);
-
+    if block ~= 0
+        token_room = Screen('MakeTexture', w, token_room);
+        prize_room = Screen('MakeTexture', w, prize_room);
+    end
 % ---- Keyboard
     KbName('UnifyKeyNames');
     L = KbName('LeftArrow');
@@ -305,6 +305,23 @@ function img_array = main_task(initialization_struct, trials, block, tutorial_ti
 % 7 - Task intro screens
 % ---- Intro screen for practice block
     if block == 0
+
+        DrawFormattedText(w,[
+            'Please wait a moment while the camera starts.' '\n' ...
+            'The screen will advance automatically, when ready.' ....
+            ], 'center','center', white, [], [], [], 1.6);
+        Screen('Flip',w);
+
+% ---- intialize video objects
+        imaqreset;
+        vid0 = videoinput('macvideo', 2);
+        src = getselectedsource(vid0);
+        vid0.FramesPerTrigger = (reward_feedback_len + 1)*30; %add 1 second for two fix crosses after reward feedback
+        triggerconfig(vid0, 'manual');
+        vid0.TriggerRepeat = trials - 1;
+        vid0.ReturnedColorSpace = 'rgb';
+        start(vid0);
+
         DrawFormattedText(w,[
             'This is the last part of the tutorial.' '\n' ...
             'You''ll get to play 15 practice rounds.' ....
@@ -335,6 +352,14 @@ function img_array = main_task(initialization_struct, trials, block, tutorial_ti
 
 % ---- Intro screen for food block
     elseif block == 2 % block == 2 is food
+% ---- intialize video objects
+        vid2 = videoinput('macvideo', 2);
+        src = getselectedsource(vid2);
+        vid2.FramesPerTrigger = (reward_feedback_len + 1)*30; %add 1 second for two fix crosses after reward feedback
+        triggerconfig(vid2, 'manual');
+        vid2.TriggerRepeat = trials - 1;
+        vid2.ReturnedColorSpace = 'rgb';
+        start(vid2);
 
     % ---- Experimenter prep
         DrawFormattedText(w,[
@@ -440,6 +465,14 @@ function img_array = main_task(initialization_struct, trials, block, tutorial_ti
 
 % ---- Intro screen for money block
     else % block = 1 is money
+% ---- intialize video objects
+        vid1 = videoinput('macvideo', 2);
+        vid1.FramesPerTrigger = (reward_feedback_len + 1)*30; %add 1 second for two fix crosses after reward feedback
+        triggerconfig(vid1, 'manual');
+        vid1.TriggerRepeat = trials - 1;
+        vid1.ReturnedColorSpace = 'rgb';
+        start(vid1);
+
         DrawFormattedText(w,[
             'Please wait while the experimenter prepares' '\n' ...
             'the room for this version of the game.' '\n\n' ...
@@ -548,17 +581,6 @@ function img_array = main_task(initialization_struct, trials, block, tutorial_ti
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
-% Initialize webcam objects
-
-    %HideCursor; ALTERED FOR DEBUGGING
-    cam = webcam(2); % when the macbook is open, the webcam is the second object
-    images = {}; % cell array that the images are placed into
-    total_frames = 1; % total count to ensure that images are stacked into the array
-
-% -----------------------------------------------------------------------------
-% -----------------------------------------------------------------------------
-% -----------------------------------------------------------------------------
-% -----------------------------------------------------------------------------
 % 8 - Begin trials
     WaitSecs(0.1);
 
@@ -626,10 +648,6 @@ function img_array = main_task(initialization_struct, trials, block, tutorial_ti
 
         while key_code(L) == 0 && key_code(R) == 0
                 [key_is_down, secs, key_code] = KbCheck;
-
-                images{total_frames} = snapshot(cam);
-                total_frames = total_frames + 1;
-
         end
 
 % ---- stop reaction timer
@@ -746,9 +764,6 @@ function img_array = main_task(initialization_struct, trials, block, tutorial_ti
 
             while key_is_down==0
                     [key_is_down, secs, key_code] = KbCheck(-3);
-
-                    images{total_frames} = snapshot(cam);
-                    total_frames = total_frames + 1;
             end
 
 % ---- stop reaction timer
@@ -829,15 +844,17 @@ function img_array = main_task(initialization_struct, trials, block, tutorial_ti
                 DrawFormattedText(w, noreward, 'center', rect(4)*0.8, white);
             end
 
-    % ---- show feedback
-            Screen('Flip', w);
-
-    % ---- show feedback for 5 seconds to allow for eating/putting money in bank
-            tic;
-            while(toc < reward_feedback_len)
-                images{total_frames} = snapshot(cam);
-                total_frames = total_frames + 1;
+    % ---- show feedback & trigger video
+            if block == 0
+                trigger(vid0);
+            elseif block == 1
+                trigger(vid1)
+            else
+                trigger(vid2)
             end
+
+            Screen('Flip', w);
+            WaitSecs(reward_feedback_len)
 
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
@@ -967,15 +984,16 @@ function img_array = main_task(initialization_struct, trials, block, tutorial_ti
                 DrawFormattedText(w, noreward, 'center', rect(4)*0.8, white);
             end
 
-    % ---- show feedback
-            Screen('Flip', w);
-
-    % ---- show feedback for 5 seconds to allow for eating/putting money in bank
-            tic;
-            while(toc < reward_feedback_len)
-                images{total_frames} = snapshot(cam);
-                total_frames = total_frames + 1;
+    % ---- show feedback & trigger video
+            if block == 0
+                trigger(vid0);
+            elseif block == 1
+                trigger(vid1)
+            else
+                trigger(vid2)
             end
+            Screen('Flip', w);
+            WaitSecs(reward_feedback_len)
         end % close the if/else for state
 
 % ---- update the payoff proability
@@ -988,8 +1006,6 @@ function img_array = main_task(initialization_struct, trials, block, tutorial_ti
     end % close the entire for loop
     RestrictKeysForKbCheck([]);
 
-% --- save video img array
-    img_array = images;
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
@@ -1078,6 +1094,8 @@ function img_array = main_task(initialization_struct, trials, block, tutorial_ti
 % 9 - Payoff screens
 % ---- Practice block end screens
     if block == 0 % practice
+        video_object = vid0
+
         Screen(w, 'FillRect', black);
         Screen('TextSize', w, 40);
         DrawFormattedText(w,[
@@ -1099,13 +1117,15 @@ function img_array = main_task(initialization_struct, trials, block, tutorial_ti
 
 % ---- Money block end screen
     elseif block == 1 % money block
+        video_object = vid1
+
         Screen(w, 'FillRect', black);
         Screen('TextSize', w, 40);
         DrawFormattedText(w, [
             'You have completed the money rounds.' '\n\n' ...
             'You earned: $' sprintf('%.2f', payoff_sum) '\n\n' ...
             'Please alert the experimenter, and' '\n' ...
-            'press c to close to practice game.'
+            'press c to close to game.'
             ], 'center', 'center', white);
         Screen(w, 'Flip');
         WaitSecs(1);
@@ -1121,12 +1141,14 @@ function img_array = main_task(initialization_struct, trials, block, tutorial_ti
 
 % ---- Food block end screen
     elseif block == 2 % food block
+        video_object = vid2
+
         Screen(w, 'FillRect', black);
         Screen('TextSize', w, 40);
         DrawFormattedText(w,[
             'You have completed the food rounds!' '\n' ...
             'Please alert the experimenter, and' '\n' ...
-            'press c to close to practice game.'
+            'press c to close to the game.'
             ],'center','center', white, [], [], [], 1.6);
         Screen(w, 'Flip');
         WaitSecs(1);
