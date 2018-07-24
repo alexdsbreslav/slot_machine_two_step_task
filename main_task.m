@@ -26,7 +26,7 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
     % ---- Screen selection
     doublebuffer=1; %????
     screens = Screen('Screens'); %count the screen
-    whichScreen = max(screens); %select the screen; ALTERED THIS BECAUSE IT KEPT SHOWING UP ON MY LAPTOP INSTEAD OF THE ATTACHED MONITOR
+    whichScreen = min(screens); %select the screen; ALTERED THIS BECAUSE IT KEPT SHOWING UP ON MY LAPTOP INSTEAD OF THE ATTACHED MONITOR
     [w, rect] = Screen('OpenWindow', whichScreen, 0,[], 32, ...
         doublebuffer+1,[],[],kPsychNeedFastBackingStore); %???
 
@@ -305,26 +305,6 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
 % 7 - Task intro screens
 % ---- Intro screen for practice block
     if block == 0
-
-        DrawFormattedText(w,[
-            'Please wait a moment while the camera starts.' '\n' ...
-            'The screen will advance automatically, when ready.' ....
-            ], 'center','center', white, [], [], [], 1.6);
-        Screen('Flip',w);
-
-% ---- intialize video objects
-        imaqreset;
-        vid = videoinput('macvideo', 'HD Pro Webcam C920');
-        diskLogger = VideoWriter([initialization_struct.video_file_path, '/practice'], 'MPEG-4');
-        vid.LoggingMode = 'disk';
-        vid.DiskLogger = diskLogger;
-        diskLogger.FrameRate = 30;
-        vid.FramesPerTrigger = (reward_feedback_len + 1)*30; %add 1 second for two fix crosses after reward feedback
-        triggerconfig(vid, 'manual');
-        vid.TriggerRepeat = trials - 1;
-        vid.ReturnedColorSpace = 'rgb';
-        start(vid);
-
         DrawFormattedText(w,[
             'This is the last part of the tutorial.' '\n' ...
             'You''ll get to play 15 practice rounds.' ....
@@ -355,17 +335,6 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
 
 % ---- Intro screen for food block
     elseif block == 2 % block == 2 is food
-% ---- intialize video objects
-        vid = videoinput('macvideo', 'HD Pro Webcam C920');
-        diskLogger = VideoWriter([initialization_struct.video_file_path, '/food'], 'MPEG-4');
-        vid.LoggingMode = 'disk';
-        vid.DiskLogger = diskLogger;
-        diskLogger.FrameRate = 30;
-        vid.FramesPerTrigger = (reward_feedback_len + 1)*30; %add 1 second for two fix crosses after reward feedback
-        triggerconfig(vid, 'manual');
-        vid.TriggerRepeat = trials - 1;
-        vid.ReturnedColorSpace = 'rgb';
-        start(vid);
 
     % ---- Experimenter prep
         DrawFormattedText(w,[
@@ -471,17 +440,6 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
 
 % ---- Intro screen for money block
     else % block = 1 is money
-% ---- intialize video objects
-        vid = videoinput('macvideo', 'HD Pro Webcam C920');
-        diskLogger = VideoWriter([initialization_struct.video_file_path, '/money'], 'MPEG-4');
-        vid.LoggingMode = 'disk';
-        vid.DiskLogger = diskLogger;
-        diskLogger.FrameRate = 30;
-        vid.FramesPerTrigger = (reward_feedback_len + 1)*30; %add 1 second for two fix crosses after reward feedback
-        triggerconfig(vid, 'manual');
-        vid.TriggerRepeat = trials - 1;
-        vid.ReturnedColorSpace = 'rgb';
-        start(vid);
 
         DrawFormattedText(w,[
             'Please wait while the experimenter prepares' '\n' ...
@@ -592,10 +550,12 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % 8 - Begin trials
-    WaitSecs(0.1);
 
-    % Trial loop
-
+    DrawFormattedText(w,[
+        'Initializing camera...' ...
+        ], 'center','center', white, [], [], [], 1.6);
+    Screen('Flip',w);
+    WaitSecs(1);
     t0 = GetSecs;
 
     for trial = 1:trials
@@ -854,8 +814,7 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
                 DrawFormattedText(w, noreward, 'center', rect(4)*0.8, white);
             end
 
-    % ---- show feedback & trigger videe
-            trigger(vid);
+    % ---- show feedback
             Screen('Flip', w);
             WaitSecs(reward_feedback_len)
 
@@ -987,10 +946,18 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
                 DrawFormattedText(w, noreward, 'center', rect(4)*0.8, white);
             end
 
-    % ---- show feedback & trigger video
-            trigger(vid);
+    % ---- show feedback for 1 second and then show countdown
             Screen('Flip', w);
-            WaitSecs(reward_feedback_len)
+            WaitSecs(1)
+            % countdown to next trial
+            for i = 1:reward_feedback_len
+                Screen(w, 'FillRect', black);
+                DrawFormattedText(w, [
+                    'The next trial will start in ' num2str(reward_feedback_len-i) ' seconds.' ...
+                    ], 'center', 'center', white, [], [], [], 1.6);
+                Screen(w, 'Flip');        
+                WaitSecs(1);
+            end
         end % close the if/else for state
 
 % ---- update the payoff proability
@@ -1091,8 +1058,6 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
 % 9 - Payoff screens
 % ---- Practice block end screens
     if block == 0 % practice
-        video_object = vid0
-
         Screen(w, 'FillRect', black);
         Screen('TextSize', w, 40);
         DrawFormattedText(w,[
@@ -1114,8 +1079,6 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
 
 % ---- Money block end screen
     elseif block == 1 % money block
-        video_object = vid1
-
         Screen(w, 'FillRect', black);
         Screen('TextSize', w, 40);
         DrawFormattedText(w, [
@@ -1138,8 +1101,6 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
 
 % ---- Food block end screen
     elseif block == 2 % food block
-        video_object = vid2
-
         Screen(w, 'FillRect', black);
         Screen('TextSize', w, 40);
         DrawFormattedText(w,[

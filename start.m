@@ -11,8 +11,7 @@ function start
     % create subject folder in the raw data folder
     filename_subnum = pad(num2str(sub), 3, 'left', '0');
     data_file_path = ['/Users/alex/OneDrive - Duke University/1. Research Projects/1. Huettel/17.09_MDT/6. Raw Data/MatLab/sub' filename_subnum];
-    video_file_path = ['/Users/alex/OneDrive - Duke University/1. Research Projects/1. Huettel/17.09_MDT/6. Raw Data/MatLab/sub' filename_subnum '/videos'];
-    [~, msg, ~] = mkdir(video_file_path);
+    [~, msg, ~] = mkdir(data_file_path);
 
     folder_already_exists = strcmp(msg, 'Directory already exists.');
     if folder_already_exists
@@ -146,8 +145,7 @@ function start
             initialization_struct.block = [0 block 3-block];
 
             % input the number of trials per block; 1 = practice trials, 2 = experimental blocks
-            initialization_struct.num_trials = [15 50];
-
+            initialization_struct.num_trials = [5 5];
             save([data_file_path '/initialization structure'], 'initialization_struct', '-v6')
 
     % ---- TASK
