@@ -5,7 +5,7 @@
 % Please do not share or use this code without my written permission.
 % Author: Alex Breslav
 
-function video_object = main_task(initialization_struct, trials, block, tutorial_timing_struct)
+function main_task(initialization_struct, trials, block, tutorial_timing_struct)
 
 % 1 - Initial setup
     % ---- adjustable parameters
@@ -314,13 +314,16 @@ function video_object = main_task(initialization_struct, trials, block, tutorial
 
 % ---- intialize video objects
         imaqreset;
-        vid0 = videoinput('macvideo', 2);
-        src = getselectedsource(vid0);
-        vid0.FramesPerTrigger = (reward_feedback_len + 1)*30; %add 1 second for two fix crosses after reward feedback
-        triggerconfig(vid0, 'manual');
-        vid0.TriggerRepeat = trials - 1;
-        vid0.ReturnedColorSpace = 'rgb';
-        start(vid0);
+        vid = videoinput('macvideo', 'HD Pro Webcam C920');
+        diskLogger = VideoWriter([initialization_struct.video_file_path, '/practice'], 'MPEG-4');
+        vid.LoggingMode = 'disk';
+        vid.DiskLogger = diskLogger;
+        diskLogger.FrameRate = 30;
+        vid.FramesPerTrigger = (reward_feedback_len + 1)*30; %add 1 second for two fix crosses after reward feedback
+        triggerconfig(vid, 'manual');
+        vid.TriggerRepeat = trials - 1;
+        vid.ReturnedColorSpace = 'rgb';
+        start(vid);
 
         DrawFormattedText(w,[
             'This is the last part of the tutorial.' '\n' ...
@@ -353,13 +356,16 @@ function video_object = main_task(initialization_struct, trials, block, tutorial
 % ---- Intro screen for food block
     elseif block == 2 % block == 2 is food
 % ---- intialize video objects
-        vid2 = videoinput('macvideo', 2);
-        src = getselectedsource(vid2);
-        vid2.FramesPerTrigger = (reward_feedback_len + 1)*30; %add 1 second for two fix crosses after reward feedback
-        triggerconfig(vid2, 'manual');
-        vid2.TriggerRepeat = trials - 1;
-        vid2.ReturnedColorSpace = 'rgb';
-        start(vid2);
+        vid = videoinput('macvideo', 'HD Pro Webcam C920');
+        diskLogger = VideoWriter([initialization_struct.video_file_path, '/food'], 'MPEG-4');
+        vid.LoggingMode = 'disk';
+        vid.DiskLogger = diskLogger;
+        diskLogger.FrameRate = 30;
+        vid.FramesPerTrigger = (reward_feedback_len + 1)*30; %add 1 second for two fix crosses after reward feedback
+        triggerconfig(vid, 'manual');
+        vid.TriggerRepeat = trials - 1;
+        vid.ReturnedColorSpace = 'rgb';
+        start(vid);
 
     % ---- Experimenter prep
         DrawFormattedText(w,[
@@ -466,12 +472,16 @@ function video_object = main_task(initialization_struct, trials, block, tutorial
 % ---- Intro screen for money block
     else % block = 1 is money
 % ---- intialize video objects
-        vid1 = videoinput('macvideo', 2);
-        vid1.FramesPerTrigger = (reward_feedback_len + 1)*30; %add 1 second for two fix crosses after reward feedback
-        triggerconfig(vid1, 'manual');
-        vid1.TriggerRepeat = trials - 1;
-        vid1.ReturnedColorSpace = 'rgb';
-        start(vid1);
+        vid = videoinput('macvideo', 'HD Pro Webcam C920');
+        diskLogger = VideoWriter([initialization_struct.video_file_path, '/money'], 'MPEG-4');
+        vid.LoggingMode = 'disk';
+        vid.DiskLogger = diskLogger;
+        diskLogger.FrameRate = 30;
+        vid.FramesPerTrigger = (reward_feedback_len + 1)*30; %add 1 second for two fix crosses after reward feedback
+        triggerconfig(vid, 'manual');
+        vid.TriggerRepeat = trials - 1;
+        vid.ReturnedColorSpace = 'rgb';
+        start(vid);
 
         DrawFormattedText(w,[
             'Please wait while the experimenter prepares' '\n' ...
@@ -844,15 +854,8 @@ function video_object = main_task(initialization_struct, trials, block, tutorial
                 DrawFormattedText(w, noreward, 'center', rect(4)*0.8, white);
             end
 
-    % ---- show feedback & trigger video
-            if block == 0
-                trigger(vid0);
-            elseif block == 1
-                trigger(vid1)
-            else
-                trigger(vid2)
-            end
-
+    % ---- show feedback & trigger videe
+            trigger(vid);
             Screen('Flip', w);
             WaitSecs(reward_feedback_len)
 
@@ -985,13 +988,7 @@ function video_object = main_task(initialization_struct, trials, block, tutorial
             end
 
     % ---- show feedback & trigger video
-            if block == 0
-                trigger(vid0);
-            elseif block == 1
-                trigger(vid1)
-            else
-                trigger(vid2)
-            end
+            trigger(vid);
             Screen('Flip', w);
             WaitSecs(reward_feedback_len)
         end % close the if/else for state
