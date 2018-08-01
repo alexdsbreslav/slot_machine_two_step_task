@@ -32,11 +32,11 @@ function start
         case 0
             load([data_file_path '/initialization structure.mat']);
             if initialization_struct.block(2) == 1
-                block1_text = 'Money'
-                block2_text = 'Food'
+                block1_text = 'Money';
+                block2_text = 'Food';
             else
-                block1_text = 'Food'
-                block2_text = 'Money'
+                block1_text = 'Food';
+                block2_text = 'Money';
             end
 
             disp([fprintf('\n\n\n\n') ...
@@ -74,6 +74,7 @@ function start
                     % --- display winnings
                         load([data_file_path '/money.mat']);
                         fprintf('\n\n\n\n\n\n\n\n\n\nYour total earnings (show up fee included) = $ %.2f\n\nThank you for your participation\n\n\n', money_struct.payoff_total);
+
                 case 2
                 % ---- TASK
                     % ---- 2: practice trials (Block 0 in code)
@@ -89,6 +90,7 @@ function start
                     % --- display winnings
                         load([data_file_path '/money.mat']);
                         fprintf('\n\n\n\n\n\n\n\n\n\nYour total earnings (show up fee included) = $ %.2f\n\nThank you for your participation\n\n\n', money_struct.payoff_total);
+
                 case 3
                 % ---- TASK
                     % ---- 3: Block 1 of the main experiment trials
@@ -100,6 +102,7 @@ function start
                     % --- display winnings
                         load([data_file_path '/money.mat']);
                         fprintf('\n\n\n\n\n\n\n\n\n\nYour total earnings (show up fee included) = $ %.2f\n\nThank you for your participation\n\n\n', money_struct.payoff_total);
+
                 case 4
                 % ---- TASK
                     % ---- 4: Block 2 of the main experiment trials
@@ -120,6 +123,7 @@ function start
             initialization_struct = struct;
             initialization_struct.sub = sub; % save the subject number into the structure
             initialization_struct.data_file_path = data_file_path; % save the data file path as well
+            initialization_struct.video_file_path = video_file_path
             initialization_struct.rng_seed = init_rng_seed; % save the rng seed for the initialization structure
 
             % stimuli sets
@@ -141,8 +145,7 @@ function start
             initialization_struct.block = [0 block 3-block];
 
             % input the number of trials per block; 1 = practice trials, 2 = experimental blocks
-            initialization_struct.num_trials = [2 2];
-
+            initialization_struct.num_trials = [5 5];
             save([data_file_path '/initialization structure'], 'initialization_struct', '-v6')
 
     % ---- TASK
@@ -155,7 +158,6 @@ function start
 
         % ---- 3: Block 1 of the main experiment trials
             main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
-
         % ---- 4: Block 2 of the main experiment trials
             main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
 
