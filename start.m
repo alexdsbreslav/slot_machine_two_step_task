@@ -123,7 +123,6 @@ function start
             initialization_struct = struct;
             initialization_struct.sub = sub; % save the subject number into the structure
             initialization_struct.data_file_path = data_file_path; % save the data file path as well
-            initialization_struct.video_file_path = video_file_path
             initialization_struct.rng_seed = init_rng_seed; % save the rng seed for the initialization structure
 
             % stimuli sets

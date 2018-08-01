@@ -1,3 +1,10 @@
+% This code was initially written by Nikki Sullivan (Duke University) and was
+% generously shared upon request. I have superficially altered the code for the
+% purposes of my study.
+
+% Please do not share or use this code without the written permission of all authors.
+% Authors: Nikki Sullivan, Alex Breslav
+
 function allergy_wanting(initialization_struct)
 
   % some setups
