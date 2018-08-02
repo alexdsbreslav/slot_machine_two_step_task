@@ -5,7 +5,7 @@
 % Please do not share or use this code without the written permission of all authors.
 % Authors: Nikki Sullivan, Alex Breslav
 
-function allergy_wanting(initialization_struct)
+function [eligible, sweet_food, salt_food] = allergy_wanting(initialization_struct)
 
   % some setups
 Screen('Preference', 'VisualDebugLevel', 1);% change psych toolbox screen check to black
@@ -138,7 +138,8 @@ DrawFormattedText(exp_screen,[
     'Press any key to continue.' ...
     ], 'center', 'center' ,txt_color,[],[],[],1.6);
 Screen('Flip', exp_screen);
-KbWait([], 2)
+% KbWait([], 2) % normal
+KbWait(6, 2) % for bluetooth keyboard
 
 % ------------------------------------------------------------------------------
 % ------------------------------------------------------------------------------
@@ -168,7 +169,8 @@ WaitSecs(.2) %force .2 sesconds on the screen so people wont hold down the key; 
 
 % -------- listen for response
 while 1
-    [keyIsDown, ~, keyCode] = KbCheck;
+    % [keyIsDown, ~, keyCode] = KbCheck; % normal
+    [keyIsDown, ~, keyCode] = KbCheck(6); % bluetooth keyboard
     if keyIsDown && any(keyCode(allergy_wanting.yesno_resp_key_codes)) && length(KbName(keyCode)) == 1
 
         allergy_wanting.allergic_RT(1) = GetSecs - t0;
@@ -251,7 +253,8 @@ else
     WaitSecs(.2); KbEventFlush;
     % wait for spacebar to begin
     while 1
-        [keyIsDown, ~, keyCode] = KbCheck;
+        % [keyIsDown, ~, keyCode] = KbCheck; % normal
+        [keyIsDown, ~, keyCode] = KbCheck(6); % bluetooth keyboard
         if keyIsDown && keyCode(spaceKey)
             break
         elseif any(keyCode(exitKeys))
@@ -286,7 +289,8 @@ else
 
 % -------- listen for response
         while 1
-            [keyIsDown, ~, keyCode] = KbCheck;
+            % [keyIsDown, ~, keyCode] = KbCheck; % normal
+            [keyIsDown, ~, keyCode] = KbCheck(6); % bluetooth keyboard
             if keyIsDown && any(keyCode(allergy_wanting.yesno_resp_key_codes)) && length(KbName(keyCode)) == 1
 
                 allergy_wanting.allergic_RT(trial+1) = GetSecs - t0;
@@ -337,6 +341,7 @@ not_allergic = reshape(logical(~allergy_wanting.allergic_numeric(2:11)), [10,1])
 allergy_wanting.foods_not_allergic = allergy_wanting.image_names(not_allergic);
 allergy_wanting.rand_img_order_want = randperm(length(allergy_wanting.foods_not_allergic))';
 
+
 % ------------------------------------------------------------------------------
 % ------------------------------------------------------------------------------
 % ------------------------------------------------------------------------------
@@ -364,7 +369,8 @@ Screen(exp_screen, 'Flip');
 WaitSecs(.2); KbEventFlush;
 % wait for spacebar to begin
 while 1
-    [keyIsDown, ~, keyCode] = KbCheck;
+    % [keyIsDown, ~, keyCode] = KbCheck; % normal
+    [keyIsDown, ~, keyCode] = KbCheck(6); % bluetooth keyboard
     if keyIsDown && keyCode(spaceKey)
         break
     elseif any(keyCode(exitKeys))
@@ -399,7 +405,8 @@ for trial = allergy_wanting.rand_img_order_want' % run trials in the pre-determi
 
     % listen for response
     while 1
-        [keyIsDown, ~, keyCode] = KbCheck;
+        % [keyIsDown, ~, keyCode] = KbCheck; % normal
+        [keyIsDown, ~, keyCode] = KbCheck(6); % bluetooth keyboard
         if keyIsDown && any(keyCode(allergy_wanting.resp_key_codes)) && length(KbName(keyCode)) == 1
 
             allergy_wanting.want_RT(trial) = GetSecs - t0;
@@ -452,6 +459,51 @@ for trial = allergy_wanting.rand_img_order_want' % run trials in the pre-determi
 end
 
 allergy_wanting.foods_want = allergy_wanting.foods_not_allergic(logical(allergy_wanting.want_numeric > 0));
+allergy_wanting.sweet_food_want = allergy_wanting.foods_want(find(contains(allergy_wanting.foods_want, 'sweet')));
+allergy_wanting.salt_food_want = allergy_wanting.foods_want(find(contains(allergy_wanting.foods_want, 'salt')));
+
+allergy_wanting.foods_reallywant = allergy_wanting.foods_not_allergic(logical(allergy_wanting.want_numeric == 2));
+allergy_wanting.sweet_food_reallywant = allergy_wanting.foods_reallywant(find(contains(allergy_wanting.foods_reallywant, 'sweet')));
+allergy_wanting.salt_food_reallywant = allergy_wanting.foods_reallywant(find(contains(allergy_wanting.foods_reallywant, 'salt')));
+
+if length(allergy_wanting.sweet_food_want) > 0 && length(allergy_wanting.salt_food_want) > 0
+    allergy_wanting.eligible = 1;
+    eligible = 1;
+
+    % select sweet food
+    if length(allergy_wanting.sweet_food_reallywant) > 0
+        sweet_food = datasample(allergy_wanting.sweet_food_reallywant, 1);
+    else
+        sweet_food = datasample(allergy_wanting.sweet_food_want, 1);
+    end
+
+    % select salt food
+    if length(allergy_wanting.salt_food_reallywant) > 0
+        salt_food = datasample(allergy_wanting.salt_food_reallywant, 1);
+    else
+        salt_food = datasample(allergy_wanting.salt_food_want, 1);
+    end
+
+    allergy_wanting.salt_food_select = salt_food
+    allergy_wanting.sweet_food_select = sweet_food
+
+else
+    allergy_wanting.eligible = 0;
+    eligible = 0;
+
+    Screen(exp_screen, 'FillRect', bg_color);
+    DrawFormattedText(exp_screen,[
+        'Based on your responses in this section, you may' '\n' ...
+        'not be eligible to continue with the study.'
+        'Please tell the experimenter that you''ve encountered an issue.' ...
+        ], 'center', 'center',txt_color,[],[],[],1.6);
+    Screen('Flip', exp_screen)
+  % KbWait([], 2) % normal
+    KbWait(6, 2) % for bluetooth keyboard
+
+    disp(['not allergic: ' allergy_wanting.foods_not_allergic' ' ||| want sweet: ' allergy_wanting.sweet_food_want' ' ||| want salt: ' allergy_wanting.salt_food_want'])
+end
+
 allergy_wanting.taskDur(2) = toc;
 save(results_file_name,'allergy_wanting');
 
