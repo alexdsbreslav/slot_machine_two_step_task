@@ -61,7 +61,7 @@ data.image_names = [data.image_names; {tmp(1:length(tmp)).name}'];
 data.nTrials = length(data.image_names);
 
 % randomize order of foods and order of ratings
-data.ind = randperm(length(data.image_names))'; % food presentation order
+data.ind = randperm(length(data.image_names))'; % food presentation order; the first item is the global question
 
 % timing
 data.feedbackSecs = .2; % feedback duration
@@ -85,6 +85,7 @@ data.keyguide = 'cvbnm'; % set key labels
 data.yesno_keyguide = {'Press c', 'Press m'};
 data.guide = {'I really do no want to eat it right now', 'I do not want to eat it right now', 'I do not know', 'I want to eat it right now', 'I really want to eat it right now'};
 data.yesno_guide = {'Yes', 'No'};
+data.yesno_allergic_guide = {'      Yes\nI am allergic.', '         No\nI am not allergic.'}
 data.guideTwo = {'I really do not\nwant to eat\nit right now', 'I do not want to\neat it right now', 'I do not know', 'I want to eat\nit right now', 'I really want to\neat it right now'};
 data.want_numeric_guide = repmat(-2:2,1,1);
 data.yesnovalence_guide = {1,0};
@@ -100,7 +101,6 @@ if data.scaleFlip
 end
 
 % preallocate
-data.anyfoodallergies = cell(1,1); % yes or no, have ANY food allergies
 data.allergic_keypress = cell(data.nTrials + 1,1); % individual questions about food allergies; key pressed
 data.allergic_text = cell(data.nTrials + 1,1); % text associated with each key
 data.allergic_numeric = cell(data.nTrials + 1,1); % 1 allergic, 0 not allergic
@@ -114,6 +114,13 @@ data.want_numeric = NaN(data.nTrials, 1); % number of response
 data.want_RT = NaN(data.nTrials, 1); % RT
 data.want_stimOn = NaN(data.nTrials, 1); % time stamp
 data.want_feedbackOn = NaN(data.nTrials, 1); % time stamp
+
+keyguide_loc_low = data.height*.88;
+guide_loc_low = data.height*.75;
+
+yesno_allergic_guide_offset = -35;
+yesno_guide_offset = 25;
+want_guide_offset = -60; %start to the left
 
 % ------------------------------------------------------------------------------
 % ------------------------------------------------------------------------------
@@ -150,14 +157,15 @@ DrawFormattedText(exp_screen,[
 Screen('TextSize', exp_screen, txt_size.blockTxt);
 for n = 1:2
     DrawFormattedText(exp_screen,data.yesno_keyguide{n},...
-        data.yesno_guideLocs{n},data.height*.8,txt_color,wrapat,[],[],vSpacing);
+        data.yesno_guideLocs{n},keyguide_loc_low,txt_color,wrapat,[],[],vSpacing);
     DrawFormattedText(exp_screen,char(data.yesno_guide(n)),...
-        data.yesno_guideLocs{n}+25,data.height*.75,txt_color,wrapat,[],[],1);
+        data.yesno_guideLocs{n} + yesno_guide_offset,guide_loc_low,txt_color,wrapat,[],[],1);
 end
 
 Screen('Flip', exp_screen);
 data.allergic_stimOn(1) = GetSecs - t0;
-WaitSecs(.5) %force .5 sesconds on the screen so people wont hold down the key
+
+WaitSecs(.2) %force .2 sesconds on the screen so people wont hold down the key; this means that RT's cannot be < 0.2
 
 
 % -------- listen for response
@@ -166,15 +174,15 @@ while 1
     if keyIsDown && any(keyCode(data.yesno_resp_key_codes)) && length(KbName(keyCode)) == 1
 
         data.allergic_RT(1) = GetSecs - t0;
-        data.allergic_RT(1) = data.RT(1) - data.stimOn(1)
+        data.allergic_RT(1) = data.allergic_RT(1) - data.allergic_stimOn(1);
 
         data.allergic_keypress{1} = KbName(keyCode); % letter code
 
-        data.allergic_text{1} = data.yesno_guide{data.allergies_keyCode ...
-            ==cell2mat(data.yesno_resp_keys)}; % string
+        data.allergic_text{1} = data.yesno_guide{data.allergic_keypress{1} ...
+            == cell2mat(data.yesno_resp_keys)}; % string
 
-        data.allergic_numeric(1) = data.yesnovalence_guide{data.allergies_keyCode ...
-            ==cell2mat(data.yesno_resp_keys)}; % number code
+        data.allergic_numeric(1) = data.yesnovalence_guide(data.allergic_keypress{1} ...
+            ==cell2mat(data.yesno_resp_keys)); % number code
 
         break
     elseif keyIsDown && any(keyCode(exitKeys)) && length(KbName(keyCode)) == 1
@@ -186,25 +194,28 @@ save(results_file_name,'data');
 % ------- show their response
 % -------- show the image:
 Screen(exp_screen, 'FillRect', bg_color);
+DrawFormattedText(exp_screen,[
+    'During the study, we will ask you to eat certain foods.' '\n\n' ...
+    'Do you have any known food allergies?' ...
+    ], 'center', 'center',txt_color,[],[],[],1.6);
 
 % -------- show ratings scale
 Screen('TextSize', exp_screen, txt_size.blockTxt);
 for n = 1:2
-    if strcmp(data.allergies_text, char(data.yesno_guide{n}))
+    if strcmp(data.allergic_text{1}, char(data.yesno_guide{n}))
         DrawFormattedText(exp_screen,data.yesno_keyguide{n},...
-            data.yesno_guideLocs{n},data.height*.8,chosen_color,wrapat,[],[],vSpacing);
+            data.yesno_guideLocs{n},keyguide_loc_low,chosen_color,wrapat,[],[],vSpacing);
         DrawFormattedText(exp_screen,char(data.yesno_guide(n)),...
-            data.yesno_guideLocs{n}+25,data.height*.75,chosen_color,wrapat,[],[],1);
+            data.yesno_guideLocs{n} + yesno_guide_offset,guide_loc_low,chosen_color,wrapat,[],[],1);
     else
         DrawFormattedText(exp_screen,data.yesno_keyguide{n},...
-            data.yesno_guideLocs{n},data.height*.8,txt_color,wrapat,[],[],vSpacing);
+            data.yesno_guideLocs{n},keyguide_loc_low,txt_color,wrapat,[],[],vSpacing);
         DrawFormattedText(exp_screen,char(data.yesno_guide(n)),...
-            data.yesno_guideLocs{n}+25,data.height*.75,txt_color,wrapat,[],[],1);
+            data.yesno_guideLocs{n} + yesno_guide_offset,guide_loc_low,txt_color,wrapat,[],[],1);
     end
 end
 Screen('Flip', exp_screen);
 data.allergic_feedbackOn(1) = GetSecs - t0;
-Screen('Close');
 WaitSecs(data.feedbackSecs);
 
 % ------------------------------------------------------------------------------
@@ -212,27 +223,27 @@ WaitSecs(data.feedbackSecs);
 % ------------------------------------------------------------------------------
 % ------------------------------------------------------------------------------
 % ---- individual food allergy ratings
-if data.anyfoodallergies == 0
+if data.allergic_numeric{1} == 0
     data.allergic_keypress(2:data.nTrials + 1, 1) = {'m'};
     data.allergic_text(2:data.nTrials + 1, 1) = {'No'};
     data.allergic_numeric(2:data.nTrials + 1, 1) = {0};
-    data.allergic_RT(2:data.nTrials + 1, 1) = {0};
-    data.allergic_stimOn(2:data.nTrials + 1, 1) = {0};
-    data.allergic_feedbackOn(2:data.nTrials + 1, 1) = {0};
+    data.allergic_RT(2:data.nTrials + 1, 1) = 0;
+    data.allergic_stimOn(2:data.nTrials + 1, 1) = 0;
+    data.allergic_feedbackOn(2:data.nTrials + 1, 1) = 0;
 else
 % -------- intro allergy questions
     Screen('TextSize', exp_screen, txt_size.blockTxt);
     Screen(exp_screen, 'FillRect', bg_color);
     DrawFormattedText(exp_screen,['Please indicate if you are allergic ' '\n' ...
         'to any of the following foods, using the keys and the scale below.'],...
-        'center',data.height*.2,txt_color,[]],[],[],1.6);
+        'center',data.height*.2,txt_color,[],[],[],1.6);
 
     Screen('TextSize', exp_screen, txt_size.blockTxt);
     for n = 1:2
         DrawFormattedText(exp_screen,data.yesno_keyguide{n},...
-            data.yesno_guideLocs{n},data.height*.8,txt_color,wrapat,[],[],vSpacing);
-        DrawFormattedText(exp_screen,char(data.yesno_guide(n)),...
-            data.yesno_guideLocs{n}+25,data.height*.75,txt_color,wrapat,[],[],1);
+            data.yesno_guideLocs{n},data.height*.65,txt_color,wrapat,[],[],vSpacing);
+        DrawFormattedText(exp_screen,char(data.yesno_allergic_guide(n)),...
+            data.yesno_guideLocs{n} + yesno_allergic_guide_offset,data.height*.52,txt_color,wrapat,[],[],1);
     end
 
     Screen('TextSize', exp_screen, txt_size.blockTxt);
@@ -250,7 +261,7 @@ else
         end
     end
 
-    for trial = data.ind % run trials in the pre-determined randomized order
+    for trial = data.ind' % run trials in the pre-determined randomized order
 
 % -------- display stimuli/get the food stimuli
         imgfile = imread(['food_images/' data.image_names{trial}]);
@@ -258,20 +269,21 @@ else
         % show the image
         Screen(exp_screen, 'FillRect', bg_color);
         Screen('DrawTexture', exp_screen, img, [], ...
-            [data.width*.5-200 data.height*.5-200 ...
-            data.width*.5+200 data.height*.5+200]);
+            [data.width*.5-200 data.height*.5-300 ...
+            data.width*.5+200 data.height*.5+100]);
 
 % -------- show response options
         Screen('TextSize', exp_screen, txt_size.blockTxt);
         for n = 1:2
             DrawFormattedText(exp_screen,data.yesno_keyguide{n},...
-                data.yesno_guideLocs{n},data.height*.8,txt_color,wrapat,[],[],vSpacing);
-            DrawFormattedText(exp_screen,char(data.yesno_guide(n)),...
-                data.yesno_guideLocs{n}+25,data.height*.75,txt_color,wrapat,[],[],1);
+                data.yesno_guideLocs{n},keyguide_loc_low,txt_color,wrapat,[],[],vSpacing);
+            DrawFormattedText(exp_screen,char(data.yesno_allergic_guide(n)),...
+                data.yesno_guideLocs{n} + yesno_allergic_guide_offset,guide_loc_low,txt_color,wrapat,[],[],1);
         end
 
         Screen('Flip', exp_screen);
-        WaitSecs(.5) %force .5 sesconds on the screen so people wont hold down the key
+        data.allergic_stimOn(trial+1) = GetSecs - t0;
+        WaitSecs(.2) %force .2 sesconds on the screen so people wont hold down the key; this means that RT's cannot be < 0.2
 
 
 % -------- listen for response
@@ -280,15 +292,15 @@ else
             if keyIsDown && any(keyCode(data.yesno_resp_key_codes)) && length(KbName(keyCode)) == 1
 
                 data.allergic_RT(trial+1) = GetSecs - t0;
-                data.allergic_RT(trial+1) = data.RT(trial+1) - data.stimOn(trial+1)
+                data.allergic_RT(trial+1) = data.allergic_RT(trial+1) - data.allergic_stimOn(trial+1);
 
                 data.allergic_keypress{trial+1} = KbName(keyCode); % letter code
 
-                data.allergic_text{trial+1} = data.yesno_guide{data.allergies_keyCode ...
+                data.allergic_text{trial+1} = data.yesno_guide{data.allergic_keypress{trial+1} ...
                     ==cell2mat(data.yesno_resp_keys)}; % string
 
-                data.allergic_numeric(trial+1) = data.yesnovalence_guide{data.allergies_keyCode ...
-                    ==cell2mat(data.yesno_resp_keys)}; % number code
+                data.allergic_numeric(trial+1) = data.yesnovalence_guide(data.allergic_keypress{trial+1} ...
+                    ==cell2mat(data.yesno_resp_keys)); % number code
 
                 break
             elseif keyIsDown && any(keyCode(exitKeys)) && length(KbName(keyCode)) == 1
@@ -304,24 +316,24 @@ else
     % -------- show ratings scale
         Screen('TextSize', exp_screen, txt_size.blockTxt);
         for n = 1:2
-            if strcmp(data.allergies_text, char(data.yesno_guide{n}))
+            if strcmp(data.allergic_text{trial+1}, char(data.yesno_guide{n}))
                 DrawFormattedText(exp_screen,data.yesno_keyguide{n},...
-                    data.yesno_guideLocs{n},data.height*.8,chosen_color,wrapat,[],[],vSpacing);
-                DrawFormattedText(exp_screen,char(data.yesno_guide(n)),...
-                    data.yesno_guideLocs{n}+25,data.height*.75,chosen_color,wrapat,[],[],1);
+                    data.yesno_guideLocs{n},keyguide_loc_low,chosen_color,wrapat,[],[],vSpacing);
+                DrawFormattedText(exp_screen,char(data.yesno_allergic_guide(n)),...
+                    data.yesno_guideLocs{n} + yesno_allergic_guide_offset,guide_loc_low,chosen_color,wrapat,[],[],1);
             else
                 DrawFormattedText(exp_screen,data.yesno_keyguide{n},...
-                    data.yesno_guideLocs{n},data.height*.8,txt_color,wrapat,[],[],vSpacing);
-                DrawFormattedText(exp_screen,char(data.yesno_guide(n)),...
-                    data.yesno_guideLocs{n}+25,data.height*.75,txt_color,wrapat,[],[],1);
+                    data.yesno_guideLocs{n},keyguide_loc_low,txt_color,wrapat,[],[],vSpacing);
+                DrawFormattedText(exp_screen,char(data.yesno_allergic_guide(n)),...
+                    data.yesno_guideLocs{n} + yesno_allergic_guide_offset,guide_loc_low,txt_color,wrapat,[],[],1);
             end
         end
         Screen('Flip', exp_screen);
-        data.feedbackOn(trial+1)
+        data.allergic_feedbackOn(trial+1) = GetSecs - t0;
         Screen('Close', img);
         WaitSecs(data.feedbackSecs);
     end
-
+end
 
 % ------------------------------------------------------------------------------
 % ------------------------------------------------------------------------------
@@ -340,7 +352,7 @@ Screen('TextSize', exp_screen, txt_size.rateGuide);
 for n = 1:length(data.keyguide)
     DrawFormattedText(exp_screen,data.keyguide(n),...
         data.guideLocs(n),data.height*.5,txt_color,wrapat,[],[],vSpacing);
-    DrawFormattedText(exp_screen,char(data.guideTwo(n)),data.guideLocs(n)-60,data.height*.58,txt_color,wrapat,[],[],1);
+    DrawFormattedText(exp_screen,char(data.guideTwo(n)),data.guideLocs(n) + want_guide_offset,data.height*.58,txt_color,wrapat,[],[],1);
 end
 
 Screen('TextSize', exp_screen, txt_size.blockTxt);
@@ -368,29 +380,29 @@ for trial = data.ind' % run trials in the pre-determined randomized order
     % show the image
     Screen(exp_screen, 'FillRect', bg_color);
     Screen('DrawTexture', exp_screen, img, [], ...
-        [data.width*.5-200 data.height*.5-200 ...
-        data.width*.5+200 data.height*.5+200]);
+        [data.width*.5-200 data.height*.5-300 ...
+        data.width*.5+200 data.height*.5+100]);
     % show ratings scale
     Screen('TextSize', exp_screen, txt_size.rateGuide);
     for n = 1:length(data.keyguide)
         DrawFormattedText(exp_screen,data.keyguide(n),...
-            data.guideLocs(n),data.height*.8,txt_color,wrapat,[],[],vSpacing);
+            data.guideLocs(n),keyguide_loc_low,txt_color,wrapat,[],[],vSpacing);
         DrawFormattedText(exp_screen,char(data.guideTwo(n)),...
-            data.guideLocs(n)-60,data.height*.88,txt_color,wrapat,[],[],1);
+            data.guideLocs(n) + want_guide_offset,guide_loc_low,txt_color,wrapat,[],[],1);
     end
     Screen('Flip', exp_screen);
-    data.stimOn(trial) = GetSecs - t0;
+    data.want_stimOn(trial) = GetSecs - t0;
 
-    WaitSecs(.5) %force .5 sesconds on the screen so people wont hold down the key
+    WaitSecs(.2) %force .2 sesconds on the screen so people wont hold down the key; this means that RT's cannot be < 0.2
 
     % listen for response
     while 1
         [keyIsDown, ~, keyCode] = KbCheck;
         if keyIsDown && any(keyCode(data.resp_key_codes)) && length(KbName(keyCode)) == 1
 
-            data.RT(trial,2) = GetSecs - t0;
-            data.RT(trial,2) = data.RT(trial,2) ...
-                - data.stimOn(trial,2);
+            data.want_RT(trial) = GetSecs - t0;
+            data.want_RT(trial) = data.want_RT(trial) ...
+                - data.want_stimOn(trial);
 
             data.want_keypress{trial} = KbName(keyCode); % letter code
 
@@ -412,25 +424,25 @@ for trial = data.ind' % run trials in the pre-determined randomized order
     % show the image:
     Screen(exp_screen, 'FillRect', bg_color);
     Screen('DrawTexture', exp_screen, img, [], ...
-        [data.width*.5-200 data.height*.5-200 ...
-        data.width*.5+200 data.height*.5+200]);
+        [data.width*.5-200 data.height*.5-300 ...
+        data.width*.5+200 data.height*.5+100]);
     % show ratings scale
     Screen('TextSize', exp_screen, txt_size.rateGuide);
     for n = 1:length(data.keyguide)
         if strcmp(data.want_text{trial}, char(data.guide{n}))
             DrawFormattedText(exp_screen,data.keyguide(n),...
-                data.guideLocs(n),data.height*.8,chosen_color,wrapat,[],[],vSpacing);
+                data.guideLocs(n),keyguide_loc_low,chosen_color,wrapat,[],[],vSpacing);
             DrawFormattedText(exp_screen,char(data.guideTwo(n)),...
-                data.guideLocs(n)-60,data.height*.88,chosen_color,wrapat,[],[],1);
+                data.guideLocs(n) + want_guide_offset,guide_loc_low,chosen_color,wrapat,[],[],1);
         else
             DrawFormattedText(exp_screen,data.keyguide(n),...
-                data.guideLocs(n),data.height*.8,txt_color,wrapat,[],[],vSpacing);
+                data.guideLocs(n),keyguide_loc_low,txt_color,wrapat,[],[],vSpacing);
             DrawFormattedText(exp_screen,char(data.guideTwo(n)),...
-                data.guideLocs(n)-60,data.height*.88,txt_color,wrapat,[],[],1);
+                data.guideLocs(n) + want_guide_offset,guide_loc_low,txt_color,wrapat,[],[],1);
         end
     end
     Screen('Flip', exp_screen);
-    data.feedbackOn(trial) = GetSecs - t0;
+    data.want_feedbackOn(trial) = GetSecs - t0;
     Screen('Close', img);
     WaitSecs(data.feedbackSecs);
     %imwrite(Screen('GetImage', exp_screen), sprintf('%d_%d.png',nB,trial))

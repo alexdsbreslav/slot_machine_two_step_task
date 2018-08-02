@@ -288,6 +288,7 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
     choice_off_time = NaN(trials,1);
     position = NaN(trials,3);
     state = NaN(trials,1);
+    reward_feedback_on = NaN(trials,1);
 
     payoff_prob = zeros(trials,4);
     payoff_prob(1,:) = 0.25 + 0.5.*rand(1,4);
@@ -948,14 +949,23 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
 
     % ---- show feedback for 1 second and then show countdown
             Screen('Flip', w);
+            reward_feedback_on(trial) = GetSecs - t0;
             WaitSecs(1)
             % countdown to next trial
             for i = 1:reward_feedback_len
                 Screen(w, 'FillRect', black);
                 DrawFormattedText(w, [
-                    'The next trial will start in ' num2str(reward_feedback_len-i) ' seconds.' ...
+                    'The next trial will start in' '\n' ...
+                    num2str(reward_feedback_len-i) ' seconds.' ...
                     ], 'center', 'center', white, [], [], [], 1.6);
-                Screen(w, 'Flip');        
+
+            if payoff(trial,2) == 1
+                DrawFormattedText(w, reward, 'center', rect(4)*0.8, white);
+            else
+                DrawFormattedText(w, noreward, 'center', rect(4)*0.8, white);
+            end
+
+                Screen(w, 'Flip');
                 WaitSecs(1);
             end
         end % close the if/else for state
@@ -986,6 +996,7 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
         practice_struct.on = choice_on_time;
         practice_struct.off = choice_off_time;
         practice_struct.rt = choice_off_time-choice_on_time;
+        practice_struct.reward_feedback_on = reward_feedback_on;
         practice_struct.transition_prob = a;
         practice_struct.transition_det = r;
         practice_struct.payoff_prob = payoff_prob;
@@ -1012,6 +1023,7 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
         money_struct.on = choice_on_time;
         money_struct.off = choice_off_time;
         money_struct.rt = choice_off_time-choice_on_time;
+        money_struct.reward_feedback_on = reward_feedback_on;
         money_struct.transition_prob = a;
         money_struct.transition_det = r;
         money_struct.payoff_prob = payoff_prob;
@@ -1037,6 +1049,7 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
         food_struct.on = choice_on_time;
         food_struct.off = choice_off_time;
         food_struct.rt = choice_off_time-choice_on_time;
+        food_struct.reward_feedback_on = reward_feedback_on;
         food_struct.transition_prob = a;
         food_struct.transition_det = r;
         food_struct.payoff_prob = payoff_prob;

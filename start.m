@@ -145,6 +145,10 @@ function start
 
             % input the number of trials per block; 1 = practice trials, 2 = experimental blocks
             initialization_struct.num_trials = [5 5];
+
+            % randomize the location of the foods
+            sweet_loc_left = randi([0,1]);
+            initialization_struct.sweet_loc_left = sweet_loc_left;
             save([data_file_path '/initialization structure'], 'initialization_struct', '-v6')
 
     % ---- TASK
