@@ -5,7 +5,7 @@
 % Please do not share or use this code without the written permission of all authors.
 % Authors: Nikki Sullivan, Alex Breslav
 
-function [eligible, sweet_food, salt_food] = allergy_wanting(initialization_struct)
+function [eligible, food_salt, food_sweet] = allergy_wanting(initialization_struct)
 
   % some setups
 Screen('Preference', 'VisualDebugLevel', 1);% change psych toolbox screen check to black
@@ -22,8 +22,8 @@ FlushEvents;
 
 % open window
 Screen('Preference', 'VisualDebugLevel', 1);% change psych toolbox screen check to black
-% [exp_screen, ~] = Screen('OpenWindow', max(Screen('Screens')));
-[exp_screen, ~] = Screen('OpenWindow', max(Screen('Screens')), [], [0 0 1200 800]); % for opening into a small rectangle instead
+[exp_screen, ~] = Screen('OpenWindow', max(Screen('Screens')));
+%[exp_screen, ~] = Screen('OpenWindow', max(Screen('Screens')), [], [0 0 1200 800]); % for opening into a small rectangle instead
 [allergy_wanting.width, allergy_wanting.height] = Screen('WindowSize',exp_screen);
 allergy_wanting.screenRefreshRate = Screen('GetFlipInterval', exp_screen);
 
@@ -53,10 +53,8 @@ startFirstKeys = KbName({'b', 'B'});
 %ratings: set up task
 
 % retrieve image names from directory
-tmp = dir('food_images/*.bmp');
-allergy_wanting.image_names = {tmp(1:length(tmp)).name}';
 tmp = dir('food_images/*.jpg');
-allergy_wanting.image_names = [allergy_wanting.image_names; {tmp(1:length(tmp)).name}'];
+allergy_wanting.image_names = {tmp(1:length(tmp)).name}';
 
 allergy_wanting.nTrials = length(allergy_wanting.image_names);
 
@@ -138,8 +136,8 @@ DrawFormattedText(exp_screen,[
     'Press any key to continue.' ...
     ], 'center', 'center' ,txt_color,[],[],[],1.6);
 Screen('Flip', exp_screen);
-% KbWait([], 2) % normal
-KbWait(6, 2) % for bluetooth keyboard
+KbWait([], 2) % normal
+% KbWait(6, 2) % for bluetooth keyboard
 
 % ------------------------------------------------------------------------------
 % ------------------------------------------------------------------------------
@@ -169,8 +167,8 @@ WaitSecs(.2) %force .2 sesconds on the screen so people wont hold down the key; 
 
 % -------- listen for response
 while 1
-    % [keyIsDown, ~, keyCode] = KbCheck; % normal
-    [keyIsDown, ~, keyCode] = KbCheck(6); % bluetooth keyboard
+    [keyIsDown, ~, keyCode] = KbCheck; % normal
+    % [keyIsDown, ~, keyCode] = KbCheck(6); % bluetooth keyboard
     if keyIsDown && any(keyCode(allergy_wanting.yesno_resp_key_codes)) && length(KbName(keyCode)) == 1
 
         allergy_wanting.allergic_RT(1) = GetSecs - t0;
@@ -253,8 +251,8 @@ else
     WaitSecs(.2); KbEventFlush;
     % wait for spacebar to begin
     while 1
-        % [keyIsDown, ~, keyCode] = KbCheck; % normal
-        [keyIsDown, ~, keyCode] = KbCheck(6); % bluetooth keyboard
+        [keyIsDown, ~, keyCode] = KbCheck; % normal
+        % [keyIsDown, ~, keyCode] = KbCheck(6); % bluetooth keyboard
         if keyIsDown && keyCode(spaceKey)
             break
         elseif any(keyCode(exitKeys))
@@ -289,8 +287,8 @@ else
 
 % -------- listen for response
         while 1
-            % [keyIsDown, ~, keyCode] = KbCheck; % normal
-            [keyIsDown, ~, keyCode] = KbCheck(6); % bluetooth keyboard
+            [keyIsDown, ~, keyCode] = KbCheck; % normal
+            % [keyIsDown, ~, keyCode] = KbCheck(6); % bluetooth keyboard
             if keyIsDown && any(keyCode(allergy_wanting.yesno_resp_key_codes)) && length(KbName(keyCode)) == 1
 
                 allergy_wanting.allergic_RT(trial+1) = GetSecs - t0;
@@ -348,165 +346,195 @@ allergy_wanting.rand_img_order_want = randperm(length(allergy_wanting.foods_not_
 % ------------------------------------------------------------------------------
 % ---- wanting ratings
 
-% --- show ratings instructions & key guide
-Screen('TextSize', exp_screen, txt_size.blockTxt);
-Screen(exp_screen, 'FillRect', bg_color);
-DrawFormattedText(exp_screen,['Please rate the following foods ' '\n' ...
-    'based on how much you want to eat them right now, using the keys and the scale below.'],...
-    'center',allergy_wanting.height*.2,txt_color,wrapat,[],[],1.6);
+if isempty(allergy_wanting.foods_not_allergic) > 0 % end if they are allergic to every food!
+    allergy_wanting.eligible = 0;
+    eligible = 0;
+    food_salt = {};
+    food_sweet = {};
 
-Screen('TextSize', exp_screen, txt_size.rateGuide);
-for n = 1:length(allergy_wanting.keyguide)
-    DrawFormattedText(exp_screen,allergy_wanting.keyguide(n),...
-        allergy_wanting.guideLocs(n),allergy_wanting.height*.5,txt_color,wrapat,[],[],vSpacing);
-    DrawFormattedText(exp_screen,char(allergy_wanting.guideTwo(n)),allergy_wanting.guideLocs(n) + want_guide_offset,allergy_wanting.height*.58,txt_color,wrapat,[],[],1);
-end
-
-Screen('TextSize', exp_screen, txt_size.blockTxt);
-DrawFormattedText(exp_screen,'Press the spacebar to begin!',...
-    'center', allergy_wanting.height*.8, txt_color, wrapat, [], [], vSpacing);
-Screen(exp_screen, 'Flip');
-WaitSecs(.2); KbEventFlush;
-% wait for spacebar to begin
-while 1
-    % [keyIsDown, ~, keyCode] = KbCheck; % normal
-    [keyIsDown, ~, keyCode] = KbCheck(6); % bluetooth keyboard
-    if keyIsDown && keyCode(spaceKey)
-        break
-    elseif any(keyCode(exitKeys))
-        sca; return
-    end
-end
-%%
-
-for trial = allergy_wanting.rand_img_order_want' % run trials in the pre-determined randomized order
-
-    % display stimuli
-    % get the food image
-    imgfile = imread(['food_images/' allergy_wanting.foods_not_allergic{trial}]);
-    img = Screen(exp_screen, 'MakeTexture', imgfile);
-    % show the image
     Screen(exp_screen, 'FillRect', bg_color);
-    Screen('DrawTexture', exp_screen, img, [], ...
-        [allergy_wanting.width*.5-200 allergy_wanting.height*.5-300 ...
-        allergy_wanting.width*.5+200 allergy_wanting.height*.5+100]);
-    % show ratings scale
+    DrawFormattedText(exp_screen,[
+        'Based on your responses in this section, you may' '\n' ...
+        'not be eligible to continue with the study.' '\n' ...
+        'Please tell the experimenter that you''ve encountered an issue.' ...
+        ], 'center', 'center',txt_color,[],[],[],1.6);
+    Screen('Flip', exp_screen)
+    KbWait([], 2) % normal
+    % KbWait(6, 2) % for bluetooth keyboard
+
+    disp(['not allergic: ' allergy_wanting.foods_not_allergic' ' ||| want sweet: ' allergy_wanting.sweet_food_want' ' ||| want salt: ' allergy_wanting.salt_food_want'])
+
+    allergy_wanting.taskDur(2) = toc;
+    save(results_file_name,'allergy_wanting');
+
+    Screen('CloseAll');
+    FlushEvents;
+    sca; return;
+
+else % otherwise, carry on as expected
+    % --- show ratings instructions & key guide
+    Screen('TextSize', exp_screen, txt_size.blockTxt);
+    Screen(exp_screen, 'FillRect', bg_color);
+    DrawFormattedText(exp_screen,['Please rate the following foods ' '\n' ...
+        'based on how much you want to eat them right now, using the keys and the scale below.'],...
+        'center',allergy_wanting.height*.2,txt_color,wrapat,[],[],1.6);
+
     Screen('TextSize', exp_screen, txt_size.rateGuide);
     for n = 1:length(allergy_wanting.keyguide)
         DrawFormattedText(exp_screen,allergy_wanting.keyguide(n),...
-            allergy_wanting.guideLocs(n),keyguide_loc_low,txt_color,wrapat,[],[],vSpacing);
-        DrawFormattedText(exp_screen,char(allergy_wanting.guideTwo(n)),...
-            allergy_wanting.guideLocs(n) + want_guide_offset,guide_loc_low,txt_color,wrapat,[],[],1);
+            allergy_wanting.guideLocs(n),allergy_wanting.height*.5,txt_color,wrapat,[],[],vSpacing);
+        DrawFormattedText(exp_screen,char(allergy_wanting.guideTwo(n)),allergy_wanting.guideLocs(n) + want_guide_offset,allergy_wanting.height*.58,txt_color,wrapat,[],[],1);
     end
-    Screen('Flip', exp_screen);
-    allergy_wanting.want_stimOn(trial) = GetSecs - t0;
 
-    WaitSecs(.2) %force .2 sesconds on the screen so people wont hold down the key; this means that RT's cannot be < 0.2
-
-    % listen for response
+    Screen('TextSize', exp_screen, txt_size.blockTxt);
+    DrawFormattedText(exp_screen,'Press the spacebar to begin!',...
+        'center', allergy_wanting.height*.8, txt_color, wrapat, [], [], vSpacing);
+    Screen(exp_screen, 'Flip');
+    WaitSecs(.2); KbEventFlush;
+    % wait for spacebar to begin
     while 1
-        % [keyIsDown, ~, keyCode] = KbCheck; % normal
-        [keyIsDown, ~, keyCode] = KbCheck(6); % bluetooth keyboard
-        if keyIsDown && any(keyCode(allergy_wanting.resp_key_codes)) && length(KbName(keyCode)) == 1
-
-            allergy_wanting.want_RT(trial) = GetSecs - t0;
-            allergy_wanting.want_RT(trial) = allergy_wanting.want_RT(trial) ...
-                - allergy_wanting.want_stimOn(trial);
-
-            allergy_wanting.want_keypress{trial} = KbName(keyCode); % letter code
-
-            allergy_wanting.want_text{trial} = allergy_wanting.guide{allergy_wanting.want_keypress{trial} ...
-                ==cell2mat(allergy_wanting.resp_keys)}; % string
-
-            allergy_wanting.want_numeric(trial) = ... % -2 to 2
-                allergy_wanting.want_numeric_guide(allergy_wanting.want_keypress{trial} == ...
-                cell2mat(allergy_wanting.resp_keys));
-
+        [keyIsDown, ~, keyCode] = KbCheck; % normal
+        % [keyIsDown, ~, keyCode] = KbCheck(6); % bluetooth keyboard
+        if keyIsDown && keyCode(spaceKey)
             break
-        elseif keyIsDown && any(keyCode(exitKeys)) && length(KbName(keyCode)) == 1
-            sca; return;
+        elseif any(keyCode(exitKeys))
+            sca; return
         end
     end
-    save(results_file_name,'allergy_wanting');
+    %%
 
-    % --- show their response
-    % show the image:
-    Screen(exp_screen, 'FillRect', bg_color);
-    Screen('DrawTexture', exp_screen, img, [], ...
-        [allergy_wanting.width*.5-200 allergy_wanting.height*.5-300 ...
-        allergy_wanting.width*.5+200 allergy_wanting.height*.5+100]);
-    % show ratings scale
-    Screen('TextSize', exp_screen, txt_size.rateGuide);
-    for n = 1:length(allergy_wanting.keyguide)
-        if strcmp(allergy_wanting.want_text{trial}, char(allergy_wanting.guide{n}))
-            DrawFormattedText(exp_screen,allergy_wanting.keyguide(n),...
-                allergy_wanting.guideLocs(n),keyguide_loc_low,chosen_color,wrapat,[],[],vSpacing);
-            DrawFormattedText(exp_screen,char(allergy_wanting.guideTwo(n)),...
-                allergy_wanting.guideLocs(n) + want_guide_offset,guide_loc_low,chosen_color,wrapat,[],[],1);
-        else
+    for trial = allergy_wanting.rand_img_order_want' % run trials in the pre-determined randomized order
+
+        % display stimuli
+        % get the food image
+        imgfile = imread(['food_images/' allergy_wanting.foods_not_allergic{trial}]);
+        img = Screen(exp_screen, 'MakeTexture', imgfile);
+        % show the image
+        Screen(exp_screen, 'FillRect', bg_color);
+        Screen('DrawTexture', exp_screen, img, [], ...
+            [allergy_wanting.width*.5-200 allergy_wanting.height*.5-300 ...
+            allergy_wanting.width*.5+200 allergy_wanting.height*.5+100]);
+        % show ratings scale
+        Screen('TextSize', exp_screen, txt_size.rateGuide);
+        for n = 1:length(allergy_wanting.keyguide)
             DrawFormattedText(exp_screen,allergy_wanting.keyguide(n),...
                 allergy_wanting.guideLocs(n),keyguide_loc_low,txt_color,wrapat,[],[],vSpacing);
             DrawFormattedText(exp_screen,char(allergy_wanting.guideTwo(n)),...
                 allergy_wanting.guideLocs(n) + want_guide_offset,guide_loc_low,txt_color,wrapat,[],[],1);
         end
+        Screen('Flip', exp_screen);
+        allergy_wanting.want_stimOn(trial) = GetSecs - t0;
+
+        WaitSecs(.2) %force .2 sesconds on the screen so people wont hold down the key; this means that RT's cannot be < 0.2
+
+        % listen for response
+        while 1
+            [keyIsDown, ~, keyCode] = KbCheck; % normal
+            % [keyIsDown, ~, keyCode] = KbCheck(6); % bluetooth keyboard
+            if keyIsDown && any(keyCode(allergy_wanting.resp_key_codes)) && length(KbName(keyCode)) == 1
+
+                allergy_wanting.want_RT(trial) = GetSecs - t0;
+                allergy_wanting.want_RT(trial) = allergy_wanting.want_RT(trial) ...
+                    - allergy_wanting.want_stimOn(trial);
+
+                allergy_wanting.want_keypress{trial} = KbName(keyCode); % letter code
+
+                allergy_wanting.want_text{trial} = allergy_wanting.guide{allergy_wanting.want_keypress{trial} ...
+                    ==cell2mat(allergy_wanting.resp_keys)}; % string
+
+                allergy_wanting.want_numeric(trial) = ... % -2 to 2
+                    allergy_wanting.want_numeric_guide(allergy_wanting.want_keypress{trial} == ...
+                    cell2mat(allergy_wanting.resp_keys));
+
+                break
+            elseif keyIsDown && any(keyCode(exitKeys)) && length(KbName(keyCode)) == 1
+                sca; return;
+            end
+        end
+        save(results_file_name,'allergy_wanting');
+
+        % --- show their response
+        % show the image:
+        Screen(exp_screen, 'FillRect', bg_color);
+        Screen('DrawTexture', exp_screen, img, [], ...
+            [allergy_wanting.width*.5-200 allergy_wanting.height*.5-300 ...
+            allergy_wanting.width*.5+200 allergy_wanting.height*.5+100]);
+        % show ratings scale
+        Screen('TextSize', exp_screen, txt_size.rateGuide);
+        for n = 1:length(allergy_wanting.keyguide)
+            if strcmp(allergy_wanting.want_text{trial}, char(allergy_wanting.guide{n}))
+                DrawFormattedText(exp_screen,allergy_wanting.keyguide(n),...
+                    allergy_wanting.guideLocs(n),keyguide_loc_low,chosen_color,wrapat,[],[],vSpacing);
+                DrawFormattedText(exp_screen,char(allergy_wanting.guideTwo(n)),...
+                    allergy_wanting.guideLocs(n) + want_guide_offset,guide_loc_low,chosen_color,wrapat,[],[],1);
+            else
+                DrawFormattedText(exp_screen,allergy_wanting.keyguide(n),...
+                    allergy_wanting.guideLocs(n),keyguide_loc_low,txt_color,wrapat,[],[],vSpacing);
+                DrawFormattedText(exp_screen,char(allergy_wanting.guideTwo(n)),...
+                    allergy_wanting.guideLocs(n) + want_guide_offset,guide_loc_low,txt_color,wrapat,[],[],1);
+            end
+        end
+        Screen('Flip', exp_screen);
+        allergy_wanting.want_feedbackOn(trial) = GetSecs - t0;
+        Screen('Close', img);
+        WaitSecs(allergy_wanting.feedbackSecs);
+        %imwrite(Screen('GetImage', exp_screen), sprintf('%d_%d.png',nB,trial))
+
     end
-    Screen('Flip', exp_screen);
-    allergy_wanting.want_feedbackOn(trial) = GetSecs - t0;
-    Screen('Close', img);
-    WaitSecs(allergy_wanting.feedbackSecs);
-    %imwrite(Screen('GetImage', exp_screen), sprintf('%d_%d.png',nB,trial))
 
-end
+    allergy_wanting.foods_want = allergy_wanting.foods_not_allergic(logical(allergy_wanting.want_numeric > 0));
+    allergy_wanting.sweet_food_want = allergy_wanting.foods_want(find(contains(allergy_wanting.foods_want, 'sweet')));
+    allergy_wanting.salt_food_want = allergy_wanting.foods_want(find(contains(allergy_wanting.foods_want, 'salt')));
 
-allergy_wanting.foods_want = allergy_wanting.foods_not_allergic(logical(allergy_wanting.want_numeric > 0));
-allergy_wanting.sweet_food_want = allergy_wanting.foods_want(find(contains(allergy_wanting.foods_want, 'sweet')));
-allergy_wanting.salt_food_want = allergy_wanting.foods_want(find(contains(allergy_wanting.foods_want, 'salt')));
+    allergy_wanting.foods_reallywant = allergy_wanting.foods_not_allergic(logical(allergy_wanting.want_numeric == 2));
+    allergy_wanting.sweet_food_reallywant = allergy_wanting.foods_reallywant(find(contains(allergy_wanting.foods_reallywant, 'sweet')));
+    allergy_wanting.salt_food_reallywant = allergy_wanting.foods_reallywant(find(contains(allergy_wanting.foods_reallywant, 'salt')));
 
-allergy_wanting.foods_reallywant = allergy_wanting.foods_not_allergic(logical(allergy_wanting.want_numeric == 2));
-allergy_wanting.sweet_food_reallywant = allergy_wanting.foods_reallywant(find(contains(allergy_wanting.foods_reallywant, 'sweet')));
-allergy_wanting.salt_food_reallywant = allergy_wanting.foods_reallywant(find(contains(allergy_wanting.foods_reallywant, 'salt')));
+    if length(allergy_wanting.sweet_food_want) > 0 && length(allergy_wanting.salt_food_want) > 0
+        allergy_wanting.eligible = 1;
+        eligible = 1;
 
-if length(allergy_wanting.sweet_food_want) > 0 && length(allergy_wanting.salt_food_want) > 0
-    allergy_wanting.eligible = 1;
-    eligible = 1;
+        % select sweet food
+        if length(allergy_wanting.sweet_food_reallywant) > 0
+            food_sweet = datasample(allergy_wanting.sweet_food_reallywant, 1);
+        else
+            food_sweet = datasample(allergy_wanting.sweet_food_want, 1);
+        end
 
-    % select sweet food
-    if length(allergy_wanting.sweet_food_reallywant) > 0
-        sweet_food = datasample(allergy_wanting.sweet_food_reallywant, 1);
+        % select salt food
+        if length(allergy_wanting.salt_food_reallywant) > 0
+            food_salt = datasample(allergy_wanting.salt_food_reallywant, 1);
+        else
+            food_salt = datasample(allergy_wanting.salt_food_want, 1);
+        end
+
+        allergy_wanting.food_salt_select = food_salt;
+        allergy_wanting.food_sweet_select = food_sweet;
+
     else
-        sweet_food = datasample(allergy_wanting.sweet_food_want, 1);
+        allergy_wanting.eligible = 0;
+        eligible = 0;
+        food_salt = {};
+        food_sweet = {};
+
+        Screen(exp_screen, 'FillRect', bg_color);
+        DrawFormattedText(exp_screen,[
+            'Based on your responses in this section, you may' '\n' ...
+            'not be eligible to continue with the study.' '\n' ...
+            'Please tell the experimenter that you''ve encountered an issue.' ...
+            ], 'center', 'center',txt_color,[],[],[],1.6);
+        Screen('Flip', exp_screen)
+        KbWait([], 2) % normal
+        % KbWait(6, 2) % for bluetooth keyboard
+
+        disp(['not allergic: ' allergy_wanting.foods_not_allergic' ' ||| want sweet: ' allergy_wanting.sweet_food_want' ' ||| want salt: ' allergy_wanting.salt_food_want'])
+
     end
 
-    % select salt food
-    if length(allergy_wanting.salt_food_reallywant) > 0
-        salt_food = datasample(allergy_wanting.salt_food_reallywant, 1);
-    else
-        salt_food = datasample(allergy_wanting.salt_food_want, 1);
-    end
+    allergy_wanting.taskDur(2) = toc;
+    save(results_file_name,'allergy_wanting');
 
-    allergy_wanting.salt_food_select = salt_food
-    allergy_wanting.sweet_food_select = sweet_food
-
-else
-    allergy_wanting.eligible = 0;
-    eligible = 0;
-
-    Screen(exp_screen, 'FillRect', bg_color);
-    DrawFormattedText(exp_screen,[
-        'Based on your responses in this section, you may' '\n' ...
-        'not be eligible to continue with the study.'
-        'Please tell the experimenter that you''ve encountered an issue.' ...
-        ], 'center', 'center',txt_color,[],[],[],1.6);
-    Screen('Flip', exp_screen)
-  % KbWait([], 2) % normal
-    KbWait(6, 2) % for bluetooth keyboard
-
-    disp(['not allergic: ' allergy_wanting.foods_not_allergic' ' ||| want sweet: ' allergy_wanting.sweet_food_want' ' ||| want salt: ' allergy_wanting.salt_food_want'])
+    Screen('CloseAll');
+    FlushEvents;
 end
-
-allergy_wanting.taskDur(2) = toc;
-save(results_file_name,'allergy_wanting');
-
-Screen('CloseAll');
-FlushEvents;
 end

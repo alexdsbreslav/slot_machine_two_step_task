@@ -26,7 +26,7 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
     % ---- Screen selection
     doublebuffer=1; %????
     screens = Screen('Screens'); %count the screen
-    whichScreen = min(screens); %select the screen; ALTERED THIS BECAUSE IT KEPT SHOWING UP ON MY LAPTOP INSTEAD OF THE ATTACHED MONITOR
+    whichScreen = max(screens); %select the screen; ALTERED THIS BECAUSE IT KEPT SHOWING UP ON MY LAPTOP INSTEAD OF THE ATTACHED MONITOR
     [w, rect] = Screen('OpenWindow', whichScreen, 0,[], 32, ...
         doublebuffer+1,[],[],kPsychNeedFastBackingStore); %???
 
@@ -338,10 +338,20 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
     elseif block == 2 % block == 2 is food
 
     % ---- Experimenter prep
+        if initialization_struct.sweet_loc_left == 1
+            left_food = initialization_struct.allergy_wanting_food_sweet;
+            right_food = initialization_struct.allergy_wanting_food_salt;
+        else
+            right_food = initialization_struct.allergy_wanting_food_sweet;
+            left_food = initialization_struct.allergy_wanting_food_salt;
+        end
+
         DrawFormattedText(w,[
             'Please wait while the experimenter prepares' '\n' ...
             'the room for this version of the game.' '\n\n' ...
-            'Version = Food'
+            'Version = Food' '\n' ...
+            'Left food = ' left_food '\n' ...
+            'Right food = ' right_food ...
             ], 'center','center', white, [], [], [], 1.6);
         Screen('Flip',w);
 
@@ -815,9 +825,27 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
                 DrawFormattedText(w, noreward, 'center', rect(4)*0.8, white);
             end
 
-    % ---- show feedback
+    % ---- show feedback for 1 second and then show countdown
             Screen('Flip', w);
-            WaitSecs(reward_feedback_len)
+            reward_feedback_on(trial) = GetSecs - t0;
+            WaitSecs(1)
+            % countdown to next trial
+            for i = 1:reward_feedback_len-1
+                Screen(w, 'FillRect', black);
+                DrawFormattedText(w, [
+                    'The next trial will start in' '\n' ...
+                    num2str(reward_feedback_len-i) ' seconds.' ...
+                    ], 'center', 'center', white, [], [], [], 1.6);
+
+            if payoff(trial,1) == 1
+                DrawFormattedText(w, reward, 'center', rect(4)*0.8, white);
+            else
+                DrawFormattedText(w, noreward, 'center', rect(4)*0.8, white);
+            end
+
+                Screen(w, 'Flip');
+                WaitSecs(1);
+            end
 
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
@@ -952,7 +980,7 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
             reward_feedback_on(trial) = GetSecs - t0;
             WaitSecs(1)
             % countdown to next trial
-            for i = 1:reward_feedback_len
+            for i = 1:reward_feedback_len-1
                 Screen(w, 'FillRect', black);
                 DrawFormattedText(w, [
                     'The next trial will start in' '\n' ...

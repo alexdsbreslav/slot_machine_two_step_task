@@ -45,10 +45,11 @@ function start
             start_where = input(['What block do you want to start on?' '\n' ...
             'You will overwrite any existing data on and after the block you choose.' '\n\n' ...
             '0 = CANCEL and restart the function' '\n' ...
-            '1 = Tutorial' '\n' ...
-            '2 = Practice Rounds' '\n' ...
-            '3 = Block 1 (' block1_text ')' '\n' ...
-            '4 = Block 2 (' block2_text ')' '\n' ...
+            '1 = Allergy & Wanting Questionnaire' '\n' ...
+            '2 = Tutorial' '\n' ...
+            '3 = Practice Rounds' '\n' ...
+            '4 = Block 1 (' block1_text ')' '\n' ...
+            '5 = Block 2 (' block2_text ')' '\n' ...
             'Response: ']);
 
             switch start_where
@@ -58,17 +59,29 @@ function start
 
                 case 1
                 % ---- TASK
-                    % ---- 1: Tutorial
+                    % ---- 1: Allergy & wanting
+                        [eligible, food_salt, food_sweet] = allergy_wanting(initialization_struct);
+
+                        initialization_struct.allergy_wanting_eligible = eligible;
+                        initialization_struct.allergy_wanting_food_salt = food_salt;
+                        initialization_struct.allergy_wanting_food_sweet = food_sweet;
+                        save([data_file_path '/initialization structure'], 'initialization_struct', '-v6')
+
+                        if eligible == 0;
+                            sca; return;
+                        end
+
+                    % ---- 2: Tutorial
                         tutorial_v4(initialization_struct);
 
-                    % ---- 2: practice trials (Block 0 in code)
+                    % ---- 3: practice trials (Block 0 in code)
                         load([data_file_path '/tutorial_timing.mat'])
                         main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1), tutorial_timing_struct);
 
-                    % ---- 3: Block 1 of the main experiment trials
+                    % ---- 4: Block 1 of the main experiment trials
                         main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
 
-                    % ---- 4: Block 2 of the main experiment trials
+                    % ---- 5: Block 2 of the main experiment trials
                         main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
 
                     % --- display winnings
@@ -77,14 +90,56 @@ function start
 
                 case 2
                 % ---- TASK
-                    % ---- 2: practice trials (Block 0 in code)
+                    % ---- Select food by hand if necessary
+                        if isempty(initialization_struct.allergy_wanting_food_salt)
+
+                          img_files = dir('food_images/*.jpg');
+                          img_file_names = {img_files(1:length(img_files)).name}';
+                          img_file_index = find(contains(img_file_names, 'salt'))';
+
+                          food_salt = input(['There is no salty food selected for this participant.' '\n' ...
+                          'Please select one of the following foods.' '\n\n' ...
+                          num2str(img_file_index(1)) ' = ' img_file_names{img_file_index(1)} '\n' ...
+                          num2str(img_file_index(2)) ' = ' img_file_names{img_file_index(2)} '\n' ...
+                          num2str(img_file_index(3)) ' = ' img_file_names{img_file_index(3)} '\n' ...
+                          num2str(img_file_index(4)) ' = ' img_file_names{img_file_index(4)} '\n' ...
+                          num2str(img_file_index(5)) ' = ' img_file_names{img_file_index(5)} '\n' ...
+                          'Response: ']);
+
+                          initialization_struct.allergy_wanting_food_salt = img_file_names{food_salt};
+                          save([data_file_path '/initialization structure'], 'initialization_struct', '-v6')
+                        end
+
+                        if isempty(initialization_struct.allergy_wanting_food_sweet)
+
+                          img_files = dir('food_images/*.jpg');
+                          img_file_names = {img_files(1:length(img_files)).name}';
+                          img_file_index = find(contains(img_file_names, 'sweet'))';
+
+                          food_sweet = input(['There is no sweet food selected for this participant.' '\n' ...
+                          'Please select one of the following foods.' '\n\n' ...
+                          num2str(img_file_index(1)) ' = ' img_file_names{img_file_index(1)} '\n' ...
+                          num2str(img_file_index(2)) ' = ' img_file_names{img_file_index(2)} '\n' ...
+                          num2str(img_file_index(3)) ' = ' img_file_names{img_file_index(3)} '\n' ...
+                          num2str(img_file_index(4)) ' = ' img_file_names{img_file_index(4)} '\n' ...
+                          num2str(img_file_index(5)) ' = ' img_file_names{img_file_index(5)} '\n' ...
+                          'Response: ']);
+
+                          initialization_struct.allergy_wanting_food_sweet = img_file_names{food_sweet};
+                          save([data_file_path '/initialization structure'], 'initialization_struct', '-v6')
+                        end
+
+                    % ---- 2: Tutorial
+                        tutorial_v4(initialization_struct);
+
+                    % ---- 3: practice trials (Block 0 in code)
                         load([data_file_path '/tutorial_timing.mat'])
                         main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1), tutorial_timing_struct);
 
-                    % ---- 3: Block 1 of the main experiment trials
+                    % ---- 4: Block 1 of the main experiment trials
                         main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
 
-                    % ---- 4: Block 2 of the main experiment trials
+                    % ---- 5: Block 2 of the main experiment trials
                         main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
 
                     % --- display winnings
@@ -93,10 +148,14 @@ function start
 
                 case 3
                 % ---- TASK
-                    % ---- 3: Block 1 of the main experiment trials
+                    % ---- 3: practice trials (Block 0 in code)
+                        load([data_file_path '/tutorial_timing.mat'])
+                        main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1), tutorial_timing_struct);
+
+                    % ---- 4: Block 1 of the main experiment trials
                         main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
 
-                    % ---- 4: Block 2 of the main experiment trials
+                    % ---- 5: Block 2 of the main experiment trials
                         main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
 
                     % --- display winnings
@@ -105,7 +164,19 @@ function start
 
                 case 4
                 % ---- TASK
-                    % ---- 4: Block 2 of the main experiment trials
+                    % ---- 4: Block 1 of the main experiment trials
+                        main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
+
+                    % ---- 5: Block 2 of the main experiment trials
+                        main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
+
+                    % --- display winnings
+                        load([data_file_path '/money.mat']);
+                        fprintf('\n\n\n\n\n\n\n\n\n\nYour total earnings (show up fee included) = $ %.2f\n\nThank you for your participation\n\n\n', money_struct.payoff_total);
+
+                case 5
+                % ---- TASK
+                    % ---- 5: Block 2 of the main experiment trials
                         main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
 
                     % --- display winnings
@@ -152,16 +223,28 @@ function start
             save([data_file_path '/initialization structure'], 'initialization_struct', '-v6')
 
     % ---- TASK
-        % ---- 1: Tutorial
+        % ---- 1: Allergy & wanting
+            [eligible, food_salt, food_sweet] = allergy_wanting(initialization_struct);
+
+            initialization_struct.allergy_wanting_eligible = eligible;
+            initialization_struct.allergy_wanting_food_salt = food_salt;
+            initialization_struct.allergy_wanting_food_sweet = food_sweet;
+            save([data_file_path '/initialization structure'], 'initialization_struct', '-v6')
+
+            if eligible == 0;
+                sca; return;
+            end
+        % ---- 2: Tutorial
             tutorial_v4(initialization_struct);
 
-        % ---- 2: practice trials (Block 0 in code)
+        % ---- 3: practice trials (Block 0 in code)
             load([data_file_path '/tutorial_timing.mat'])
             main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1), tutorial_timing_struct);
 
-        % ---- 3: Block 1 of the main experiment trials
+        % ---- 4: Block 1 of the main experiment trials
             main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
-        % ---- 4: Block 2 of the main experiment trials
+
+        % ---- 5: Block 2 of the main experiment trials
             main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
 
         % --- display winnings
