@@ -53,7 +53,7 @@ function start
             'Response: ']);
 
             switch start_where
-                case 99
+                case 0
                    disp([fprintf('\n') ...
                    'OK, you should restart the function to try again'])
 
@@ -67,7 +67,7 @@ function start
                         initialization_struct.allergy_wanting_food_sweet = food_sweet;
                         save([data_file_path '/initialization structure'], 'initialization_struct', '-v6')
 
-                        if eligible == 0;
+                        if eligible == 0
                             sca; return;
                         end
 
@@ -79,10 +79,42 @@ function start
                         main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1), tutorial_timing_struct);
 
                     % ---- 4: Block 1 of the main experiment trials
-                        main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
+                    % ---- Camera on?
+                        camera_on = input(['\n\n' ...
+                          'Before the task begins, ensure that the camera is on,' '\n' ...
+                          'and that the software is recording!' '\n\n' ...
+                          '1 = I am recording. The camera''s blue light is on; the recording timer has started.' '\n' ...
+                          '0 = Something may not be working, exit the script so I can double check.' '\n' ...
+                          'Response: ' ]);
 
-                    % ---- 5: Block 2 of the main experiment trials
-                        main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
+                          switch camera_on
+                              case 0
+                                  disp([fprintf('\n') ...
+                                  'OK, you should restart the function to try again'])
+                                  sca; return;
+
+                              case 1
+                                  main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
+                          end
+
+                      % ---- 5: Block 2 of the main experiment trials
+                      % ---- Camera on?
+                          camera_on = input(['\n\n' ...
+                            'Before the task begins, ensure that the camera is on,' '\n' ...
+                            'and that the software is recording!' '\n\n' ...
+                            '1 = I am recording. The camera''s blue light is on; the recording timer has started.' '\n' ...
+                            '0 = Something may not be working, exit the script so I can double check.' '\n' ...
+                            'Response: ' ]);
+
+                            switch camera_on
+                                case 0
+                                    disp([fprintf('\n') ...
+                                    'OK, you should restart the function to try again'])
+                                    sca; return;
+
+                                case 1
+                                    main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
+                            end
 
                     % --- display winnings
                         load([data_file_path '/money.mat']);
@@ -137,10 +169,42 @@ function start
                         main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1), tutorial_timing_struct);
 
                     % ---- 4: Block 1 of the main experiment trials
-                        main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
+                    % ---- Camera on?
+                        camera_on = input(['\n\n' ...
+                          'Before the task begins, ensure that the camera is on,' '\n' ...
+                          'and that the software is recording!' '\n\n' ...
+                          '1 = I am recording. The camera''s blue light is on; the recording timer has started.' '\n' ...
+                          '0 = Something may not be working, exit the script so I can double check.' '\n' ...
+                          'Response: ' ]);
 
-                    % ---- 5: Block 2 of the main experiment trials
-                        main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
+                          switch camera_on
+                              case 0
+                                  disp([fprintf('\n') ...
+                                  'OK, you should restart the function to try again'])
+                                  sca; return;
+
+                              case 1
+                                  main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
+                          end
+
+                      % ---- 5: Block 2 of the main experiment trials
+                      % ---- Camera on?
+                          camera_on = input(['\n\n' ...
+                            'Before the task begins, ensure that the camera is on,' '\n' ...
+                            'and that the software is recording!' '\n\n' ...
+                            '1 = I am recording. The camera''s blue light is on; the recording timer has started.' '\n' ...
+                            '0 = Something may not be working, exit the script so I can double check.' '\n' ...
+                            'Response: ' ]);
+
+                            switch camera_on
+                                case 0
+                                    disp([fprintf('\n') ...
+                                    'OK, you should restart the function to try again'])
+                                    sca; return;
+
+                                case 1
+                                    main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
+                            end
 
                     % --- display winnings
                         load([data_file_path '/money.mat']);
@@ -153,22 +217,85 @@ function start
                         main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1), tutorial_timing_struct);
 
                     % ---- 4: Block 1 of the main experiment trials
-                        main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
+                    % ---- Camera on?
+                        camera_on = input(['\n\n' ...
+                          'Before the task begins, ensure that the camera is on,' '\n' ...
+                          'and that the software is recording!' '\n\n' ...
+                          '1 = I am recording. The camera''s blue light is on; the recording timer has started.' '\n' ...
+                          '0 = Something may not be working, exit the script so I can double check.' '\n' ...
+                          'Response: ' ]);
 
-                    % ---- 5: Block 2 of the main experiment trials
-                        main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
+                          switch camera_on
+                              case 0
+                                  disp([fprintf('\n') ...
+                                  'OK, you should restart the function to try again'])
+                                  sca; return;
+
+                              case 1
+                                  main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
+                          end
+
+                      % ---- 5: Block 2 of the main experiment trials
+                      % ---- Camera on?
+                          camera_on = input(['\n\n' ...
+                            'Before the task begins, ensure that the camera is on,' '\n' ...
+                            'and that the software is recording!' '\n\n' ...
+                            '1 = I am recording. The camera''s blue light is on; the recording timer has started.' '\n' ...
+                            '0 = Something may not be working, exit the script so I can double check.' '\n' ...
+                            'Response: ' ]);
+
+                            switch camera_on
+                                case 0
+                                    disp([fprintf('\n') ...
+                                    'OK, you should restart the function to try again'])
+                                    sca; return;
+
+                                case 1
+                                    main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
+                            end
 
                     % --- display winnings
                         load([data_file_path '/money.mat']);
                         fprintf('\n\n\n\n\n\n\n\n\n\nYour total earnings (show up fee included) = $ %.2f\n\nThank you for your participation\n\n\n', money_struct.payoff_total);
 
                 case 4
-                % ---- TASK
                     % ---- 4: Block 1 of the main experiment trials
-                        main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
+                    % ---- Camera on?
+                        camera_on = input(['\n\n' ...
+                          'Before the task begins, ensure that the camera is on,' '\n' ...
+                          'and that the software is recording!' '\n\n' ...
+                          '1 = I am recording. The camera''s blue light is on; the recording timer has started.' '\n' ...
+                          '0 = Something may not be working, exit the script so I can double check.' '\n' ...
+                          'Response: ' ]);
 
-                    % ---- 5: Block 2 of the main experiment trials
-                        main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
+                          switch camera_on
+                              case 0
+                                  disp([fprintf('\n') ...
+                                  'OK, you should restart the function to try again'])
+                                  sca; return;
+
+                              case 1
+                                  main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
+                          end
+
+                      % ---- 5: Block 2 of the main experiment trials
+                      % ---- Camera on?
+                          camera_on = input(['\n\n' ...
+                            'Before the task begins, ensure that the camera is on,' '\n' ...
+                            'and that the software is recording!' '\n\n' ...
+                            '1 = I am recording. The camera''s blue light is on; the recording timer has started.' '\n' ...
+                            '0 = Something may not be working, exit the script so I can double check.' '\n' ...
+                            'Response: ' ]);
+
+                            switch camera_on
+                                case 0
+                                    disp([fprintf('\n') ...
+                                    'OK, you should restart the function to try again'])
+                                    sca; return;
+
+                                case 1
+                                    main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
+                            end
 
                     % --- display winnings
                         load([data_file_path '/money.mat']);
@@ -177,7 +304,23 @@ function start
                 case 5
                 % ---- TASK
                     % ---- 5: Block 2 of the main experiment trials
-                        main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
+                    % ---- Camera on?
+                        camera_on = input(['\n\n' ...
+                          'Before the task begins, ensure that the camera is on,' '\n' ...
+                          'and that the software is recording!' '\n\n' ...
+                          '1 = I am recording. The camera''s blue light is on; the recording timer has started.' '\n' ...
+                          '0 = Something may not be working, exit the script so I can double check.' '\n' ...
+                          'Response: ' ]);
+
+                          switch camera_on
+                              case 0
+                                  disp([fprintf('\n') ...
+                                  'OK, you should restart the function to try again'])
+                                  sca; return;
+
+                              case 1
+                                  main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
+                          end
 
                     % --- display winnings
                         load([data_file_path '/money.mat']);
@@ -231,7 +374,7 @@ function start
             initialization_struct.allergy_wanting_food_sweet = food_sweet;
             save([data_file_path '/initialization structure'], 'initialization_struct', '-v6')
 
-            if eligible == 0;
+            if eligible == 0
                 sca; return;
             end
         % ---- 2: Tutorial
@@ -242,10 +385,42 @@ function start
             main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1), tutorial_timing_struct);
 
         % ---- 4: Block 1 of the main experiment trials
-            main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
+        % ---- Camera on?
+            camera_on = input(['\n\n' ...
+              'Before the task begins, ensure that the camera is on,' '\n' ...
+              'and that the software is recording!' '\n\n' ...
+              '1 = I am recording. The camera''s blue light is on; the recording timer has started.' '\n' ...
+              '0 = Something may not be working, exit the script so I can double check.' '\n' ...
+              'Response: ' ]);
+
+              switch camera_on
+                  case 0
+                      disp([fprintf('\n') ...
+                      'OK, you should restart the function to try again'])
+                      sca; return;
+
+                  case 1
+                      main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
+              end
 
         % ---- 5: Block 2 of the main experiment trials
-            main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
+        % ---- Camera on?
+            camera_on = input(['\n\n' ...
+              'Before the task begins, ensure that the camera is on,' '\n' ...
+              'and that the software is recording!' '\n\n' ...
+              '1 = I am recording. The camera''s blue light is on; the recording timer has started.' '\n' ...
+              '0 = Something may not be working, exit the script so I can double check.' '\n' ...
+              'Response: ' ]);
+
+              switch camera_on
+                  case 0
+                      disp([fprintf('\n') ...
+                      'OK, you should restart the function to try again'])
+                      sca; return;
+
+                  case 1
+                      main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
+              end
 
         % --- display winnings
             load([data_file_path '/money.mat']);
