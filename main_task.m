@@ -566,7 +566,7 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
         'Initializing camera...' ...
         ], 'center','center', white, [], [], [], 1.6);
     Screen('Flip',w);
-    WaitSecs(1);
+    WaitSecs(1)
     t0 = GetSecs;
 
     for trial = 1:trials
