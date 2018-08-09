@@ -7,12 +7,21 @@
 
 function compile_input_for_video_coding(subject_number)
 
-start_time_vid2 = input(['\n\n' ...
-'We need the time stamp for when the second video starts in the editor.' '\n\n' ...
+start_time_vid1 = input(['\n\n' ...
+'We need the time stamp for the FIRST video.' '\n' ...
+  'Record when the first frame occurs after the initializing camera... screen.' '\n' ...
   'Please enter the start time as a vector.' '\n' ...
   'e.g. [minutes, seconds, frames]' '\n' ...
-  'Response: ' ]);
+  'Response (1st video): ' ]);
 
+start_time_vid2 = input(['\n\n' ...
+'We need the time stamp for the SECOND video.' '\n' ...
+  'Record when the first frame occurs after the initializing camera... screen.' '\n' ...
+  'Please enter the start time as a vector.' '\n' ...
+  'e.g. [minutes, seconds, frames]' '\n' ...
+  'Response (2nd video): ' ]);
+
+start_time_vid1_frames = start_time_vid1(1)*60*30 + start_time_vid1(2)*30 + start_time_vid1(3);
 start_time_vid2_frames = start_time_vid2(1)*60*30 + start_time_vid2(2)*30 + start_time_vid2(3);
 
 % load all of the necessary structures
@@ -37,8 +46,8 @@ video_file_path = ['/Users/alex/OneDrive - Duke University/1. Research Projects/
 video_coding_input(:,2) = cellstr([video_file_path '/video.mp4']);
 
 % foods
-video_coding_input(:,3) = cellstr(initialization_struct.allergy_wanting_food_sweet(7:length(initialization_struct.allergy_wanting_food_sweet)-4)); %variable is sweet_[food name].jpg
-video_coding_input(:,4) = cellstr(initialization_struct.allergy_wanting_food_salt(6:length(initialization_struct.allergy_wanting_food_salt)-4)); %variable is salt_[food name].jpg
+video_coding_input(:,3) = cellstr(initialization_struct.allergy_wanting_food_sweet{1}(7:end-4)); %variable is sweet_[food name].jpg
+video_coding_input(:,4) = cellstr(initialization_struct.allergy_wanting_food_salt{1}(6:end-4)); %variable is salt_[food name].jpg
 
 % food location
 video_coding_input(:,5) = num2cell(initialization_struct.sweet_loc_left);
@@ -69,11 +78,11 @@ video_coding_input([food_start:food_end],8) = num2cell(food_start:food_end);
 
 % reward feedback on
 if money_start == 1
-    video_coding_input([money_start:money_end],9) = num2cell(floor(money_struct.reward_feedback_on*30)-2); % multiplying the seconds by fps. I am then subtracting 2 to make sure we undershoot the actual start
+    video_coding_input([money_start:money_end],9) = num2cell(floor(money_struct.reward_feedback_on*30)-2 + start_time_vid1_frames); % multiplying the seconds by fps. I am then subtracting 2 to make sure we undershoot the actual start
     video_coding_input([food_start:food_end],9) = num2cell(floor(food_struct.reward_feedback_on*30)-2 + start_time_vid2_frames);
 else
     video_coding_input([money_start:money_end],9) = num2cell(floor(money_struct.reward_feedback_on*30)-2 + start_time_vid2_frames); % multiplying the seconds by fps. I am then subtracting 2 to make sure we undershoot the actual start
-    video_coding_input([food_start:food_end],9) = num2cell(floor(food_struct.reward_feedback_on*30)-2);
+    video_coding_input([food_start:food_end],9) = num2cell(floor(food_struct.reward_feedback_on*30)-2 + start_time_vid1_frames);
 end
 
 % feedback state
@@ -117,11 +126,11 @@ if money_start == 1
     end
 else
     for idx = money_start:money_end
-          video_coding_input{idx, 11} = block2_color_map(money_struct.state(idx));
+          video_coding_input{idx, 11} = block2_color_map(money_struct.state(idx - food_end));
     end
 
     for idx = food_start:food_end
-          video_coding_input{idx, 11} = block1_color_map(food_struct.state(idx - food_end));
+          video_coding_input{idx, 11} = block1_color_map(food_struct.state(idx));
     end
 end
 

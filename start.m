@@ -138,7 +138,7 @@ function start
                           num2str(img_file_index(5)) ' = ' img_file_names{img_file_index(5)} '\n' ...
                           'Response: ']);
 
-                          initialization_struct.allergy_wanting_food_salt = img_file_names{food_salt};
+                          initialization_struct.allergy_wanting_food_salt = cellstr(img_file_names{food_salt});
                           save([data_file_path '/initialization structure'], 'initialization_struct', '-v6')
                         end
 
@@ -157,7 +157,7 @@ function start
                           num2str(img_file_index(5)) ' = ' img_file_names{img_file_index(5)} '\n' ...
                           'Response: ']);
 
-                          initialization_struct.allergy_wanting_food_sweet = img_file_names{food_sweet};
+                          initialization_struct.allergy_wanting_food_sweet = cellstr(img_file_names{food_sweet});
                           save([data_file_path '/initialization structure'], 'initialization_struct', '-v6')
                         end
 
@@ -359,6 +359,9 @@ function start
 
             % input the number of trials per block; 1 = practice trials, 2 = experimental blocks
             initialization_struct.num_trials = [5 5];
+
+            % set the reward_feedback_len
+            initialization_struct.reward_feedback_len = 3;
 
             % randomize the location of the foods
             sweet_loc_left = randi([0,1]);

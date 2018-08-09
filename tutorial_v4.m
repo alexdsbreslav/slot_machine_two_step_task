@@ -753,7 +753,24 @@ if down_key == L
           'Win!' ...
           ],'center',rect(4)*0.75, [], [], [], [], 1.6);
       Screen('Flip',w);
-      WaitSecs(1.5)
+      WaitSecs(1);
+
+% ---- countdown to next trial
+      for i = 1:initialization_struct.reward_feedback_len-1
+          Screen(w, 'FillRect', black);
+          Screen('TextSize', w, 20);
+          DrawFormattedText(w, [
+              'The next trial will start in' '\n' ...
+              num2str(initialization_struct.reward_feedback_len-i) ' seconds.' ...
+              ], 'center', 'center', white, [], [], [], 1.6);
+
+          Screen('TextSize', w, 40);
+          DrawFormattedText(w,[
+              'Win!' ...
+              ],'center',rect(4)*0.75, [], [], [], [], 1.6);
+          Screen(w, 'Flip');
+          WaitSecs(1);
+      end
 
 elseif down_key == R
       Screen('DrawTexture', w, state2_slot_L, [], slot_Lpoint);
@@ -774,7 +791,23 @@ elseif down_key == R
           'Win!' ...
           ],'center',rect(4)*0.75, [], [], [], [], 1.6);
       Screen('Flip',w);
-      WaitSecs(1.5)
+      WaitSecs(1);
+% ---- countdown to next trial
+      for i = 1:initialization_struct.reward_feedback_len-1
+          Screen(w, 'FillRect', black);
+          Screen('TextSize', w, 20);
+          DrawFormattedText(w, [
+              'The next trial will start in' '\n' ...
+              num2str(initialization_struct.reward_feedback_len-i) ' seconds.' ...
+              ], 'center', 'center', white, [], [], [], 1.6);
+
+          Screen('TextSize', w, 40);
+          DrawFormattedText(w,[
+              'Win!' ...
+              ],'center',rect(4)*0.75, [], [], [], [], 1.6);
+          Screen(w, 'Flip');
+          WaitSecs(1);
+      end
 end
 
 % -----------------------------------------------------------------------------
@@ -899,7 +932,23 @@ if down_key == L
           'Lose' ...
           ],'center',rect(4)*0.75, [], [], [], [], 1.6);
       Screen('Flip',w);
-      WaitSecs(1.5)
+      WaitSecs(1);
+% ---- countdown to next trial
+      for i = 1:initialization_struct.reward_feedback_len-1
+          Screen(w, 'FillRect', black);
+          Screen('TextSize', w, 20);
+          DrawFormattedText(w, [
+              'The next trial will start in' '\n' ...
+              num2str(initialization_struct.reward_feedback_len-i) ' seconds.' ...
+              ], 'center', 'center', white, [], [], [], 1.6);
+
+          Screen('TextSize', w, 40);
+          DrawFormattedText(w,[
+              'Lose' ...
+              ],'center',rect(4)*0.75, [], [], [], [], 1.6);
+          Screen(w, 'Flip');
+          WaitSecs(1);
+      end
 
 elseif down_key == R
       Screen('DrawTexture', w, state3_slot_L, [], slot_Lpoint);
@@ -920,7 +969,23 @@ elseif down_key == R
           'Lose' ...
           ],'center',rect(4)*0.75, [], [], [], [], 1.6);
       Screen('Flip',w);
-      WaitSecs(1.5)
+      WaitSecs(1);
+% ---- countdown to next trial
+      for i = 1:initialization_struct.reward_feedback_len-1
+          Screen(w, 'FillRect', black);
+          Screen('TextSize', w, 20);
+          DrawFormattedText(w, [
+              'The next trial will start in' '\n' ...
+              num2str(initialization_struct.reward_feedback_len-i) ' seconds.' ...
+              ], 'center', 'center', white, [], [], [], 1.6);
+
+          Screen('TextSize', w, 40);
+          DrawFormattedText(w,[
+              'Lose' ...
+              ],'center',rect(4)*0.75, [], [], [], [], 1.6);
+          Screen(w, 'Flip');
+          WaitSecs(1);
+      end
 end
 
 % -----------------------------------------------------------------------------
@@ -1041,7 +1106,23 @@ if down_key == L
           'Win!' ...
           ],'center',rect(4)*0.75, [], [], [], [], 1.6);
       Screen('Flip',w);
-      WaitSecs(1.5)
+      WaitSecs(1);
+% ---- countdown to next trial
+      for i = 1:initialization_struct.reward_feedback_len-1
+          Screen(w, 'FillRect', black);
+          Screen('TextSize', w, 20);
+          DrawFormattedText(w, [
+              'The trial will end in' '\n' ...
+              num2str(initialization_struct.reward_feedback_len-i) ' seconds.' ...
+              ], 'center', 'center', white, [], [], [], 1.6);
+
+          Screen('TextSize', w, 40);
+          DrawFormattedText(w,[
+              'Win!' ...
+              ],'center',rect(4)*0.75, [], [], [], [], 1.6);
+          Screen(w, 'Flip');
+          WaitSecs(1);
+      end
 
 elseif down_key == R
       Screen('DrawTexture', w, state3_slot_L, [], slot_Lpoint);
@@ -1062,7 +1143,23 @@ elseif down_key == R
           'Win!' ...
           ],'center',rect(4)*0.75, [], [], [], [], 1.6);
       Screen('Flip',w);
-      WaitSecs(1.5)
+      WaitSecs(1);
+% ---- countdown to next trial
+      for i = 1:initialization_struct.reward_feedback_len-1
+          Screen(w, 'FillRect', black);
+          Screen('TextSize', w, 20);
+          DrawFormattedText(w, [
+              'The trial will end in' '\n' ...
+              num2str(initialization_struct.reward_feedback_len-i) ' seconds.' ...
+              ], 'center', 'center', white, [], [], [], 1.6);
+
+          Screen('TextSize', w, 40);
+          DrawFormattedText(w,[
+              'Win!' ...
+              ],'center',rect(4)*0.75, [], [], [], [], 1.6);
+          Screen(w, 'Flip');
+          WaitSecs(1);
+      end
 end
 
 

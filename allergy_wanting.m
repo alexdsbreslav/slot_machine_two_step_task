@@ -511,6 +511,14 @@ else % otherwise, carry on as expected
         allergy_wanting.food_salt_select = food_salt;
         allergy_wanting.food_sweet_select = food_sweet;
 
+        Screen(exp_screen, 'FillRect', bg_color);
+        DrawFormattedText(exp_screen,[
+            'You have finished this section.' '\n' ...
+            'Press any key to continue on to the tutorial.' ...
+            ], 'center', 'center',txt_color,[],[],[],1.6);
+        Screen('Flip', exp_screen)
+        KbWait([], 2) % normal
+
     else
         allergy_wanting.eligible = 0;
         eligible = 0;

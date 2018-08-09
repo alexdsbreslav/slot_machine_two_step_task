@@ -8,9 +8,6 @@
 function main_task(initialization_struct, trials, block, tutorial_timing_struct)
 
 % 1 - Initial setup
-    % ---- adjustable parameters
-    reward_feedback_len = 3;
-
     % ---- shuffle the rng and save the seed
     rng('shuffle');
     rng_seed = rng;
@@ -339,11 +336,11 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
 
     % ---- Experimenter prep
         if initialization_struct.sweet_loc_left == 1
-            left_food = initialization_struct.allergy_wanting_food_sweet;
-            right_food = initialization_struct.allergy_wanting_food_salt;
+            left_food = initialization_struct.allergy_wanting_food_sweet{1}(7:end-4);
+            right_food = initialization_struct.allergy_wanting_food_salt{1}(6:end-4);
         else
-            right_food = initialization_struct.allergy_wanting_food_sweet;
-            left_food = initialization_struct.allergy_wanting_food_salt;
+            right_food = initialization_struct.allergy_wanting_food_sweet{1}(7:end-4);
+            left_food = initialization_struct.allergy_wanting_food_salt{1}(6:end-4);
         end
 
         DrawFormattedText(w,[
@@ -561,12 +558,14 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % 8 - Begin trials
+    if block ~= 0 % not using the camera for the practice trials
+        DrawFormattedText(w,[
+            'Initializing camera...' ...
+            ], 'center','center', white, [], [], [], 1.6);
+        Screen('Flip',w);
+        WaitSecs(1)
+    end
 
-    DrawFormattedText(w,[
-        'Initializing camera...' ...
-        ], 'center','center', white, [], [], [], 1.6);
-    Screen('Flip',w);
-    WaitSecs(1)
     t0 = GetSecs;
 
     for trial = 1:trials
@@ -829,19 +828,37 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
             Screen('Flip', w);
             reward_feedback_on(trial) = GetSecs - t0;
             WaitSecs(1)
+
+            % variable tex that will change on the last trial of the game
+            if block == 0
+                if trial == trials
+                    countdown_text = 'The game will end in';
+                else
+                    countdown_text = 'The next trial will start in';
+                end
+            else
+                if trial == trials
+                    countdown_text = 'The game will end in';
+                else
+                    countdown_text = 'The next trial will start in';
+                end
+            end
+
             % countdown to next trial
-            for i = 1:reward_feedback_len-1
+            for i = 1:initialization_struct.reward_feedback_len-1
                 Screen(w, 'FillRect', black);
+                Screen('TextSize', w, 30);
                 DrawFormattedText(w, [
-                    'The next trial will start in' '\n' ...
-                    num2str(reward_feedback_len-i) ' seconds.' ...
+                    countdown_text '\n' ...
+                    num2str(initialization_struct.reward_feedback_len-i) ' seconds.' ...
                     ], 'center', 'center', white, [], [], [], 1.6);
 
-            if payoff(trial,1) == 1
-                DrawFormattedText(w, reward, 'center', rect(4)*0.8, white);
-            else
-                DrawFormattedText(w, noreward, 'center', rect(4)*0.8, white);
-            end
+                Screen('TextSize', w, 60);
+                if payoff(trial,1) == 1
+                    DrawFormattedText(w, reward, 'center', rect(4)*0.8, white);
+                else
+                    DrawFormattedText(w, noreward, 'center', rect(4)*0.8, white);
+                end
 
                 Screen(w, 'Flip');
                 WaitSecs(1);
@@ -979,19 +996,37 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
             Screen('Flip', w);
             reward_feedback_on(trial) = GetSecs - t0;
             WaitSecs(1)
+
+            % variable tex that will change on the last trial of the game
+            if block == 0
+                if trial == trials
+                    countdown_text = 'The game will end in';
+                else
+                    countdown_text = 'The next trial will start in';
+                end
+            else
+                if trial == trials
+                    countdown_text = 'The game will end in';
+                else
+                    countdown_text = 'The next trial will start in';
+                end
+            end
+
             % countdown to next trial
-            for i = 1:reward_feedback_len-1
+            for i = 1:initialization_struct.reward_feedback_len-1
                 Screen(w, 'FillRect', black);
+                Screen('TextSize', w, 30);
                 DrawFormattedText(w, [
-                    'The next trial will start in' '\n' ...
-                    num2str(reward_feedback_len-i) ' seconds.' ...
+                    countdown_text '\n' ...
+                    num2str(initialization_struct.reward_feedback_len-i) ' seconds.' ...
                     ], 'center', 'center', white, [], [], [], 1.6);
 
-            if payoff(trial,2) == 1
-                DrawFormattedText(w, reward, 'center', rect(4)*0.8, white);
-            else
-                DrawFormattedText(w, noreward, 'center', rect(4)*0.8, white);
-            end
+                Screen('TextSize', w, 60);
+                if payoff(trial,2) == 1
+                    DrawFormattedText(w, reward, 'center', rect(4)*0.8, white);
+                else
+                    DrawFormattedText(w, noreward, 'center', rect(4)*0.8, white);
+                end
 
                 Screen(w, 'Flip');
                 WaitSecs(1);
