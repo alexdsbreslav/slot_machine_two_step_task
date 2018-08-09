@@ -1,4 +1,4 @@
-function tutorial_v4(initialization_struct)
+function exit_flag = tutorial_v4(initialization_struct)
 
 % The tutorial for this task was initially developed for Daw et al. (2011) Neuron and
 % used for other implementations of the task such as Konovalov (2016) Nature Communications.
@@ -9,7 +9,8 @@ function tutorial_v4(initialization_struct)
 % Please do not share or use this code without my written permission.
 % Author: Alex Breslav
 
-%clear all
+clear all
+exit_flag = 0;
 rng(66); %set the rng seed so everyone sees the same probability changing video
 
 Screen('Preference', 'SkipSyncTests', 1); % ALTERED FOR DEBUGGING
@@ -291,6 +292,7 @@ KbWait([],2);
 while 1
   [keyIsDown, ~, keyCode] = KbCheck;
   if keyIsDown && any(keyCode(exitKeys))
+      exit_flag = 1;
       sca; return
   else
       break
@@ -1183,6 +1185,7 @@ KbWait([],2);
 while 1
   [keyIsDown, ~, keyCode] = KbCheck;
   if keyIsDown && any(keyCode(exitKeys))
+      exit_flag = 1;
       sca; return
   else
       break
@@ -1463,6 +1466,7 @@ KbWait([],2);
 while 1
   [keyIsDown, ~, keyCode] = KbCheck;
   if keyIsDown && any(keyCode(exitKeys))
+      exit_flag = 1;
       sca; return
   else
       break

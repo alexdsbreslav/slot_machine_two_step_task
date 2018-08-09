@@ -5,14 +5,15 @@
 % Please do not share or use this code without the written permission of all authors.
 % Authors: Nikki Sullivan, Alex Breslav
 
-function [eligible, food_salt, food_sweet] = allergy_wanting(initialization_struct)
+function [exit_flag, eligible, food_salt, food_sweet] = allergy_wanting(initialization_struct)
 
-  % some setups
+% some setups
 Screen('Preference', 'VisualDebugLevel', 1);% change psych toolbox screen check to black
 Screen('Preference', 'SkipSyncTests', 1); % ALTERED FOR DEBUGGING
 FlushEvents;
 %HideCursor; %ALTERED FOR DEBUGGING
 PsychDefaultSetup(1);
+exit_flag = 0;
 
 results_file_name = [initialization_struct.data_file_path '/allergy_wanting'];
 
@@ -184,6 +185,7 @@ while 1
 
         break
     elseif keyIsDown && any(keyCode(exitKeys)) && length(KbName(keyCode)) == 1
+        exit_flag = 1;
         sca; return;
     end
 end
@@ -256,6 +258,7 @@ else
         if keyIsDown && keyCode(spaceKey)
             break
         elseif any(keyCode(exitKeys))
+            exit_flag = 1;
             sca; return
         end
     end
@@ -304,6 +307,7 @@ else
 
                 break
             elseif keyIsDown && any(keyCode(exitKeys)) && length(KbName(keyCode)) == 1
+                exit_flag = 1;
                 sca; return;
             end
         end
@@ -398,6 +402,7 @@ else % otherwise, carry on as expected
         if keyIsDown && keyCode(spaceKey)
             break
         elseif any(keyCode(exitKeys))
+            exit_flag = 1;
             sca; return
         end
     end
@@ -448,6 +453,7 @@ else % otherwise, carry on as expected
 
                 break
             elseif keyIsDown && any(keyCode(exitKeys)) && length(KbName(keyCode)) == 1
+                exit_flag = 1;
                 sca; return;
             end
         end

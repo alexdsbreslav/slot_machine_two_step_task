@@ -60,7 +60,11 @@ function start
                 case 1
                 % ---- TASK
                     % ---- 1: Allergy & wanting
-                        [eligible, food_salt, food_sweet] = allergy_wanting(initialization_struct);
+                        [exit_flag, eligible, food_salt, food_sweet] = allergy_wanting(initialization_struct);
+
+                        if exit_flag == 1
+                            sca; return
+                        end
 
                         initialization_struct.allergy_wanting_eligible = eligible;
                         initialization_struct.allergy_wanting_food_salt = food_salt;
@@ -68,15 +72,23 @@ function start
                         save([data_file_path '/initialization structure'], 'initialization_struct', '-v6')
 
                         if eligible == 0
-                            sca; return;
+                            sca; return
                         end
 
                     % ---- 2: Tutorial
-                        tutorial_v4(initialization_struct);
+                        exit_flag = tutorial_v4(initialization_struct);
+
+                        if exit_flag == 1
+                            sca; return
+                        end
 
                     % ---- 3: practice trials (Block 0 in code)
                         load([data_file_path '/tutorial_timing.mat'])
-                        main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1), tutorial_timing_struct);
+                        exit_flag = main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1), tutorial_timing_struct);
+
+                        if exit_flag == 1
+                            sca; return
+                        end
 
                     % ---- 4: Block 1 of the main experiment trials
                     % ---- Camera on?
@@ -91,10 +103,14 @@ function start
                               case 0
                                   disp([fprintf('\n') ...
                                   'OK, you should restart the function to try again'])
-                                  sca; return;
+                                  sca; return
 
                               case 1
-                                  main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
+                                  exit_flag = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
+
+                                  if exit_flag == 1
+                                      sca; return
+                                  end
                           end
 
                       % ---- 5: Block 2 of the main experiment trials
@@ -110,16 +126,20 @@ function start
                                 case 0
                                     disp([fprintf('\n') ...
                                     'OK, you should restart the function to try again'])
-                                    sca; return;
+                                    sca; return
 
                                 case 1
-                                    main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
+                                    exit_flag = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
+
+                                    if exit_flag == 1
+                                        sca; return
+                                    end
                             end
 
                     % --- display winnings
                         load([data_file_path '/money.mat']);
-                        fprintf('\n\n\n\n\n\n\n\n\n\nYour total earnings (show up fee included) = $ %.2f\n\nThank you for your participation\n\n\n', money_struct.payoff_total);
-
+                        fprintf('\n\n\n\n\n\n\n\n\n\nThe participant earned $ %.2f during the money rounds', money_struct.payoff_sum);
+                        fprintf('\nRound up to the nearest dollar and pay them (show up fee included) = $ %.2f', money_struct.payoff_total);
                 case 2
                 % ---- TASK
                     % ---- Select food by hand if necessary
@@ -162,11 +182,19 @@ function start
                         end
 
                     % ---- 2: Tutorial
-                        tutorial_v4(initialization_struct);
+                        exit_flag = tutorial_v4(initialization_struct);
+
+                        if exit_flag == 1
+                            sca; return
+                        end
 
                     % ---- 3: practice trials (Block 0 in code)
                         load([data_file_path '/tutorial_timing.mat'])
-                        main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1), tutorial_timing_struct);
+                        exit_flag = main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1), tutorial_timing_struct);
+
+                        if exit_flag == 1
+                            sca; return
+                        end
 
                     % ---- 4: Block 1 of the main experiment trials
                     % ---- Camera on?
@@ -181,10 +209,14 @@ function start
                               case 0
                                   disp([fprintf('\n') ...
                                   'OK, you should restart the function to try again'])
-                                  sca; return;
+                                  sca; return
 
                               case 1
-                                  main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
+                                  exit_flag = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
+
+                                  if exit_flag == 1
+                                      sca; return
+                                  end
                           end
 
                       % ---- 5: Block 2 of the main experiment trials
@@ -200,21 +232,29 @@ function start
                                 case 0
                                     disp([fprintf('\n') ...
                                     'OK, you should restart the function to try again'])
-                                    sca; return;
+                                    sca; return
 
                                 case 1
-                                    main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
+                                    exit_flag = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
+
+                                    if exit_flag == 1
+                                        sca; return
+                                    end
                             end
 
                     % --- display winnings
                         load([data_file_path '/money.mat']);
-                        fprintf('\n\n\n\n\n\n\n\n\n\nYour total earnings (show up fee included) = $ %.2f\n\nThank you for your participation\n\n\n', money_struct.payoff_total);
-
+                        fprintf('\n\n\n\n\n\n\n\n\n\nThe participant earned $ %.2f during the money rounds', money_struct.payoff_sum);
+                        fprintf('\nRound up to the nearest dollar and pay them (show up fee included) = $ %.2f', money_struct.payoff_total);
                 case 3
                 % ---- TASK
                     % ---- 3: practice trials (Block 0 in code)
                         load([data_file_path '/tutorial_timing.mat'])
-                        main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1), tutorial_timing_struct);
+                        exit_flag = main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1), tutorial_timing_struct);
+
+                        if exit_flag == 1
+                            sca; return
+                        end
 
                     % ---- 4: Block 1 of the main experiment trials
                     % ---- Camera on?
@@ -229,10 +269,14 @@ function start
                               case 0
                                   disp([fprintf('\n') ...
                                   'OK, you should restart the function to try again'])
-                                  sca; return;
+                                  sca; return
 
                               case 1
-                                  main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
+                                  exit_flag = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
+
+                                  if exit_flag == 1
+                                      sca; return
+                                  end
                           end
 
                       % ---- 5: Block 2 of the main experiment trials
@@ -248,16 +292,20 @@ function start
                                 case 0
                                     disp([fprintf('\n') ...
                                     'OK, you should restart the function to try again'])
-                                    sca; return;
+                                    sca; return
 
                                 case 1
-                                    main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
+                                    exit_flag = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
+
+                                    if exit_flag == 1
+                                        sca; return
+                                    end
                             end
 
                     % --- display winnings
                         load([data_file_path '/money.mat']);
-                        fprintf('\n\n\n\n\n\n\n\n\n\nYour total earnings (show up fee included) = $ %.2f\n\nThank you for your participation\n\n\n', money_struct.payoff_total);
-
+                        fprintf('\n\n\n\n\n\n\n\n\n\nThe participant earned $ %.2f during the money rounds', money_struct.payoff_sum);
+                        fprintf('\nRound up to the nearest dollar and pay them (show up fee included) = $ %.2f', money_struct.payoff_total);
                 case 4
                     % ---- 4: Block 1 of the main experiment trials
                     % ---- Camera on?
@@ -272,10 +320,14 @@ function start
                               case 0
                                   disp([fprintf('\n') ...
                                   'OK, you should restart the function to try again'])
-                                  sca; return;
+                                  sca; return
 
                               case 1
-                                  main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
+                                  exit_flag = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
+
+                                  if exit_flag == 1
+                                      sca; return
+                                  end
                           end
 
                       % ---- 5: Block 2 of the main experiment trials
@@ -291,16 +343,20 @@ function start
                                 case 0
                                     disp([fprintf('\n') ...
                                     'OK, you should restart the function to try again'])
-                                    sca; return;
+                                    sca; return
 
                                 case 1
-                                    main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
+                                    exit_flag = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
+
+                                    if exit_flag == 1
+                                        sca; return
+                                    end
                             end
 
                     % --- display winnings
                         load([data_file_path '/money.mat']);
-                        fprintf('\n\n\n\n\n\n\n\n\n\nYour total earnings (show up fee included) = $ %.2f\n\nThank you for your participation\n\n\n', money_struct.payoff_total);
-
+                        fprintf('\n\n\n\n\n\n\n\n\n\nThe participant earned $ %.2f during the money rounds', money_struct.payoff_sum);
+                        fprintf('\nRound up to the nearest dollar and pay them (show up fee included) = $ %.2f', money_struct.payoff_total);
                 case 5
                 % ---- TASK
                     % ---- 5: Block 2 of the main experiment trials
@@ -316,16 +372,21 @@ function start
                               case 0
                                   disp([fprintf('\n') ...
                                   'OK, you should restart the function to try again'])
-                                  sca; return;
+                                  sca; return
 
                               case 1
-                                  main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
+                                  exit_flag = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
+
+                                  if exit_flag == 1
+                                      sca; return
+                                  end
                           end
 
                     % --- display winnings
                         load([data_file_path '/money.mat']);
-                        fprintf('\n\n\n\n\n\n\n\n\n\nYour total earnings (show up fee included) = $ %.2f\n\nThank you for your participation\n\n\n', money_struct.payoff_total);
-            end
+                        fprintf('\n\n\n\n\n\n\n\n\n\nThe participant earned $ %.2f during the money rounds', money_struct.payoff_sum);
+                        fprintf('\nRound up to the nearest dollar and pay them (show up fee included) = $ %.2f', money_struct.payoff_total);
+              end
 
         case 99
             % shuffle the rng and save the seed
@@ -370,7 +431,11 @@ function start
 
     % ---- TASK
         % ---- 1: Allergy & wanting
-            [eligible, food_salt, food_sweet] = allergy_wanting(initialization_struct);
+            [exit_flag, eligible, food_salt, food_sweet] = allergy_wanting(initialization_struct);
+
+            if exit_flag == 1
+                sca; return
+            end
 
             initialization_struct.allergy_wanting_eligible = eligible;
             initialization_struct.allergy_wanting_food_salt = food_salt;
@@ -378,14 +443,22 @@ function start
             save([data_file_path '/initialization structure'], 'initialization_struct', '-v6')
 
             if eligible == 0
-                sca; return;
+                sca; return
             end
         % ---- 2: Tutorial
-            tutorial_v4(initialization_struct);
+            exit_flag = tutorial_v4(initialization_struct);
+
+            if exit_flag == 1
+                sca; return
+            end
 
         % ---- 3: practice trials (Block 0 in code)
             load([data_file_path '/tutorial_timing.mat'])
-            main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1), tutorial_timing_struct);
+            exit_flag = main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1), tutorial_timing_struct);
+
+            if exit_flag == 1
+                sca; return
+            end
 
         % ---- 4: Block 1 of the main experiment trials
         % ---- Camera on?
@@ -400,10 +473,14 @@ function start
                   case 0
                       disp([fprintf('\n') ...
                       'OK, you should restart the function to try again'])
-                      sca; return;
+                      sca; return
 
                   case 1
-                      main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
+                      exit_flag = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
+
+                      if exit_flag == 1
+                          sca; return
+                      end
               end
 
         % ---- 5: Block 2 of the main experiment trials
@@ -419,15 +496,20 @@ function start
                   case 0
                       disp([fprintf('\n') ...
                       'OK, you should restart the function to try again'])
-                      sca; return;
+                      sca; return
 
                   case 1
-                      main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
+                      exit_flag = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
+
+                      if exit_flag == 1
+                          sca; return
+                      end
               end
 
         % --- display winnings
             load([data_file_path '/money.mat']);
-            fprintf('\n\n\n\n\n\n\n\n\n\nYour total earnings (show up fee included) = $ %.2f\n\nThank you for your participation\n\n\n', money_struct.payoff_total);
+            fprintf('\n\n\n\n\n\n\n\n\n\nThe participant earned $ %.2f during the money rounds', money_struct.payoff_sum);
+            fprintf('\nRound up to the nearest dollar and pay them (show up fee included) = $ %.2f', money_struct.payoff_total);
 
     end
 end

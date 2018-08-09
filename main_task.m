@@ -5,9 +5,11 @@
 % Please do not share or use this code without my written permission.
 % Author: Alex Breslav
 
-function main_task(initialization_struct, trials, block, tutorial_timing_struct)
+function exit_flag = main_task(initialization_struct, trials, block, tutorial_timing_struct)
 
 % 1 - Initial setup
+    exit_flag = 0;
+
     % ---- shuffle the rng and save the seed
     rng('shuffle');
     rng_seed = rng;
@@ -325,6 +327,7 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
         while 1 %wait for response and allow exit if necessesary
           [keyIsDown, ~, keyCode] = KbCheck;
           if keyIsDown && any(keyCode(exitKeys))
+              exit_flag = 1;
               sca; return
           elseif keyIsDown && any(keyCode(startFirstKeys))
               break
@@ -355,6 +358,7 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
         while 1 %wait for response and allow exit if necessesary
           [keyIsDown, ~, keyCode] = KbCheck;
           if keyIsDown && any(keyCode(exitKeys))
+              exit_flag = 1;
               sca; return
           elseif keyIsDown && any(keyCode(start_game_key))
               break
@@ -440,6 +444,7 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
         while 1 %wait for response and allow exit if necessesary
           [keyIsDown, ~, keyCode] = KbCheck;
           if keyIsDown && any(keyCode(exitKeys))
+              exit_flag = 1;
               sca; return
           elseif keyIsDown && any(keyCode(startFirstKeys))
               break
@@ -459,6 +464,7 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
         while 1 %wait for response and allow exit if necessesary
           [keyIsDown, ~, keyCode] = KbCheck;
           if keyIsDown && any(keyCode(exitKeys))
+              exit_flag = 1;
               sca; return
           elseif keyIsDown && any(keyCode(start_game_key))
               break
@@ -545,6 +551,7 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
         while 1 %wait for response and allow exit if necessesary
           [keyIsDown, ~, keyCode] = KbCheck;
           if keyIsDown && any(keyCode(exitKeys))
+              exit_flag = 1;
               sca; return
           elseif keyIsDown && any(keyCode(startFirstKeys))
               break
@@ -1097,8 +1104,8 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
 % ---- unique to this block
         money_struct.block = find(initialization_struct.block == 1);
         money_struct.stim_symbol = initialization_struct.stim_symbol(1:6); % first 6 symbols always go to money block
-        payoff_sum = sum(nansum(payoff))/10;
-        money_struct.payoff_total = 7 + payoff_sum;
+        money_struct.payoff_sum = sum(nansum(payoff))/10;
+        money_struct.payoff_total = 7 + ceil(money_struct.payoff_sum);
         save([initialization_struct.data_file_path '/money'], 'money_struct', '-v6');
 
     else % food block
@@ -1147,6 +1154,7 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
         while 1 %wait for response and allow exit if necessesary
           [keyIsDown, ~, keyCode] = KbCheck;
           if keyIsDown && any(keyCode(exitKeys))
+              exit_flag = 1;
               sca; return
           elseif keyIsDown && any(keyCode(continueKeys))
               break
@@ -1169,6 +1177,7 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
         while 1 %wait for response and allow exit if necessesary
           [keyIsDown, ~, keyCode] = KbCheck;
           if keyIsDown && any(keyCode(exitKeys))
+              exit_flag = 1;
               sca; return
           elseif keyIsDown && any(keyCode(continueKeys))
               break
@@ -1190,6 +1199,7 @@ function main_task(initialization_struct, trials, block, tutorial_timing_struct)
         while 1 %wait for response and allow exit if necessesary
           [keyIsDown, ~, keyCode] = KbCheck;
           if keyIsDown && any(keyCode(exitKeys))
+              exit_flag = 1;
               sca; return
           elseif keyIsDown && any(keyCode(continueKeys))
               break
