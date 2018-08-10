@@ -25,7 +25,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
     % ---- Screen selection
     doublebuffer=1; %????
     screens = Screen('Screens'); %count the screen
-    whichScreen = min(screens); %select the screen; ALTERED THIS BECAUSE IT KEPT SHOWING UP ON MY LAPTOP INSTEAD OF THE ATTACHED MONITOR
+    whichScreen = max(screens); %select the screen; ALTERED THIS BECAUSE IT KEPT SHOWING UP ON MY LAPTOP INSTEAD OF THE ATTACHED MONITOR
     [w, rect] = Screen('OpenWindow', whichScreen, 0,[], 32, ...
         doublebuffer+1,[],[],kPsychNeedFastBackingStore); %???
 
