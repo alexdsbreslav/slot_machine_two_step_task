@@ -336,35 +336,6 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
 % ---- Intro screen for food block
     elseif block == 2 % block == 2 is food
-
-    % ---- Experimenter prep
-        if initialization_struct.sweet_loc_left == 1
-            left_food = initialization_struct.allergy_wanting_food_sweet{1}(7:end-4);
-            right_food = initialization_struct.allergy_wanting_food_salt{1}(6:end-4);
-        else
-            right_food = initialization_struct.allergy_wanting_food_sweet{1}(7:end-4);
-            left_food = initialization_struct.allergy_wanting_food_salt{1}(6:end-4);
-        end
-
-        DrawFormattedText(w,[
-            'Please wait while the experimenter prepares' '\n' ...
-            'the room for this version of the game.' '\n\n' ...
-            'Version = Food' '\n' ...
-            'Left food = ' left_food '\n' ...
-            'Right food = ' right_food ...
-            ], 'center','center', white, [], [], [], 1.6);
-        Screen('Flip',w);
-
-        while 1 %wait for response and allow exit if necessesary
-          [keyIsDown, ~, keyCode] = KbCheck;
-          if keyIsDown && any(keyCode(exitKeys))
-              exit_flag = 1;
-              sca; return
-          elseif keyIsDown && any(keyCode(start_game_key))
-              break
-          end
-        end
-
     % ---- Food version
         DrawFormattedText(w, [
             'In this version of the game, you will be playing for food rewards!' ...
@@ -453,24 +424,6 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
 % ---- Intro screen for money block
     else % block = 1 is money
-
-        DrawFormattedText(w,[
-            'Please wait while the experimenter prepares' '\n' ...
-            'the room for this version of the game.' '\n\n' ...
-            'Version = Money'
-            ], 'center','center', white, [], [], [], 1.6);
-        Screen('Flip',w);
-
-        while 1 %wait for response and allow exit if necessesary
-          [keyIsDown, ~, keyCode] = KbCheck;
-          if keyIsDown && any(keyCode(exitKeys))
-              exit_flag = 1;
-              sca; return
-          elseif keyIsDown && any(keyCode(start_game_key))
-              break
-          end
-        end
-
     % ---- Money version
         DrawFormattedText(w, [
             'In this version of the game, you will be playing for money!' ...
@@ -1167,7 +1120,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
         Screen('TextSize', w, 40);
         DrawFormattedText(w, [
             'You have completed the money rounds.' '\n\n' ...
-            'You earned: $' sprintf('%.2f', payoff_sum) '\n\n' ...
+            'You earned: $' sprintf('%.2f', money_struct.payoff_sum) '\n\n' ...
             'Please alert the experimenter, and' '\n' ...
             'press c to close to game.'
             ], 'center', 'center', white);

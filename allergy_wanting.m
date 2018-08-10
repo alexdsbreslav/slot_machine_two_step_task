@@ -45,7 +45,7 @@ txt_size.statusLabels = 32;
 
 % response key set up
 KbName('UnifyKeyNames');
-exitKeys = KbName({'e', 'E'});
+exitKeys = KbName({'ESCAPE'});
 rightKey = KbName('rightarrow');
 leftKey = KbName('leftarrow');
 spaceKey = KbName('space');
