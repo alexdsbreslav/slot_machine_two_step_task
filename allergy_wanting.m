@@ -54,7 +54,7 @@ startFirstKeys = KbName({'b', 'B'});
 %ratings: set up task
 
 % retrieve image names from directory
-tmp = dir('food_images/*.jpg');
+tmp = dir('food_images/*.png');
 allergy_wanting.image_names = {tmp(1:length(tmp)).name}';
 
 allergy_wanting.nTrials = length(allergy_wanting.image_names);
