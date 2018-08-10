@@ -45,7 +45,7 @@ txt_size.statusLabels = 32;
 
 % response key set up
 KbName('UnifyKeyNames');
-exitKeys = KbName({'e', 'E'});
+exitKeys = KbName({'ESCAPE'});
 rightKey = KbName('rightarrow');
 leftKey = KbName('leftarrow');
 spaceKey = KbName('space');
@@ -54,7 +54,7 @@ startFirstKeys = KbName({'b', 'B'});
 %ratings: set up task
 
 % retrieve image names from directory
-tmp = dir('food_images/*.jpg');
+tmp = dir('food_images/*.png');
 allergy_wanting.image_names = {tmp(1:length(tmp)).name}';
 
 allergy_wanting.nTrials = length(allergy_wanting.image_names);

@@ -9,7 +9,6 @@ function exit_flag = tutorial_v4(initialization_struct)
 % Please do not share or use this code without my written permission.
 % Author: Alex Breslav
 
-clear all
 exit_flag = 0;
 rng(66); %set the rng seed so everyone sees the same probability changing video
 
@@ -1768,7 +1767,6 @@ save([initialization_struct.data_file_path '/tutorial_timing'], 'tutorial_timing
 
 ShowCursor; %ALTERED FOR DEBUGGING; THIS WAS HASHED OUT?
 Screen('Close',w); %ALTERED FOR DEBUGGING; THIS WAS HASHED OUT?
-Screen('Close'); %ALTERED FOR DEBUGGING; THIS WAS HASHED OUT?
 
 %jheapcl; ALTERED FOR DEBUGGING
 
