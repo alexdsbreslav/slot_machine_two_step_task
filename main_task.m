@@ -774,13 +774,13 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
     % ---- determine reward based on block
             if block == 0
                 reward = 'Win!';
-                noreward = 'Try again';
+                noreward = 'Lose';
             elseif block == 1
                 reward = '+10 cents';
-                noreward = '0 cents';
+                noreward = 'Lose';
             else
                 reward = 'Take one bite of a snack';
-                noreward = 'Try again';
+                noreward = 'Lose';
             end
 
     % ---- determine second step choice
@@ -942,13 +942,13 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
     % ---- determine reward based on block
             if block == 0
                reward = 'Win!';
-               noreward = 'Try again';
+               noreward = 'Lose';
             elseif block == 1
                reward = '+10 cents';
-               noreward = '0 cents';
+               noreward = 'Lose';
             else
                reward = 'Take one bite of a snack';
-               noreward = 'Try again';
+               noreward = 'Lose';
             end
 
     % ---- determine second step choice
