@@ -7,6 +7,19 @@
 
 function compile_input_for_video_coding(subject_number)
 
+  % ------------------------------------------------------------------------------
+  % ------------------------------------------------------------------------------
+  % ---- File specifications
+  file_root = '/Users/alex/OneDrive - Duke University/1. Research Projects/1. Huettel/17.09_MDT/6. Raw Data/MatLab' % for Alex's computer
+  video_file_root = '/Users/alex/OneDrive - Duke University/1. Research Projects/1. Huettel/17.09_MDT/6. Raw Data/Videos' % for Alex's computer
+  % file_root = '\Users\ads48\Documents\Projects\18.08.07_MDT\raw_data\matlab' % for the eye-tracker
+  % video_file_root = '\Users\ads48\Documents\Projects\18.08.07_MDT\raw_data\videos' % for the eye-tracker
+  sl = '/'; % for OSX
+  % sl = '\'; % for Windows
+
+  % ------------------------------------------------------------------------------
+  % ------------------------------------------------------------------------------
+
 start_time_vid1 = input(['\n\n' ...
 'We need the time stamp for the FIRST video.' '\n' ...
   'Record when the first frame occurs after the initializing camera... screen.' '\n' ...
@@ -26,10 +39,10 @@ start_time_vid2_frames = start_time_vid2(1)*60*30 + start_time_vid2(2)*30 + star
 
 % load all of the necessary structures
 filename_subnum = pad(num2str(subject_number), 3, 'left', '0');
-data_file_path = ['/Users/alex/OneDrive - Duke University/1. Research Projects/1. Huettel/17.09_MDT/6. Raw Data/MatLab/sub' filename_subnum];
-load([data_file_path '/initialization structure.mat']);
-load([data_file_path '/food.mat']);
-load([data_file_path '/money.mat']);
+data_file_path = [file_root sl 'sub' filename_subnum];
+load([data_file_path sl 'initialization structure.mat']);
+load([data_file_path sl 'food.mat']);
+load([data_file_path sl 'money.mat']);
 
 % number of trials/size of the array
 trials_food = length(food_struct.reward_feedback_on);
@@ -41,9 +54,9 @@ video_coding_input = cell(num_trials, 12);
 video_coding_input(:, 1) = num2cell(subject_number);
 
 % video link
-video_file_path = ['/Users/alex/OneDrive - Duke University/1. Research Projects/1. Huettel/17.09_MDT/6. Raw Data/Videos/sub' filename_subnum];
+video_file_path = [video_file_root sl 'sub' filename_subnum];
 [~, msg, ~] = mkdir(video_file_path);
-video_coding_input(:,2) = cellstr([video_file_path '/video.mp4']);
+video_coding_input(:,2) = cellstr([video_file_path sl 'video.mp4']);
 
 % foods
 video_coding_input(:,3) = cellstr(initialization_struct.allergy_wanting_food_sweet{1}(7:end-4)); %variable is sweet_[food name].jpg
@@ -143,7 +156,7 @@ T = table(video_coding_input(:,1), video_coding_input(:,2), video_coding_input(:
 'VariableNames', {'subID', 'video_link', 'food_text_sweet', 'food_text_salt', 'sweet_loc_left', 'block_num', 'block_text', 'trial_num', 'reward_feedback_on', 'feedback_state', 'feedback_state_color', 'trial_win'});
 
 % print table to excel
-writetable(T, [video_file_path '/coding_input.xlsx']);
+writetable(T, [video_file_path sl 'coding_input.xlsx']);
 
 
 end
