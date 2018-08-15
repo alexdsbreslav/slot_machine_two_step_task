@@ -8,7 +8,7 @@
 function start
 
 % clear everything from the workspace; everything is saved in the initialization_struct
-Screen('CloseAll')
+Screen('CloseAll');
 FlushEvents;
 
 % ------------------------------------------------------------------------------
@@ -28,7 +28,7 @@ sl = '/'; % for OSX
 
 % ---- Text formatting specifications
 textsize_directions = 30;
-textsize_allergy_wanting_rateGuide = 18;
+textsize_allergy_wanting_rateGuide = 20;
 textsize_fixcross = 40;
 textsize_countdown = 20;
 
@@ -151,7 +151,6 @@ else
     initialization_struct.textsize_countdown = textsize_countdown;
 
     save([data_file_path sl 'initialization structure'], 'initialization_struct', '-v6')
-
 end
 
 if start_where == 1

@@ -151,7 +151,7 @@ for n = 1:2
     DrawFormattedText(exp_screen,allergy_wanting.yesno_keyguide{n},...
         allergy_wanting.yesno_guideLocs{n},keyguide_loc_low,txt_color,wrapat,[],[],vSpacing);
     DrawFormattedText(exp_screen,char(allergy_wanting.yesno_guide(n)),...
-        allergy_wanting.yesno_guideLocs{n} + yesno_guide_offset,guide_loc_low,txt_color,wrapat,[],[],1);
+        allergy_wanting.yesno_guideLocs{n} + yesno_guide_offset,guide_loc_low,txt_color,wrapat,[],[],1.6);
 end
 
 Screen('Flip', exp_screen);
@@ -200,12 +200,12 @@ for n = 1:2
         DrawFormattedText(exp_screen,allergy_wanting.yesno_keyguide{n},...
             allergy_wanting.yesno_guideLocs{n},keyguide_loc_low,chosen_color,wrapat,[],[],vSpacing);
         DrawFormattedText(exp_screen,char(allergy_wanting.yesno_guide(n)),...
-            allergy_wanting.yesno_guideLocs{n} + yesno_guide_offset,guide_loc_low,chosen_color,wrapat,[],[],1);
+            allergy_wanting.yesno_guideLocs{n} + yesno_guide_offset,guide_loc_low,chosen_color,wrapat,[],[],1.6);
     else
         DrawFormattedText(exp_screen,allergy_wanting.yesno_keyguide{n},...
             allergy_wanting.yesno_guideLocs{n},keyguide_loc_low,txt_color,wrapat,[],[],vSpacing);
         DrawFormattedText(exp_screen,char(allergy_wanting.yesno_guide(n)),...
-            allergy_wanting.yesno_guideLocs{n} + yesno_guide_offset,guide_loc_low,txt_color,wrapat,[],[],1);
+            allergy_wanting.yesno_guideLocs{n} + yesno_guide_offset,guide_loc_low,txt_color,wrapat,[],[],1.6);
     end
 end
 Screen('Flip', exp_screen);
@@ -237,7 +237,7 @@ else
         DrawFormattedText(exp_screen,allergy_wanting.yesno_keyguide{n},...
             allergy_wanting.yesno_guideLocs{n},allergy_wanting.height*.65,txt_color,wrapat,[],[],vSpacing);
         DrawFormattedText(exp_screen,char(allergy_wanting.yesno_allergic_guide(n)),...
-            allergy_wanting.yesno_guideLocs{n} + yesno_allergic_guide_offset,allergy_wanting.height*.52,txt_color,wrapat,[],[],1);
+            allergy_wanting.yesno_guideLocs{n} + yesno_allergic_guide_offset,allergy_wanting.height*.52,txt_color,wrapat,[],[],1.6);
     end
 
     Screen('TextSize', exp_screen, textsize_directions);
@@ -274,7 +274,7 @@ else
             DrawFormattedText(exp_screen,allergy_wanting.yesno_keyguide{n},...
                 allergy_wanting.yesno_guideLocs{n},keyguide_loc_low,txt_color,wrapat,[],[],vSpacing);
             DrawFormattedText(exp_screen,char(allergy_wanting.yesno_allergic_guide(n)),...
-                allergy_wanting.yesno_guideLocs{n} + yesno_allergic_guide_offset,guide_loc_low,txt_color,wrapat,[],[],1);
+                allergy_wanting.yesno_guideLocs{n} + yesno_allergic_guide_offset,guide_loc_low,txt_color,wrapat,[],[],1.6);
         end
 
         Screen('Flip', exp_screen);
@@ -318,12 +318,12 @@ else
                 DrawFormattedText(exp_screen,allergy_wanting.yesno_keyguide{n},...
                     allergy_wanting.yesno_guideLocs{n},keyguide_loc_low,chosen_color,wrapat,[],[],vSpacing);
                 DrawFormattedText(exp_screen,char(allergy_wanting.yesno_allergic_guide(n)),...
-                    allergy_wanting.yesno_guideLocs{n} + yesno_allergic_guide_offset,guide_loc_low,chosen_color,wrapat,[],[],1);
+                    allergy_wanting.yesno_guideLocs{n} + yesno_allergic_guide_offset,guide_loc_low,chosen_color,wrapat,[],[],1.6);
             else
                 DrawFormattedText(exp_screen,allergy_wanting.yesno_keyguide{n},...
                     allergy_wanting.yesno_guideLocs{n},keyguide_loc_low,txt_color,wrapat,[],[],vSpacing);
                 DrawFormattedText(exp_screen,char(allergy_wanting.yesno_allergic_guide(n)),...
-                    allergy_wanting.yesno_guideLocs{n} + yesno_allergic_guide_offset,guide_loc_low,txt_color,wrapat,[],[],1);
+                    allergy_wanting.yesno_guideLocs{n} + yesno_allergic_guide_offset,guide_loc_low,txt_color,wrapat,[],[],1.6);
             end
         end
         Screen('Flip', exp_screen);
@@ -381,7 +381,7 @@ else % otherwise, carry on as expected
     for n = 1:length(allergy_wanting.keyguide)
         DrawFormattedText(exp_screen,allergy_wanting.keyguide(n),...
             allergy_wanting.guideLocs(n),allergy_wanting.height*.5,txt_color,wrapat,[],[],vSpacing);
-        DrawFormattedText(exp_screen,char(allergy_wanting.guideTwo(n)),allergy_wanting.guideLocs(n) + want_guide_offset,allergy_wanting.height*.58,txt_color,wrapat,[],[],1);
+        DrawFormattedText(exp_screen,char(allergy_wanting.guideTwo(n)),allergy_wanting.guideLocs(n) + want_guide_offset,allergy_wanting.height*.58,txt_color,wrapat,[],[],1.6);
     end
 
     Screen('TextSize', exp_screen, textsize_directions);
@@ -419,7 +419,7 @@ else % otherwise, carry on as expected
             DrawFormattedText(exp_screen,allergy_wanting.keyguide(n),...
                 allergy_wanting.guideLocs(n),keyguide_loc_low,txt_color,wrapat,[],[],vSpacing);
             DrawFormattedText(exp_screen,char(allergy_wanting.guideTwo(n)),...
-                allergy_wanting.guideLocs(n) + want_guide_offset,guide_loc_low,txt_color,wrapat,[],[],1);
+                allergy_wanting.guideLocs(n) + want_guide_offset,guide_loc_low,txt_color,wrapat,[],[],1.6);
         end
         Screen('Flip', exp_screen);
         allergy_wanting.want_stimOn(trial) = GetSecs - t0;
@@ -466,12 +466,12 @@ else % otherwise, carry on as expected
                 DrawFormattedText(exp_screen,allergy_wanting.keyguide(n),...
                     allergy_wanting.guideLocs(n),keyguide_loc_low,chosen_color,wrapat,[],[],vSpacing);
                 DrawFormattedText(exp_screen,char(allergy_wanting.guideTwo(n)),...
-                    allergy_wanting.guideLocs(n) + want_guide_offset,guide_loc_low,chosen_color,wrapat,[],[],1);
+                    allergy_wanting.guideLocs(n) + want_guide_offset,guide_loc_low,chosen_color,wrapat,[],[],1.6);
             else
                 DrawFormattedText(exp_screen,allergy_wanting.keyguide(n),...
                     allergy_wanting.guideLocs(n),keyguide_loc_low,txt_color,wrapat,[],[],vSpacing);
                 DrawFormattedText(exp_screen,char(allergy_wanting.guideTwo(n)),...
-                    allergy_wanting.guideLocs(n) + want_guide_offset,guide_loc_low,txt_color,wrapat,[],[],1);
+                    allergy_wanting.guideLocs(n) + want_guide_offset,guide_loc_low,txt_color,wrapat,[],[],1.6);
             end
         end
         Screen('Flip', exp_screen);

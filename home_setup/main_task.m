@@ -1166,7 +1166,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
     end
 
     ShowCursor;
-    Screen('Close',w)
+    Screen('Close',w);
     Screen('CloseAll');
     FlushEvents;
 
