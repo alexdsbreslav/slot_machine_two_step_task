@@ -20,7 +20,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
     % ---- Screen setup
     Screen('Preference', 'VisualDebugLevel', 1);% change psych toolbox screen check to black
-    Screen('Preference', 'SkipSyncTests', 1); % 1 DURING DEBUGGING
+    Screen('Preference', 'SkipSyncTests', 0); % 1 DURING DEBUGGING
     FlushEvents;
     %HideCursor; %ALTERED FOR DEBUGGING
     PsychDefaultSetup(1);
