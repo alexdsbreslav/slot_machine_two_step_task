@@ -22,8 +22,8 @@ num_trials_main_task = 5;
 length_of_reward_feedback_screen = 4;
 
 % ---- File specifications
-file_root = '/Users/alex/OneDrive - Duke University/1. Research Projects/1. Huettel/17.09_MDT/6. Raw Data/MatLab' % for Alex's computer
-% file_root = '\Users\ads48\Documents\Projects\18.08.07_MDT\raw_data\matlab' % for the eye-tracker
+file_root = '/Users/alex/OneDrive - Duke University/1. Research Projects/1. Huettel/17.09_MDT/6. Raw Data/MatLab'; % for Alex's computer
+% file_root = '\Users\ads48\Documents\Projects\18.08.07_MDT\raw_data\matlab'; % for the eye-tracker
 sl = '/'; % for OSX
 % sl = '\'; % for Windows
 
@@ -186,7 +186,7 @@ end
 if start_where <= 2
 % ---- Select food by hand if necessary
     if isempty(initialization_struct.food_salt)
-        img_files = dir('food_images' sl '*.png');
+        img_files = dir(['food_images' sl '*.png']);
         img_file_names = {img_files(1:length(img_files)).name}';
         img_file_index = find(contains(img_file_names, 'salt'))';
 
@@ -204,7 +204,7 @@ if start_where <= 2
     end
 
     if isempty(initialization_struct.food_sweet)
-        img_files = dir('food_images' sl '*.png');
+        img_files = dir(['food_images' sl '*.png']);
         img_file_names = {img_files(1:length(img_files)).name}';
         img_file_index = find(contains(img_file_names, 'sweet'))';
 
