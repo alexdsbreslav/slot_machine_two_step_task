@@ -7,19 +7,19 @@
 
 function [exit_flag, eligible, food_salt, food_sweet] = allergy_wanting(initialization_struct)
 
-% some setups
+% psychtoolbox setup
 Screen('Preference', 'VisualDebugLevel', 1);% change psych toolbox screen check to black
 Screen('Preference', 'SkipSyncTests', 1); % ALTERED FOR DEBUGGING
 FlushEvents;
 %HideCursor; %ALTERED FOR DEBUGGING
 PsychDefaultSetup(1);
+
+% sets the exit flag default to 0; throws a flag if you exit the function to leave the start function
 exit_flag = 0;
 
-results_file_name = [initialization_struct.data_file_path '/allergy_wanting'];
-
-Screen('Preference', 'VisualDebugLevel', 1);% change psych toolbox screen check to black
-Screen('Preference', 'SkipSyncTests', 1); % ALTERED FOR DEBUGGING
-FlushEvents;
+% file set up; enables flexibility between OSX and Windows
+sl = initialization_struct.sl;
+results_file_name = [initialization_struct.data_file_path sl 'allergy_wanting'];
 
 % open window
 Screen('Preference', 'VisualDebugLevel', 1);% change psych toolbox screen check to black
@@ -36,12 +36,8 @@ vSpacing = 3;
 bg_color = BlackIndex(exp_screen);
 txt_color = WhiteIndex(exp_screen);
 chosen_color= [0 220 0];
-txt_size.fixCross = 60;
-txt_size.blockTxt = 30;
-txt_size.rateFoodName = 33;
-txt_size.rateGuide = 22;
-txt_size.binaryFoodName = 30;
-txt_size.statusLabels = 32;
+textsize_directions = initialization_struct.textsize_allergy_wanting_directions;
+textsize_rateguide = initialization_struct.textsize_allergy_wanting_rateGuide;
 
 % response key set up
 KbName('UnifyKeyNames');
@@ -54,7 +50,7 @@ startFirstKeys = KbName({'b', 'B'});
 %ratings: set up task
 
 % retrieve image names from directory
-tmp = dir('food_images/*.png');
+tmp = dir('food_images' sl '*.png');
 allergy_wanting.image_names = {tmp(1:length(tmp)).name}';
 
 allergy_wanting.nTrials = length(allergy_wanting.image_names);
@@ -128,7 +124,7 @@ want_guide_offset = -60; %start to the left
 % ---- intro
 tic;
 t0 = GetSecs;
-Screen('TextSize', exp_screen, txt_size.blockTxt);
+Screen('TextSize', exp_screen, textsize_directions);
 Screen(exp_screen, 'FillRect', bg_color);
 DrawFormattedText(exp_screen,[
     'The purpose of this section is to ensure that you can complete the' '\n'...
@@ -152,7 +148,7 @@ DrawFormattedText(exp_screen,[
     ], 'center', 'center',txt_color,[],[],[],1.6);
 
 % -------- show response options
-Screen('TextSize', exp_screen, txt_size.blockTxt);
+Screen('TextSize', exp_screen, textsize_directions);
 for n = 1:2
     DrawFormattedText(exp_screen,allergy_wanting.yesno_keyguide{n},...
         allergy_wanting.yesno_guideLocs{n},keyguide_loc_low,txt_color,wrapat,[],[],vSpacing);
@@ -185,7 +181,7 @@ while 1
 
         break
     elseif keyIsDown && any(keyCode(exitKeys)) && length(KbName(keyCode)) == 1
-        exit_flag = 1;
+        exit_flag = 1; Screen('CloseAll'); FlushEvents;
         sca; return;
     end
 end
@@ -200,7 +196,7 @@ DrawFormattedText(exp_screen,[
     ], 'center', 'center',txt_color,[],[],[],1.6);
 
 % -------- show ratings scale
-Screen('TextSize', exp_screen, txt_size.blockTxt);
+Screen('TextSize', exp_screen, textsize_directions);
 for n = 1:2
     if strcmp(allergy_wanting.allergic_text{1}, char(allergy_wanting.yesno_guide{n}))
         DrawFormattedText(exp_screen,allergy_wanting.yesno_keyguide{n},...
@@ -232,13 +228,13 @@ if allergy_wanting.allergic_numeric(1) == 0
     allergy_wanting.allergic_feedbackOn(2:allergy_wanting.nTrials + 1, 1) = 0;
 else
 % -------- intro allergy questions
-    Screen('TextSize', exp_screen, txt_size.blockTxt);
+    Screen('TextSize', exp_screen, textsize_directions);
     Screen(exp_screen, 'FillRect', bg_color);
     DrawFormattedText(exp_screen,['Please indicate if you are allergic ' '\n' ...
         'to any of the following foods, using the keys and the scale below.'],...
         'center',allergy_wanting.height*.2,txt_color,[],[],[],1.6);
 
-    Screen('TextSize', exp_screen, txt_size.blockTxt);
+    Screen('TextSize', exp_screen, textsize_directions);
     for n = 1:2
         DrawFormattedText(exp_screen,allergy_wanting.yesno_keyguide{n},...
             allergy_wanting.yesno_guideLocs{n},allergy_wanting.height*.65,txt_color,wrapat,[],[],vSpacing);
@@ -246,7 +242,7 @@ else
             allergy_wanting.yesno_guideLocs{n} + yesno_allergic_guide_offset,allergy_wanting.height*.52,txt_color,wrapat,[],[],1);
     end
 
-    Screen('TextSize', exp_screen, txt_size.blockTxt);
+    Screen('TextSize', exp_screen, textsize_directions);
     DrawFormattedText(exp_screen,'Press the spacebar to begin!',...
         'center', allergy_wanting.height*.8, txt_color, wrapat, [], [], vSpacing);
     Screen(exp_screen, 'Flip');
@@ -258,7 +254,7 @@ else
         if keyIsDown && keyCode(spaceKey)
             break
         elseif any(keyCode(exitKeys))
-            exit_flag = 1;
+            exit_flag = 1; Screen('CloseAll'); FlushEvents;
             sca; return
         end
     end
@@ -266,7 +262,7 @@ else
     for trial = allergy_wanting.rand_img_order_allergic' % run trials in the pre-determined randomized order
 
 % -------- display stimuli/get the food stimuli
-        imgfile = imread(['food_images/' allergy_wanting.image_names{trial}]);
+        imgfile = imread(['food_images' sl allergy_wanting.image_names{trial}]);
         img = Screen(exp_screen, 'MakeTexture', imgfile);
         % show the image
         Screen(exp_screen, 'FillRect', bg_color);
@@ -275,7 +271,7 @@ else
             allergy_wanting.width*.5+200 allergy_wanting.height*.5+100]);
 
 % -------- show response options
-        Screen('TextSize', exp_screen, txt_size.blockTxt);
+        Screen('TextSize', exp_screen, textsize_directions);
         for n = 1:2
             DrawFormattedText(exp_screen,allergy_wanting.yesno_keyguide{n},...
                 allergy_wanting.yesno_guideLocs{n},keyguide_loc_low,txt_color,wrapat,[],[],vSpacing);
@@ -307,7 +303,7 @@ else
 
                 break
             elseif keyIsDown && any(keyCode(exitKeys)) && length(KbName(keyCode)) == 1
-                exit_flag = 1;
+                exit_flag = 1; Screen('CloseAll'); FlushEvents;
                 sca; return;
             end
         end
@@ -318,7 +314,7 @@ else
         Screen(exp_screen, 'FillRect', bg_color);
 
     % -------- show ratings scale
-        Screen('TextSize', exp_screen, txt_size.blockTxt);
+        Screen('TextSize', exp_screen, textsize_directions);
         for n = 1:2
             if strcmp(allergy_wanting.allergic_text{trial+1}, char(allergy_wanting.yesno_guide{n}))
                 DrawFormattedText(exp_screen,allergy_wanting.yesno_keyguide{n},...
@@ -377,20 +373,20 @@ if isempty(allergy_wanting.foods_not_allergic) > 0 % end if they are allergic to
 
 else % otherwise, carry on as expected
     % --- show ratings instructions & key guide
-    Screen('TextSize', exp_screen, txt_size.blockTxt);
+    Screen('TextSize', exp_screen, textsize_directions);
     Screen(exp_screen, 'FillRect', bg_color);
     DrawFormattedText(exp_screen,['Please rate the following foods ' '\n' ...
         'based on how much you want to eat them right now, using the keys and the scale below.'],...
         'center',allergy_wanting.height*.2,txt_color,wrapat,[],[],1.6);
 
-    Screen('TextSize', exp_screen, txt_size.rateGuide);
+    Screen('TextSize', exp_screen, textsize_rateguide);
     for n = 1:length(allergy_wanting.keyguide)
         DrawFormattedText(exp_screen,allergy_wanting.keyguide(n),...
             allergy_wanting.guideLocs(n),allergy_wanting.height*.5,txt_color,wrapat,[],[],vSpacing);
         DrawFormattedText(exp_screen,char(allergy_wanting.guideTwo(n)),allergy_wanting.guideLocs(n) + want_guide_offset,allergy_wanting.height*.58,txt_color,wrapat,[],[],1);
     end
 
-    Screen('TextSize', exp_screen, txt_size.blockTxt);
+    Screen('TextSize', exp_screen, textsize_directions);
     DrawFormattedText(exp_screen,'Press the spacebar to begin!',...
         'center', allergy_wanting.height*.8, txt_color, wrapat, [], [], vSpacing);
     Screen(exp_screen, 'Flip');
@@ -402,7 +398,7 @@ else % otherwise, carry on as expected
         if keyIsDown && keyCode(spaceKey)
             break
         elseif any(keyCode(exitKeys))
-            exit_flag = 1;
+            exit_flag = 1; Screen('CloseAll'); FlushEvents;
             sca; return
         end
     end
@@ -412,7 +408,7 @@ else % otherwise, carry on as expected
 
         % display stimuli
         % get the food image
-        imgfile = imread(['food_images/' allergy_wanting.foods_not_allergic{trial}]);
+        imgfile = imread(['food_images' sl allergy_wanting.foods_not_allergic{trial}]);
         img = Screen(exp_screen, 'MakeTexture', imgfile);
         % show the image
         Screen(exp_screen, 'FillRect', bg_color);
@@ -420,7 +416,7 @@ else % otherwise, carry on as expected
             [allergy_wanting.width*.5-200 allergy_wanting.height*.5-300 ...
             allergy_wanting.width*.5+200 allergy_wanting.height*.5+100]);
         % show ratings scale
-        Screen('TextSize', exp_screen, txt_size.rateGuide);
+        Screen('TextSize', exp_screen, textsize_rateguide);
         for n = 1:length(allergy_wanting.keyguide)
             DrawFormattedText(exp_screen,allergy_wanting.keyguide(n),...
                 allergy_wanting.guideLocs(n),keyguide_loc_low,txt_color,wrapat,[],[],vSpacing);
@@ -453,7 +449,7 @@ else % otherwise, carry on as expected
 
                 break
             elseif keyIsDown && any(keyCode(exitKeys)) && length(KbName(keyCode)) == 1
-                exit_flag = 1;
+                exit_flag = 1; Screen('CloseAll'); FlushEvents;
                 sca; return;
             end
         end
@@ -466,7 +462,7 @@ else % otherwise, carry on as expected
             [allergy_wanting.width*.5-200 allergy_wanting.height*.5-300 ...
             allergy_wanting.width*.5+200 allergy_wanting.height*.5+100]);
         % show ratings scale
-        Screen('TextSize', exp_screen, txt_size.rateGuide);
+        Screen('TextSize', exp_screen, textsize_rateguide);
         for n = 1:length(allergy_wanting.keyguide)
             if strcmp(allergy_wanting.want_text{trial}, char(allergy_wanting.guide{n}))
                 DrawFormattedText(exp_screen,allergy_wanting.keyguide(n),...
@@ -548,6 +544,7 @@ else % otherwise, carry on as expected
     allergy_wanting.taskDur(2) = toc;
     save(results_file_name,'allergy_wanting');
 
+    ShowCursor;
     Screen('CloseAll');
     FlushEvents;
 end

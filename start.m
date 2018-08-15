@@ -6,11 +6,41 @@
 % Author: Alex Breslav
 
 function start
+
+% clear everything from the workspace; everything is saved in the initialization_struct
+clear all;
+Screen('CloseAll');
+FlushEvents;
+
+% ------------------------------------------------------------------------------
+% ------------------------------------------------------------------------------
+% ---- Flexible parameters that need to be checked
+% ---- Task specificiations
+num_trials_practice = 1;
+num_trials_main_task = 5;
+
+length_of_reward_feedback_screen = 4;
+
+% ---- File specifications
+file_root = '/Users/alex/OneDrive - Duke University/1. Research Projects/1. Huettel/17.09_MDT/6. Raw Data/MatLab' % for Alex's computer
+% file_root = '\Users\ads48\Documents\Projects\18.08.07_MDT\raw_data\matlab' % for the eye-tracker
+sl = '/'; % for OSX
+% sl = '\'; % for Windows
+
+% ---- Text formatting specifications
+textsize_directions = 30;
+textsize_allergy_wanting_rateGuide = 18;
+textsize_fixcross = 40;
+textsize_countdown = 20;
+
+% ------------------------------------------------------------------------------
+% ------------------------------------------------------------------------------
+
 sub = input('Subject number: '); %keep sub number as a string so we can validate easily below
 
 % create subject folder in the raw data folder
 filename_subnum = pad(num2str(sub), 3, 'left', '0');
-data_file_path = ['/Users/alex/OneDrive - Duke University/1. Research Projects/1. Huettel/17.09_MDT/6. Raw Data/MatLab/sub' filename_subnum];
+data_file_path = [file_root sl 'sub' filename_subnum];
 [~, msg, ~] = mkdir(data_file_path);
 
 folder_already_exists = strcmp(msg, 'Directory already exists.');
@@ -37,7 +67,7 @@ if sub_exists == 1
    sca; return
 
 elseif sub_exists == 0
-    load([data_file_path '/initialization structure.mat']);
+    load([data_file_path sl 'initialization structure.mat']);
     if initialization_struct.block(2) == 1
         block1_text = 'Money';
         block2_text = 'Food';
@@ -101,16 +131,27 @@ else
     block = randi([1,2]);
     initialization_struct.block = [0 block 3-block];
 
-    % input the number of trials per block; 1 = practice trials, 2 = experimental blocks
-    initialization_struct.num_trials = [1 15];
-
-    % set the reward_feedback_len
-    initialization_struct.reward_feedback_len = 4;
-
     % randomize the location of the foods
     sweet_loc_left = randi([0,1]);
     initialization_struct.sweet_loc_left = sweet_loc_left;
-    save([data_file_path '/initialization structure'], 'initialization_struct', '-v6')
+    save([data_file_path sl 'initialization structure'], 'initialization_struct', '-v6')
+
+    % input the number of trials per block; 1 = practice trials, 2 = experimental blocks
+    initialization_struct.num_trials = [num_trials_practice num_trials_main_task];
+
+    % set the reward_feedback_len
+    initialization_struct.reward_feedback_len = length_of_reward_feedback_screen;
+
+    % set the file root and backslash vs. forwardslash convention
+    initialization_struct.file_root = file_root;
+    initialization_struct.slash_convention = sl;
+
+    % set the text formatting specs
+    initialization_struct.textsize_directions = textsize_directions;
+    initialization_struct.textsize_allergy_wanting_rateGuide = textsize_allergy_wanting_rateGuide;
+    initialization_struct.textsize_fixcross = textsize_fixcross;
+    initialization_struct.textsize_countdown = textsize_countdown;
+
 end
 
 if start_where == 1
@@ -135,7 +176,7 @@ if start_where == 1
         initialization_struct.left_food = initialization_struct.food_salt{1}(6:end-4);
     end
 
-    save([data_file_path '/initialization structure'], 'initialization_struct', '-v6')
+    save([data_file_path sl 'initialization structure'], 'initialization_struct', '-v6')
 
     if eligible == 0
         sca; return
@@ -145,7 +186,7 @@ end
 if start_where <= 2
 % ---- Select food by hand if necessary
     if isempty(initialization_struct.food_salt)
-        img_files = dir('food_images/*.jpg');
+        img_files = dir('food_images' sl '*.png');
         img_file_names = {img_files(1:length(img_files)).name}';
         img_file_index = find(contains(img_file_names, 'salt'))';
 
@@ -159,11 +200,11 @@ if start_where <= 2
         'Response: ']);
 
         initialization_struct.food_salt = cellstr(img_file_names{food_salt});
-        save([data_file_path '/initialization structure'], 'initialization_struct', '-v6')
+        save([data_file_path sl 'initialization structure'], 'initialization_struct', '-v6')
     end
 
     if isempty(initialization_struct.food_sweet)
-        img_files = dir('food_images/*.jpg');
+        img_files = dir('food_images' sl '*.png');
         img_file_names = {img_files(1:length(img_files)).name}';
         img_file_index = find(contains(img_file_names, 'sweet'))';
 
@@ -177,7 +218,7 @@ if start_where <= 2
         'Response: ']);
 
         initialization_struct.food_sweet = cellstr(img_file_names{food_sweet});
-        save([data_file_path '/initialization structure'], 'initialization_struct', '-v6')
+        save([data_file_path sl 'initialization structure'], 'initialization_struct', '-v6')
     end
 
 % ---- 2: Tutorial
@@ -191,8 +232,8 @@ end
 
 if start_where <= 3
 % ---- 3: practice trials (Block 0 in code)
-    if exist([data_file_path '/tutorial_timing.mat']) == 2
-        load([data_file_path '/tutorial_timing.mat'])
+    if exist([data_file_path sl 'tutorial_timing.mat']) == 2
+        load([data_file_path sl 'tutorial_timing.mat'])
         exit_flag = main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1), tutorial_timing_struct);
     else
         exit_flag = main_task(initialization_struct, initialization_struct.num_trials(1), initialization_struct.block(1));
@@ -347,7 +388,7 @@ if start_where <= 5
 end
 
 % --- display winnings
-load([data_file_path '/money.mat']);
+load([data_file_path sl 'money.mat']);
 fprintf('\n\n\n\n\n\n\n\n\n\nThe participant earned $ %.2f during the money rounds', money_struct.payoff_sum);
 fprintf('\nRound up to the nearest dollar and pay them (show up fee included) = $ %.2f', money_struct.payoff_total);
 

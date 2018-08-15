@@ -10,6 +10,9 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 % 1 - Initial setup
     exit_flag = 0;
 
+    % ---- file set up; enables flexibility between OSX and Windows
+    sl = initialization_struct.sl;
+
     % ---- shuffle the rng and save the seed
     rng('shuffle');
     rng_seed = rng;
@@ -17,7 +20,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
     % ---- Screen setup
     Screen('Preference', 'VisualDebugLevel', 1);% change psych toolbox screen check to black
-    Screen('Preference', 'SkipSyncTests', 1); % ALTERED FOR DEBUGGING
+    Screen('Preference', 'SkipSyncTests', 1); % 1 DURING DEBUGGING
     FlushEvents;
     %HideCursor; %ALTERED FOR DEBUGGING
     PsychDefaultSetup(1);
@@ -28,6 +31,11 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
     whichScreen = max(screens); %select the screen; ALTERED THIS BECAUSE IT KEPT SHOWING UP ON MY LAPTOP INSTEAD OF THE ATTACHED MONITOR
     [w, rect] = Screen('OpenWindow', whichScreen, 0,[], 32, ...
         doublebuffer+1,[],[],kPsychNeedFastBackingStore); %???
+
+    % --- font sizes
+    textsize_fixcross = initialization_struct.textsize_fixcross;
+    textsize_countdown = initialization_struct.textsize_countdown;
+    textsize_directions = initialization_struct.textsize_directions;
 
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
@@ -82,44 +90,44 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 % 3 - Load images for practice block
     if block == 0
 % --- load basic stimuli
-        A1 = imread(['stimuli/practice/' char(initialization_struct.stim_color_step1(1)) '/' ...
+        A1 = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_color_step1(1)) sl ...
           char(initialization_struct.stim_prac_symbol(1)) '.png'],'png');
-        B1 = imread(['stimuli/practice/' char(initialization_struct.stim_color_step1(1)) '/' ...
+        B1 = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_color_step1(1)) sl ...
           char(initialization_struct.stim_prac_symbol(2)) '.png'],'png');
 
-        A2 = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(1)) '/' ...
+        A2 = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl char(initialization_struct.stim_step2_color_select(1)) sl ...
           char(initialization_struct.stim_prac_symbol(3)) '.png'],'png');
-        B2 = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(1)) '/' ...
+        B2 = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl char(initialization_struct.stim_step2_color_select(1)) sl ...
           char(initialization_struct.stim_prac_symbol(4)) '.png'],'png');
 
-        A3 = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(2)) '/' ...
+        A3 = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl char(initialization_struct.stim_step2_color_select(2)) sl ...
           char(initialization_struct.stim_prac_symbol(5)) '.png'],'png');
-        B3 = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(2)) '/' ...
+        B3 = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl char(initialization_struct.stim_step2_color_select(2)) sl ...
           char(initialization_struct.stim_prac_symbol(6)) '.png'],'png');
 
 % ---- load slot machine files
-        step1_slot_L = imread(['stimuli/practice/' char(initialization_struct.stim_color_step1(1)) '/Slot Machine_L.png'],'png');
-        step1_slot_R = imread(['stimuli/practice/' char(initialization_struct.stim_color_step1(1)) '/Slot Machine_R.png'],'png');
+        step1_slot_L = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_color_step1(1)) sl 'Slot Machine_L.png'],'png');
+        step1_slot_R = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_color_step1(1)) sl 'Slot Machine_R.png'],'png');
 
-        state2_slot_L = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(1)) '/Slot Machine_L.png'],'png');
-        state2_slot_R = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(1)) '/Slot Machine_R.png'],'png');
+        state2_slot_L = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl char(initialization_struct.stim_step2_color_select(1)) sl 'Slot Machine_L.png'],'png');
+        state2_slot_R = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl char(initialization_struct.stim_step2_color_select(1)) sl 'Slot Machine_R.png'],'png');
 
-        state3_slot_L = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(2)) '/Slot Machine_L.png'],'png');
-        state3_slot_R = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(2)) '/Slot Machine_R.png'],'png');
+        state3_slot_L = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl char(initialization_struct.stim_step2_color_select(2)) sl 'Slot Machine_L.png'],'png');
+        state3_slot_R = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl char(initialization_struct.stim_step2_color_select(2)) sl 'Slot Machine_R.png'],'png');
 
 % ---- load coin slot files
-        state2_coin_slot = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(1)) '/coin slot.png'],'png');
-        state3_coin_slot = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(2)) '/coin slot.png'],'png');
+        state2_coin_slot = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl char(initialization_struct.stim_step2_color_select(1)) sl 'coin slot.png'],'png');
+        state3_coin_slot = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl char(initialization_struct.stim_step2_color_select(2)) sl 'coin slot.png'],'png');
 
 % ---- read token files
-        state2_token = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(1)) '/' ...
+        state2_token = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl char(initialization_struct.stim_step2_color_select(1)) sl ...
            'token.png'],'png');
-        state3_token = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(2)) '/' ...
+        state3_token = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl char(initialization_struct.stim_step2_color_select(2)) sl ...
           'token.png'],'png');
-        spent_token = imread(['stimuli/practice/spent token.png'],'png');
+        spent_token = imread(['stimuli' sl 'practice' sl 'spent token.png'],'png');
 
 % ---- read next arrow file
-        next_arrow = imread(['stimuli/main_task/next arrow.png'],'png');
+        next_arrow = imread(['stimuli' sl 'main_task' sl 'next arrow.png'],'png');
 
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
@@ -128,48 +136,48 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 % 4 - Load and create images for money block
     elseif block == 1
 % --- load basic stimuli files
-        A1 = imread(['stimuli/main_task/' char(initialization_struct.stim_color_step1(2)) '/' ...
+        A1 = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_color_step1(2)) sl ...
           char(initialization_struct.stim_symbol(1)) '.png'],'png');
-        B1 = imread(['stimuli/main_task/' char(initialization_struct.stim_color_step1(2)) '/' ...
+        B1 = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_color_step1(2)) sl ...
           char(initialization_struct.stim_symbol(2)) '.png'],'png');
 
-        A2 = imread(['stimuli/main_task/' char(initialization_struct.stim_colors_step2(2)) '/' char(initialization_struct.stim_step2_color_select(1)) '/' ...
+        A2 = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_colors_step2(2)) sl char(initialization_struct.stim_step2_color_select(1)) sl ...
           char(initialization_struct.stim_symbol(3)) '.png'],'png');
-        B2 = imread(['stimuli/main_task/' char(initialization_struct.stim_colors_step2(2)) '/' char(initialization_struct.stim_step2_color_select(1)) '/' ...
+        B2 = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_colors_step2(2)) sl char(initialization_struct.stim_step2_color_select(1)) sl ...
           char(initialization_struct.stim_symbol(4)) '.png'],'png');
 
-        A3 = imread(['stimuli/main_task/' char(initialization_struct.stim_colors_step2(2)) '/' char(initialization_struct.stim_step2_color_select(2)) '/' ...
+        A3 = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_colors_step2(2)) sl char(initialization_struct.stim_step2_color_select(2)) sl ...
           char(initialization_struct.stim_symbol(5)) '.png'],'png');
-        B3 = imread(['stimuli/main_task/' char(initialization_struct.stim_colors_step2(2)) '/' char(initialization_struct.stim_step2_color_select(2)) '/' ...
+        B3 = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_colors_step2(2)) sl char(initialization_struct.stim_step2_color_select(2)) sl ...
           char(initialization_struct.stim_symbol(6)) '.png'],'png');
 
 % ---- load slot machine files
-        step1_slot_L = imread(['stimuli/main_task/' char(initialization_struct.stim_color_step1(2)) '/Slot Machine_L.png'],'png');
-        step1_slot_R = imread(['stimuli/main_task/' char(initialization_struct.stim_color_step1(2)) '/Slot Machine_R.png'],'png');
+        step1_slot_L = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_color_step1(2)) sl 'Slot Machine_L.png'],'png');
+        step1_slot_R = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_color_step1(2)) sl 'Slot Machine_R.png'],'png');
 
-        state2_slot_L = imread(['stimuli/main_task/' char(initialization_struct.stim_colors_step2(2)) '/' char(initialization_struct.stim_step2_color_select(1)) '/Slot Machine_L.png'],'png');
-        state2_slot_R = imread(['stimuli/main_task/' char(initialization_struct.stim_colors_step2(2)) '/' char(initialization_struct.stim_step2_color_select(1)) '/Slot Machine_R.png'],'png');
+        state2_slot_L = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_colors_step2(2)) sl char(initialization_struct.stim_step2_color_select(1)) sl 'Slot Machine_L.png'],'png');
+        state2_slot_R = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_colors_step2(2)) sl char(initialization_struct.stim_step2_color_select(1)) sl 'Slot Machine_R.png'],'png');
 
-        state3_slot_L = imread(['stimuli/main_task/' char(initialization_struct.stim_colors_step2(2)) '/' char(initialization_struct.stim_step2_color_select(2)) '/Slot Machine_L.png'],'png');
-        state3_slot_R = imread(['stimuli/main_task/' char(initialization_struct.stim_colors_step2(2)) '/' char(initialization_struct.stim_step2_color_select(2)) '/Slot Machine_R.png'],'png');
+        state3_slot_L = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_colors_step2(2)) sl char(initialization_struct.stim_step2_color_select(2)) sl 'Slot Machine_L.png'],'png');
+        state3_slot_R = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_colors_step2(2)) sl char(initialization_struct.stim_step2_color_select(2)) sl 'Slot Machine_R.png'],'png');
 
 % ---- load coin slot files
-        state2_coin_slot = imread(['stimuli/main_task/' char(initialization_struct.stim_colors_step2(2)) '/' char(initialization_struct.stim_step2_color_select(1)) '/coin slot.png'],'png');
-        state3_coin_slot = imread(['stimuli/main_task/' char(initialization_struct.stim_colors_step2(2)) '/' char(initialization_struct.stim_step2_color_select(2)) '/coin slot.png'],'png');
+        state2_coin_slot = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_colors_step2(2)) sl char(initialization_struct.stim_step2_color_select(1)) sl 'coin slot.png'],'png');
+        state3_coin_slot = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_colors_step2(2)) sl char(initialization_struct.stim_step2_color_select(2)) sl 'coin slot.png'],'png');
 
 % ---- read token files
-        state2_token = imread(['stimuli/main_task/' char(initialization_struct.stim_colors_step2(2)) '/' char(initialization_struct.stim_step2_color_select(1)) '/' ...
+        state2_token = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_colors_step2(2)) sl char(initialization_struct.stim_step2_color_select(1)) sl ...
            'token.png'],'png');
-        state3_token = imread(['stimuli/main_task/' char(initialization_struct.stim_colors_step2(2)) '/' char(initialization_struct.stim_step2_color_select(2)) '/' ...
+        state3_token = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_colors_step2(2)) sl char(initialization_struct.stim_step2_color_select(2)) sl ...
           'token.png'],'png');
-        spent_token = imread(['stimuli/main_task/spent token.png'],'png');
+        spent_token = imread(['stimuli' sl 'main_task' sl 'spent token.png'],'png');
 
 % ---- read next arrow file
-        next_arrow = imread(['stimuli/main_task/next arrow.png'],'png');
+        next_arrow = imread(['stimuli' sl 'main_task' sl 'next arrow.png'],'png');
 
 % ---- load room stimuli
-        token_room = imread(['stimuli/main_task/' char(initialization_struct.stim_color_step1(2)) '/token room.png'],'png');
-        prize_room = imread(['stimuli/main_task/' char(initialization_struct.stim_colors_step2(2)) '/money prize room.png'],'png');
+        token_room = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_color_step1(2)) sl 'token room.png'],'png');
+        prize_room = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_colors_step2(2)) sl 'money prize room.png'],'png');
 
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
@@ -178,48 +186,48 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 % 5 - Load and create images for food block
     else
 % --- load basic stimuli
-        A1 = imread(['stimuli/main_task/' char(initialization_struct.stim_color_step1(3)) '/' ...
+        A1 = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_color_step1(3)) sl ...
           char(initialization_struct.stim_symbol(7)) '.png'],'png');
-        B1 = imread(['stimuli/main_task/' char(initialization_struct.stim_color_step1(3)) '/' ...
+        B1 = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_color_step1(3)) sl ...
           char(initialization_struct.stim_symbol(8)) '.png'],'png');
 
-        A2 = imread(['stimuli/main_task/' char(initialization_struct.stim_colors_step2(3)) '/' char(initialization_struct.stim_step2_color_select(1)) '/' ...
+        A2 = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_colors_step2(3)) sl char(initialization_struct.stim_step2_color_select(1)) sl ...
           char(initialization_struct.stim_symbol(9)) '.png'],'png');
-        B2 = imread(['stimuli/main_task/' char(initialization_struct.stim_colors_step2(3)) '/' char(initialization_struct.stim_step2_color_select(1)) '/' ...
+        B2 = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_colors_step2(3)) sl char(initialization_struct.stim_step2_color_select(1)) sl ...
           char(initialization_struct.stim_symbol(10)) '.png'],'png');
 
-        A3 = imread(['stimuli/main_task/' char(initialization_struct.stim_colors_step2(3)) '/' char(initialization_struct.stim_step2_color_select(2)) '/' ...
+        A3 = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_colors_step2(3)) sl char(initialization_struct.stim_step2_color_select(2)) sl ...
           char(initialization_struct.stim_symbol(11)) '.png'],'png');
-        B3 = imread(['stimuli/main_task/' char(initialization_struct.stim_colors_step2(3)) '/' char(initialization_struct.stim_step2_color_select(2)) '/' ...
+        B3 = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_colors_step2(3)) sl char(initialization_struct.stim_step2_color_select(2)) sl ...
           char(initialization_struct.stim_symbol(12)) '.png'],'png');
 
 % ---- load slot machine files
-        step1_slot_L = imread(['stimuli/main_task/' char(initialization_struct.stim_color_step1(3)) '/Slot Machine_L.png'],'png');
-        step1_slot_R = imread(['stimuli/main_task/' char(initialization_struct.stim_color_step1(3)) '/Slot Machine_R.png'],'png');
+        step1_slot_L = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_color_step1(3)) sl 'Slot Machine_L.png'],'png');
+        step1_slot_R = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_color_step1(3)) sl 'Slot Machine_R.png'],'png');
 
-        state2_slot_L = imread(['stimuli/main_task/' char(initialization_struct.stim_colors_step2(3)) '/' char(initialization_struct.stim_step2_color_select(1)) '/Slot Machine_L.png'],'png');
-        state2_slot_R = imread(['stimuli/main_task/' char(initialization_struct.stim_colors_step2(3)) '/' char(initialization_struct.stim_step2_color_select(1)) '/Slot Machine_R.png'],'png');
+        state2_slot_L = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_colors_step2(3)) sl char(initialization_struct.stim_step2_color_select(1)) sl 'Slot Machine_L.png'],'png');
+        state2_slot_R = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_colors_step2(3)) sl char(initialization_struct.stim_step2_color_select(1)) sl 'Slot Machine_R.png'],'png');
 
-        state3_slot_L = imread(['stimuli/main_task/' char(initialization_struct.stim_colors_step2(3)) '/' char(initialization_struct.stim_step2_color_select(2)) '/Slot Machine_L.png'],'png');
-        state3_slot_R = imread(['stimuli/main_task/' char(initialization_struct.stim_colors_step2(3)) '/' char(initialization_struct.stim_step2_color_select(2)) '/Slot Machine_R.png'],'png');
+        state3_slot_L = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_colors_step2(3)) sl char(initialization_struct.stim_step2_color_select(2)) sl 'Slot Machine_L.png'],'png');
+        state3_slot_R = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_colors_step2(3)) sl char(initialization_struct.stim_step2_color_select(2)) sl 'Slot Machine_R.png'],'png');
 
 % ---- load coin slot files
-        state2_coin_slot = imread(['stimuli/main_task/' char(initialization_struct.stim_colors_step2(3)) '/' char(initialization_struct.stim_step2_color_select(1)) '/coin slot.png'],'png');
-        state3_coin_slot = imread(['stimuli/main_task/' char(initialization_struct.stim_colors_step2(3)) '/' char(initialization_struct.stim_step2_color_select(2)) '/coin slot.png'],'png');
+        state2_coin_slot = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_colors_step2(3)) sl char(initialization_struct.stim_step2_color_select(1)) sl 'coin slot.png'],'png');
+        state3_coin_slot = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_colors_step2(3)) sl char(initialization_struct.stim_step2_color_select(2)) sl 'coin slot.png'],'png');
 
 % ---- read token files
-        state2_token = imread(['stimuli/main_task/' char(initialization_struct.stim_colors_step2(3)) '/' char(initialization_struct.stim_step2_color_select(1)) '/' ...
+        state2_token = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_colors_step2(3)) sl char(initialization_struct.stim_step2_color_select(1)) sl ...
            'token.png'],'png');
-        state3_token = imread(['stimuli/main_task/' char(initialization_struct.stim_colors_step2(3)) '/' char(initialization_struct.stim_step2_color_select(2)) '/' ...
+        state3_token = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_colors_step2(3)) sl char(initialization_struct.stim_step2_color_select(2)) sl ...
           'token.png'],'png');
-        spent_token = imread(['stimuli/main_task/spent token.png'],'png');
+        spent_token = imread(['stimuli' sl 'main_task' sl 'spent token.png'],'png');
 
 % ---- read next arrow file
-        next_arrow = imread(['stimuli/main_task/next arrow.png'],'png');
+        next_arrow = imread(['stimuli' sl 'main_task' sl 'next arrow.png'],'png');
 
 % ---- load room stimuli
-        token_room = imread(['stimuli/main_task/' char(initialization_struct.stim_color_step1(3)) '/token room.png'],'png');
-        prize_room = imread(['stimuli/main_task/' char(initialization_struct.stim_colors_step2(3)) '/food prize room.png'],'png');
+        token_room = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_color_step1(3)) sl 'token room.png'],'png');
+        prize_room = imread(['stimuli' sl 'main_task' sl char(initialization_struct.stim_colors_step2(3)) sl 'food prize room.png'],'png');
 
     end
 
@@ -296,7 +304,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
 % ---- Waiting screen
     Screen('FillRect', w, black);
-    Screen('TextSize', w, 40);
+    Screen('TextSize', w, textsize_directions);
 
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
@@ -327,7 +335,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
         while 1 %wait for response and allow exit if necessesary
           [keyIsDown, ~, keyCode] = KbCheck;
           if keyIsDown && any(keyCode(exitKeys))
-              exit_flag = 1;
+              exit_flag = 1; Screen('CloseAll'); FlushEvents;
               sca; return
           elseif keyIsDown && any(keyCode(startFirstKeys))
               break
@@ -415,7 +423,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
         while 1 %wait for response and allow exit if necessesary
           [keyIsDown, ~, keyCode] = KbCheck;
           if keyIsDown && any(keyCode(exitKeys))
-              exit_flag = 1;
+              exit_flag = 1; Screen('CloseAll'); FlushEvents;
               sca; return
           elseif keyIsDown && any(keyCode(startFirstKeys))
               break
@@ -504,7 +512,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
         while 1 %wait for response and allow exit if necessesary
           [keyIsDown, ~, keyCode] = KbCheck;
           if keyIsDown && any(keyCode(exitKeys))
-              exit_flag = 1;
+              exit_flag = 1; Screen('CloseAll'); FlushEvents;
               sca; return
           elseif keyIsDown && any(keyCode(startFirstKeys))
               break
@@ -541,7 +549,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
             if trial == (trials/3) + 1 || trial == (2*trials/3) + 1
                 Screen('FillRect', w, black);
-                Screen('TextSize', w, 40);
+                Screen('TextSize', w, textsize_directions);
                 DrawFormattedText(w, [
                     'You can take a short break. Press left or right to continue' ...
                     ],'center', 'center', white);
@@ -552,7 +560,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
 % ---- Fixation screen
         Screen(w, 'FillRect', black);
-        Screen('TextSize', w, 60);
+        Screen('TextSize', w, textsize_fixcross);
         DrawFormattedText(w, '+', 'center', 'center', white);
         Screen(w, 'Flip');
         WaitSecs(0.5)
@@ -664,7 +672,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
 % ---- Fixation screen
             Screen(w, 'FillRect', black);
-            Screen('TextSize', w, 60);
+            Screen('TextSize', w, textsize_fixcross);
             DrawFormattedText(w, '+', 'center', 'center', white);
             Screen(w, 'Flip');
             % wait 0.5 second
@@ -807,13 +815,13 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
             % countdown to next trial
             for i = 1:initialization_struct.reward_feedback_len-1
                 Screen(w, 'FillRect', black);
-                Screen('TextSize', w, 30);
+                Screen('TextSize', w, textsize_countdown);
                 DrawFormattedText(w, [
                     countdown_text '\n' ...
                     num2str(initialization_struct.reward_feedback_len-i) ' seconds.' ...
                     ], 'center', 'center', white, [], [], [], 1.6);
 
-                Screen('TextSize', w, 60);
+                Screen('TextSize', w, textsize_fixcross);
                 if payoff(trial,1) == 1
                     DrawFormattedText(w, reward, 'center', rect(4)*0.8, white);
                 else
@@ -833,7 +841,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
         else
 % ---- Fixation screen
             Screen(w, 'FillRect', black);
-            Screen('TextSize', w, 60);
+            Screen('TextSize', w, textsize_fixcross);
             DrawFormattedText(w, '+', 'center', 'center', white);
             Screen(w, 'Flip');
             % wait 0.5 second
@@ -975,13 +983,13 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
             % countdown to next trial
             for i = 1:initialization_struct.reward_feedback_len-1
                 Screen(w, 'FillRect', black);
-                Screen('TextSize', w, 30);
+                Screen('TextSize', w, textsize_countdown);
                 DrawFormattedText(w, [
                     countdown_text '\n' ...
                     num2str(initialization_struct.reward_feedback_len-i) ' seconds.' ...
                     ], 'center', 'center', white, [], [], [], 1.6);
 
-                Screen('TextSize', w, 60);
+                Screen('TextSize', w, textsize_fixcross);
                 if payoff(trial,2) == 1
                     DrawFormattedText(w, reward, 'center', rect(4)*0.8, white);
                 else
@@ -1032,8 +1040,8 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
         practice_struct.stim_symbol = initialization_struct.stim_prac_symbol;
         practice_struct.tutorial_timing_names = tutorial_timing_struct.names; % these are the times pulled during the tutorial
         practice_struct.tutorial_timing_times = tutorial_timing_struct.times; % these are the names of the timed chunks of the tutorial
-        delete([initialization_struct.data_file_path '/tutorial_timing.mat']);
-        save([initialization_struct.data_file_path '/practice'], 'practice_struct', '-v6');
+        delete([initialization_struct.data_file_path sl 'tutorial_timing.mat']);
+        save([initialization_struct.data_file_path sl 'practice'], 'practice_struct', '-v6');
 
     elseif block == 1 % money block
         money_struct = struct;
@@ -1059,7 +1067,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
         money_struct.stim_symbol = initialization_struct.stim_symbol(1:6); % first 6 symbols always go to money block
         money_struct.payoff_sum = sum(nansum(payoff))/10;
         money_struct.payoff_total = 7 + ceil(money_struct.payoff_sum);
-        save([initialization_struct.data_file_path '/money'], 'money_struct', '-v6');
+        save([initialization_struct.data_file_path sl 'money'], 'money_struct', '-v6');
 
     else % food block
         food_struct = struct;
@@ -1083,7 +1091,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 % ---- unique to this block
         food_struct.block = find(initialization_struct.block == 2);
         food_struct.stim_symbol = initialization_struct.stim_symbol(7:12); % second 6 symbols in the arrary always go to food block
-        save([initialization_struct.data_file_path '/food'], 'food_struct', '-v6');
+        save([initialization_struct.data_file_path sl 'food'], 'food_struct', '-v6');
 
     end
 
@@ -1095,7 +1103,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 % ---- Practice block end screens
     if block == 0 % practice
         Screen(w, 'FillRect', black);
-        Screen('TextSize', w, 40);
+        Screen('TextSize', w, textsize_directions);
         DrawFormattedText(w,[
             'You have completed the practice rounds!' '\n' ...
             'Please alert the experimenter, and' '\n' ...
@@ -1107,7 +1115,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
         while 1 %wait for response and allow exit if necessesary
           [keyIsDown, ~, keyCode] = KbCheck;
           if keyIsDown && any(keyCode(exitKeys))
-              exit_flag = 1;
+              exit_flag = 1; Screen('CloseAll'); FlushEvents;
               sca; return
           elseif keyIsDown && any(keyCode(continueKeys))
               break
@@ -1117,7 +1125,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 % ---- Money block end screen
     elseif block == 1 % money block
         Screen(w, 'FillRect', black);
-        Screen('TextSize', w, 40);
+        Screen('TextSize', w, textsize_directions);
         DrawFormattedText(w, [
             'You have completed the money rounds.' '\n\n' ...
             'You earned: $' sprintf('%.2f', money_struct.payoff_sum) '\n\n' ...
@@ -1130,7 +1138,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
         while 1 %wait for response and allow exit if necessesary
           [keyIsDown, ~, keyCode] = KbCheck;
           if keyIsDown && any(keyCode(exitKeys))
-              exit_flag = 1;
+              exit_flag = 1; Screen('CloseAll'); FlushEvents;
               sca; return
           elseif keyIsDown && any(keyCode(continueKeys))
               break
@@ -1140,7 +1148,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 % ---- Food block end screen
     elseif block == 2 % food block
         Screen(w, 'FillRect', black);
-        Screen('TextSize', w, 40);
+        Screen('TextSize', w, textsize_directions);
         DrawFormattedText(w,[
             'You have completed the food rounds!' '\n' ...
             'Please alert the experimenter, and' '\n' ...
@@ -1152,7 +1160,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
         while 1 %wait for response and allow exit if necessesary
           [keyIsDown, ~, keyCode] = KbCheck;
           if keyIsDown && any(keyCode(exitKeys))
-              exit_flag = 1;
+              exit_flag = 1; Screen('CloseAll'); FlushEvents;
               sca; return
           elseif keyIsDown && any(keyCode(continueKeys))
               break
@@ -1161,10 +1169,8 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
     end
 
-    Screen('Close',w);
+    ShowCursor;
     Screen('CloseAll');
     FlushEvents;
-%   jheapcl; ALTERED FOR DEBUGGING; THIS FUNCTION HELPS PREVENT MEMORY
-%   EXCEPTIOINS
 
 end

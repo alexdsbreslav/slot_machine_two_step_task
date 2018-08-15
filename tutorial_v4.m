@@ -9,18 +9,24 @@ function exit_flag = tutorial_v4(initialization_struct)
 % Please do not share or use this code without my written permission.
 % Author: Alex Breslav
 
+% ---- Initial set up
+% sets the exit flag default to 0; throws a flag if you exit the function to leave the start function
 exit_flag = 0;
-rng(66); %set the rng seed so everyone sees the same probability changing video
 
-Screen('Preference', 'SkipSyncTests', 1); % ALTERED FOR DEBUGGING
+% file set up; enables flexibility between OSX and Windows
+sl = initialization_struct.sl;
+
+%set the rng seed so everyone sees the same probability changing video
+rng(66);
+
+% ---- psychtoolbox set up
+Screen('Preference', 'VisualDebugLevel', 1);% change psych toolbox screen check to black
+Screen('Preference', 'SkipSyncTests', 1); % 1 DURING DEBUGGING
 FlushEvents;
-
+% HideCursor; %ALTERED FOR DEBUGGING
 PsychDefaultSetup(1);
-Screen('CloseAll');
-Screen('Close');
 
-%HideCursor; ALTERED FOR DEBUGGING
-
+% ---- stimuli set up
 % Need to define the color name
 if strcmp(char(initialization_struct.stim_color_step1(1)), 'dark_grey') == 1
     step1_color = 'dark grey';
@@ -66,12 +72,14 @@ else
     end
 end
 
+% ---- psychtoolbox: define the screen to open into
 doublebuffer=1;
 screens = Screen('Screens'); %count the screen
 whichScreen = max(screens); %select the screen ALTERED FOR DEBUGGING
 [w,rect] = Screen('OpenWindow', whichScreen, 0,[], 32, ...
         doublebuffer+1,[],[],kPsychNeedFastBackingStore);
 
+% ---- define parameters for stimuli
 r = [0,0,400,290]; %stimuli rectangle
 rc = [0,0,420,310]; %choice rectangle
 slot_r = [0,0,600,480]; % slot rectangle
@@ -124,71 +132,72 @@ room_Rpoint = CenterRectOnPoint(room_r, 3*rect(3)*.25, rect(4)*0.3);
 % next arrow location
 next_arrow_loc = CenterRectOnPoint(r_next_arrow, rect(3)*0.9, rect(4)*0.9);
 
+% ---- load and draw stimuli in psychtoolbox
 % read basic stimuli files
-A1 = imread(['stimuli/practice/' char(initialization_struct.stim_color_step1(1)) '/' ...
+A1 = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_color_step1(1)) sl ...
   char(initialization_struct.stim_prac_symbol(1)) '.png'],'png');
-B1 = imread(['stimuli/practice/' char(initialization_struct.stim_color_step1(1)) '/' ...
+B1 = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_color_step1(1)) sl ...
   char(initialization_struct.stim_prac_symbol(2)) '.png'],'png');
 
-A2 = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(1)) '/' ...
+A2 = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl char(initialization_struct.stim_step2_color_select(1)) sl ...
   char(initialization_struct.stim_prac_symbol(3)) '.png'],'png');
-B2 = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(1)) '/' ...
+B2 = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl char(initialization_struct.stim_step2_color_select(1)) sl ...
   char(initialization_struct.stim_prac_symbol(4)) '.png'],'png');
 
-A3 = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(2)) '/' ...
+A3 = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl char(initialization_struct.stim_step2_color_select(2)) sl ...
   char(initialization_struct.stim_prac_symbol(5)) '.png'],'png');
-B3 = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(2)) '/' ...
+B3 = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl char(initialization_struct.stim_step2_color_select(2)) sl ...
   char(initialization_struct.stim_prac_symbol(6)) '.png'],'png');
 
 % read token files
-state2_token = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(1)) '/' ...
+state2_token = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl char(initialization_struct.stim_step2_color_select(1)) sl ...
    'token.png'],'png');
-state3_token = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(2)) '/' ...
+state3_token = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl char(initialization_struct.stim_step2_color_select(2)) sl ...
   'token.png'],'png');
-spent_token = imread(['stimuli/practice/spent token.png'],'png');
+spent_token = imread(['stimuli' sl 'practice' sl 'spent token.png'],'png');
 
 % read token bag files
-A1_blank_token_bag = imread(['stimuli/practice/blank token bags/' char(initialization_struct.stim_prac_symbol(1)) '.png'],'png');
-B1_blank_token_bag = imread(['stimuli/practice/blank token bags/' char(initialization_struct.stim_prac_symbol(2)) '.png'],'png');
+A1_blank_token_bag = imread(['stimuli' sl 'practice' sl 'blank token bags' sl char(initialization_struct.stim_prac_symbol(1)) '.png'],'png');
+B1_blank_token_bag = imread(['stimuli' sl 'practice' sl 'blank token bags' sl char(initialization_struct.stim_prac_symbol(2)) '.png'],'png');
 
-A1_S2_token_bag = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(1)) '/' ...
+A1_S2_token_bag = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl char(initialization_struct.stim_step2_color_select(1)) sl ...
   char(initialization_struct.stim_prac_symbol(1)) '_token bag.png'],'png');
-A1_S3_token_bag = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(2)) '/' ...
+A1_S3_token_bag = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl char(initialization_struct.stim_step2_color_select(2)) sl ...
   char(initialization_struct.stim_prac_symbol(1)) '_token bag.png'],'png');
-B1_S2_token_bag = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(1)) '/' ...
+B1_S2_token_bag = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl char(initialization_struct.stim_step2_color_select(1)) sl ...
   char(initialization_struct.stim_prac_symbol(2)) '_token bag.png'],'png');
-B1_S3_token_bag = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(2)) '/' ...
+B1_S3_token_bag = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl char(initialization_struct.stim_step2_color_select(2)) sl ...
   char(initialization_struct.stim_prac_symbol(2)) '_token bag.png'],'png');
 
 % read token dump files
-A1_tokendump = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' ...
+A1_tokendump = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl ...
   char(initialization_struct.stim_prac_symbol(1)) '_dump.png'],'png');
-B1_tokendump = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' ...
+B1_tokendump = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl ...
   char(initialization_struct.stim_prac_symbol(2)) '_dump.png'],'png');
 
 % read slot machine files
-step1_slot_L = imread(['stimuli/practice/' char(initialization_struct.stim_color_step1(1)) '/Slot Machine_L.png'],'png');
-state2_slot_L = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(1)) '/Slot Machine_L.png'],'png');
-state3_slot_L = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(2)) '/Slot Machine_L.png'],'png');
+step1_slot_L = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_color_step1(1)) sl 'Slot Machine_L.png'],'png');
+state2_slot_L = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl char(initialization_struct.stim_step2_color_select(1)) sl 'Slot Machine_L.png'],'png');
+state3_slot_L = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl char(initialization_struct.stim_step2_color_select(2)) sl 'Slot Machine_L.png'],'png');
 
-step1_slot_R = imread(['stimuli/practice/' char(initialization_struct.stim_color_step1(1)) '/Slot Machine_R.png'],'png');
-state2_slot_R = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(1)) '/Slot Machine_R.png'],'png');
-state3_slot_R = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(2)) '/Slot Machine_R.png'],'png');
+step1_slot_R = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_color_step1(1)) sl 'Slot Machine_R.png'],'png');
+state2_slot_R = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl char(initialization_struct.stim_step2_color_select(1)) sl 'Slot Machine_R.png'],'png');
+state3_slot_R = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl char(initialization_struct.stim_step2_color_select(2)) sl 'Slot Machine_R.png'],'png');
 
 % read coin slot files
-state2_coin_slot = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(1)) '/coin slot.png'],'png');
-state3_coin_slot = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/' char(initialization_struct.stim_step2_color_select(2)) '/coin slot.png'],'png');
+state2_coin_slot = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl char(initialization_struct.stim_step2_color_select(1)) sl 'coin slot.png'],'png');
+state3_coin_slot = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl char(initialization_struct.stim_step2_color_select(2)) sl 'coin slot.png'],'png');
 
 % read room files
-token_room = imread(['stimuli/practice/' char(initialization_struct.stim_color_step1(1)) '/token room.png'],'png');
-prize_room = imread(['stimuli/practice/' char(initialization_struct.stim_colors_step2(1)) '/prize room.png'],'png');
+token_room = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_color_step1(1)) sl 'token room.png'],'png');
+prize_room = imread(['stimuli' sl 'practice' sl char(initialization_struct.stim_colors_step2(1)) sl 'prize room.png'],'png');
 
 % read win/lose files
-win = imread(['stimuli/practice/win_lose/win.png'],'png');
-lose = imread(['stimuli/practice/win_lose/lose.png'],'png');
+win = imread(['stimuli' sl 'practice' sl 'win_lose' sl 'win.png'],'png');
+lose = imread(['stimuli' sl 'practice' sl 'win_lose' sl 'lose.png'],'png');
 
 % read next arrow
-next_arrow = imread(['stimuli/practice/next arrow.png'],'png');
+next_arrow = imread(['stimuli' sl 'practice' sl 'next arrow.png'],'png');
 
 % create original stimuli
 A1 = Screen('MakeTexture', w, A1);
@@ -239,18 +248,26 @@ lose = Screen('MakeTexture', w, lose);
 % create next arrow
 next_arrow = Screen('MakeTexture', w, next_arrow);
 
+% ---- formatting set up
 % Keyboard
 KbName('UnifyKeyNames');
 L = KbName('LeftArrow');
 R = KbName('RightArrow');
 exitKeys = KbName({'ESCAPE'});
 
+% colors
 white = [255 255 255];
 black = [0 0 0];
 green = [0 220 0];
 
+% font sizes
+textsize_fixcross = initialization_struct.textsize_fixcross;
+textsize_countdown = initialization_struct.textsize_countdown;
+textsize_directions = initialization_struct.textsize_directions;
+
+% ---- open the background for the first screen
 Screen('FillRect', w, [0 0 0]);
-Screen('TextSize', w, 40);
+Screen('TextSize', w, textsize_directions);
 Screen('TextColor',w,[255 255 255]);
 Screen('TextFont',w,'Helvetica');
 
@@ -691,9 +708,9 @@ KbWait([],2);
 
 % ---- fix cross explanation
 Screen(w, 'FillRect', black);
-Screen('TextSize', w, 60);
+Screen('TextSize', w, textsize_fixcross);
 DrawFormattedText(w, '+', 'center', 'center', white);
-Screen('TextSize', w, 40);
+Screen('TextSize', w, textsize_directions);
 DrawFormattedText(w,[
     'Before you enter each room, this symbol will show' '\n' ...
     'up in the middle of the screen...' ...
@@ -704,9 +721,9 @@ WaitSecs(1)
 KbWait([],2);
 
 Screen(w, 'FillRect', black);
-Screen('TextSize', w, 60);
+Screen('TextSize', w, textsize_fixcross);
 DrawFormattedText(w, '+', 'center', 'center', white);
-Screen('TextSize', w, 40);
+Screen('TextSize', w, textsize_directions);
 DrawFormattedText(w,[
     'Each time this shows up, focus on that middle point.' '\n'...
     'Your focus is very important for the eyetracker!'
@@ -759,13 +776,13 @@ if down_key == L
 % ---- countdown to next trial
       for i = 1:initialization_struct.reward_feedback_len-1
           Screen(w, 'FillRect', black);
-          Screen('TextSize', w, 20);
+          Screen('TextSize', w, textsize_countdown);
           DrawFormattedText(w, [
               'The next trial will start in' '\n' ...
               num2str(initialization_struct.reward_feedback_len-i) ' seconds.' ...
               ], 'center', 'center', white, [], [], [], 1.6);
 
-          Screen('TextSize', w, 40);
+          Screen('TextSize', w, textsize_directions);
           DrawFormattedText(w,[
               'Win!' ...
               ],'center',rect(4)*0.75, [], [], [], [], 1.6);
@@ -796,13 +813,13 @@ elseif down_key == R
 % ---- countdown to next trial
       for i = 1:initialization_struct.reward_feedback_len-1
           Screen(w, 'FillRect', black);
-          Screen('TextSize', w, 20);
+          Screen('TextSize', w, textsize_countdown);
           DrawFormattedText(w, [
               'The next trial will start in' '\n' ...
               num2str(initialization_struct.reward_feedback_len-i) ' seconds.' ...
               ], 'center', 'center', white, [], [], [], 1.6);
 
-          Screen('TextSize', w, 40);
+          Screen('TextSize', w, textsize_directions);
           DrawFormattedText(w,[
               'Win!' ...
               ],'center',rect(4)*0.75, [], [], [], [], 1.6);
@@ -827,9 +844,9 @@ KbWait([],2);
 
 % ---- fix cross
 Screen(w, 'FillRect', black);
-Screen('TextSize', w, 60);
+Screen('TextSize', w, textsize_fixcross);
 DrawFormattedText(w, '+', 'center', 'center', white);
-Screen('TextSize', w, 40);
+Screen('TextSize', w, textsize_directions);
 Screen(w, 'Flip');
 WaitSecs(.5)
 
@@ -889,9 +906,9 @@ KbWait([],2);
 
 % ---- fix cross
 Screen(w, 'FillRect', black);
-Screen('TextSize', w, 60);
+Screen('TextSize', w, textsize_fixcross);
 DrawFormattedText(w, '+', 'center', 'center', white);
-Screen('TextSize', w, 40);
+Screen('TextSize', w, textsize_directions);
 Screen(w, 'Flip');
 WaitSecs(.5)
 
@@ -937,13 +954,13 @@ if down_key == L
 % ---- countdown to next trial
       for i = 1:initialization_struct.reward_feedback_len-1
           Screen(w, 'FillRect', black);
-          Screen('TextSize', w, 20);
+          Screen('TextSize', w, textsize_countdown);
           DrawFormattedText(w, [
               'The next trial will start in' '\n' ...
               num2str(initialization_struct.reward_feedback_len-i) ' seconds.' ...
               ], 'center', 'center', white, [], [], [], 1.6);
 
-          Screen('TextSize', w, 40);
+          Screen('TextSize', w, textsize_directions);
           DrawFormattedText(w,[
               'Lose' ...
               ],'center',rect(4)*0.75, [], [], [], [], 1.6);
@@ -974,13 +991,13 @@ elseif down_key == R
 % ---- countdown to next trial
       for i = 1:initialization_struct.reward_feedback_len-1
           Screen(w, 'FillRect', black);
-          Screen('TextSize', w, 20);
+          Screen('TextSize', w, textsize_countdown);
           DrawFormattedText(w, [
               'The next trial will start in' '\n' ...
               num2str(initialization_struct.reward_feedback_len-i) ' seconds.' ...
               ], 'center', 'center', white, [], [], [], 1.6);
 
-          Screen('TextSize', w, 40);
+          Screen('TextSize', w, textsize_directions);
           DrawFormattedText(w,[
               'Lose' ...
               ],'center',rect(4)*0.75, [], [], [], [], 1.6);
@@ -1016,9 +1033,9 @@ KbWait([],2);
 
 % ---- fix cross
 Screen(w, 'FillRect', black);
-Screen('TextSize', w, 60);
+Screen('TextSize', w, textsize_fixcross);
 DrawFormattedText(w, '+', 'center', 'center', white);
-Screen('TextSize', w, 40);
+Screen('TextSize', w, textsize_directions);
 Screen(w, 'Flip');
 WaitSecs(.5)
 
@@ -1063,9 +1080,9 @@ end
 
 % ---- fix cross
 Screen(w, 'FillRect', black);
-Screen('TextSize', w, 60);
+Screen('TextSize', w, textsize_fixcross);
 DrawFormattedText(w, '+', 'center', 'center', white);
-Screen('TextSize', w, 40);
+Screen('TextSize', w, textsize_directions);
 Screen(w, 'Flip');
 WaitSecs(.5)
 
@@ -1111,13 +1128,13 @@ if down_key == L
 % ---- countdown to next trial
       for i = 1:initialization_struct.reward_feedback_len-1
           Screen(w, 'FillRect', black);
-          Screen('TextSize', w, 20);
+          Screen('TextSize', w, textsize_countdown);
           DrawFormattedText(w, [
               'The trial will end in' '\n' ...
               num2str(initialization_struct.reward_feedback_len-i) ' seconds.' ...
               ], 'center', 'center', white, [], [], [], 1.6);
 
-          Screen('TextSize', w, 40);
+          Screen('TextSize', w, textsize_directions);
           DrawFormattedText(w,[
               'Win!' ...
               ],'center',rect(4)*0.75, [], [], [], [], 1.6);
@@ -1148,13 +1165,13 @@ elseif down_key == R
 % ---- countdown to next trial
       for i = 1:initialization_struct.reward_feedback_len-1
           Screen(w, 'FillRect', black);
-          Screen('TextSize', w, 20);
+          Screen('TextSize', w, textsize_countdown);
           DrawFormattedText(w, [
               'The trial will end in' '\n' ...
               num2str(initialization_struct.reward_feedback_len-i) ' seconds.' ...
               ], 'center', 'center', white, [], [], [], 1.6);
 
-          Screen('TextSize', w, 40);
+          Screen('TextSize', w, textsize_directions);
           DrawFormattedText(w,[
               'Win!' ...
               ],'center',rect(4)*0.75, [], [], [], [], 1.6);
@@ -1171,9 +1188,9 @@ tic;
 
 DrawFormattedText(w,[
     'Let''s pause for just a moment.' '\n\n' ...
-    'If you have any questions at all about the strategy game,' '\n' ...
+    'If you have any questions at all about the strategy game,' '\n' ... % overrun
     'this is a great time to ask the experimenter.' '\n\n' ...
-    'Once the experimenter has answered all of your questions,' '\n' ...
+    'Once the experimenter has answered all of your questions,' '\n' ... % overrun
     'press any key to continue.' ...
     ],'center','center', [], [], [], [], 1.6);
 Screen('Flip',w);
@@ -1275,7 +1292,7 @@ Screen('DrawTexture', w, A1_blank_token_bag, [], R1point);
 Screen('DrawTexture', w, A1_blank_token_bag, [], R2point);
 DrawFormattedText(w,[
     'Notice that the slot machine and the' '\n' ...
-    'bags are labeled with the same symbol.' ...
+    'bags are labeled with the same symbol.' ... % overrun
     ],'center',rect(4)*0.8, [], [], [], [], 1.6);
 Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
 Screen('Flip',w);
@@ -1331,7 +1348,7 @@ Screen('DrawTexture', w, B1_blank_token_bag, [], R1point);
 Screen('DrawTexture', w, B1_blank_token_bag, [], R2point);
 DrawFormattedText(w,[
     'The slot machine operator then grabbed two' '\n' ...
-    'large token bags for the second slot machine.' ...
+    'large token bags for the second slot machine.' ... % overrun
     ],'center',rect(4)*0.8, [], [], [], [], 1.6);
 Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
 Screen('Flip',w);
@@ -1345,7 +1362,7 @@ Screen('DrawTexture', w, B1_blank_token_bag, [], R1point);
 Screen('DrawTexture', w, B1_blank_token_bag, [], R2point);
 DrawFormattedText(w,[
     'Notice that the slot machine and the' '\n' ...
-    'bags are labeled with the same symbol.' ...
+    'bags are labeled with the same symbol.' ... % overrun
     ],'center',rect(4)*0.8, [], [], [], [], 1.6);
 Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
 Screen('Flip',w);
@@ -1421,7 +1438,7 @@ Screen('FrameRect',w,white,slot_label_Rframe,10);
 
 DrawFormattedText(w,[
     'Each time you win a token, the operator puts' '\n' ...
-    'it back in the slot machine that it came from...' ...
+    'it back in the slot machine that it came from...' ... % overrun
     ],'center',rect(4)*0.8, [], [], [], [], 1.6);
 Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
 Screen('Flip',w);
@@ -1514,7 +1531,7 @@ KbWait([],2);
 Screen('DrawTexture', w, prize_room, [], room_Upoint);
 DrawFormattedText(w,[
     'This part of the programming is the same for the' '\n' ...
-    'slot machines in PRIZE ROOM and in the TOKEN ROOM.' ...
+    'slot machines in PRIZE ROOM and in the TOKEN ROOM.' ... % overrun
     ],'center',rect(4)*0.7, [], [], [], [], 1.6);
 Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
 Screen('Flip',w);
@@ -1587,7 +1604,7 @@ KbWait([],2);
 
 Screen('DrawTexture', w, prize_room, [], room_Upoint);
 DrawFormattedText(w,[
-    'This means that each time you return to the PRIZE ROOM,' '\n' ...
+    'This means that each time you return to the PRIZE ROOM,' '\n' ... % overrun
     'your chance of winning at each slot machine will be' '\n' ...
     'slightly different than it was the round before.'
     ],'center',rect(4)*0.7, [], [], [], [], 1.6);
@@ -1709,7 +1726,7 @@ KbWait([],2);
 Screen('DrawTexture', w, prize_room, [], room_Upoint);
 DrawFormattedText(w,[
     'This means that you will have to pay close attention to' '\n' ...
-    'figure out which slot machine in the PRIZE ROOM is the best!' ...
+    'figure out which slot machine in the PRIZE ROOM is the best!' ... % overrun
     ],'center',rect(4)*0.7, [], [], [], [], 1.6);
 Screen('DrawTexture', w, next_arrow, [], next_arrow_loc);
 Screen('Flip',w);
@@ -1763,11 +1780,10 @@ final_ques_time = toc;
 tutorial_timing_struct = struct;
 tutorial_timing_struct.times = [intro_time game_structure_time slot_layout_time game_progression_time trial_walkthrough_time game_rules_ques_time token_room_prog_time token_room_prog_ques_time prize_room_prog_time final_ques_time]
 tutorial_timing_struct.names = [{'intro_time'} {'game_structure_time'} {'slot_layout_time'} {'game_progression_time'} {'trial_walkthrough_time'} {'game_rules_ques_time'} {'token_room_prog_time'} {'token_room_prog_ques_time'} {'prize_room_prog_time'} {'final_ques_time'}]
-save([initialization_struct.data_file_path '/tutorial_timing'], 'tutorial_timing_struct', '-v6');
+save([initialization_struct.data_file_path sl 'tutorial_timing'], 'tutorial_timing_struct', '-v6');
 
-ShowCursor; %ALTERED FOR DEBUGGING; THIS WAS HASHED OUT?
-Screen('Close',w); %ALTERED FOR DEBUGGING; THIS WAS HASHED OUT?
-
-%jheapcl; ALTERED FOR DEBUGGING
+ShowCursor;
+Screen('CloseAll');
+FlushEvents;
 
 end
