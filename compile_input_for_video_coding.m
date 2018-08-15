@@ -59,8 +59,8 @@ video_file_path = [video_file_root sl 'sub' filename_subnum];
 video_coding_input(:,2) = cellstr([video_file_path sl 'video.mp4']);
 
 % foods
-video_coding_input(:,3) = cellstr(initialization_struct.allergy_wanting_food_sweet{1}(7:end-4)); %variable is sweet_[food name].jpg
-video_coding_input(:,4) = cellstr(initialization_struct.allergy_wanting_food_salt{1}(6:end-4)); %variable is salt_[food name].jpg
+video_coding_input(:,3) = cellstr(initialization_struct.food_sweet{1}(7:end-4)); %variable is sweet_[food name].jpg
+video_coding_input(:,4) = cellstr(initialization_struct.food_salt{1}(6:end-4)); %variable is salt_[food name].jpg
 
 % food location
 video_coding_input(:,5) = num2cell(initialization_struct.sweet_loc_left);
