@@ -9,9 +9,8 @@ function [exit_flag, eligible, food_salt, food_sweet] = allergy_wanting(initiali
 
 % psychtoolbox setup
 Screen('Preference', 'VisualDebugLevel', 1);% change psych toolbox screen check to black
-Screen('Preference', 'SkipSyncTests', 0); % ALTERED FOR DEBUGGING
 FlushEvents;
-%HideCursor; %ALTERED FOR DEBUGGING
+HideCursor;
 PsychDefaultSetup(1);
 
 % sets the exit flag default to 0; throws a flag if you exit the function to leave the start function

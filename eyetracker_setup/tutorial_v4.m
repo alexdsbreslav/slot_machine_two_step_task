@@ -21,9 +21,8 @@ rng(66);
 
 % ---- psychtoolbox set up
 Screen('Preference', 'VisualDebugLevel', 1);% change psych toolbox screen check to black
-Screen('Preference', 'SkipSyncTests', 0); % 1 DURING DEBUGGING
 FlushEvents;
-% HideCursor; %ALTERED FOR DEBUGGING
+HideCursor;
 PsychDefaultSetup(1);
 
 % ---- stimuli set up

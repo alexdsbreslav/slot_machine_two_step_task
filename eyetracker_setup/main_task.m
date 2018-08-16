@@ -20,17 +20,14 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
     % ---- Screen setup
     Screen('Preference', 'VisualDebugLevel', 1);% change psych toolbox screen check to black
-    Screen('Preference', 'SkipSyncTests', 0); % 1 DURING DEBUGGING
     FlushEvents;
-    %HideCursor; %ALTERED FOR DEBUGGING
+    HideCursor;
     PsychDefaultSetup(1);
 
     % ---- Screen selection
-    doublebuffer=1; %????
     screens = Screen('Screens'); %count the screen
     whichScreen = max(screens); %select the screen; ALTERED THIS BECAUSE IT KEPT SHOWING UP ON MY LAPTOP INSTEAD OF THE ATTACHED MONITOR
-    [w, rect] = Screen('OpenWindow', whichScreen, 0,[], 32, ...
-        doublebuffer+1,[],[],kPsychNeedFastBackingStore); %???
+    [w, rect] = Screen('OpenWindow', whichScreen);
 
     % --- font sizes
     textsize_fixcross = initialization_struct.textsize_fixcross;
