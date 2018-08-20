@@ -35,10 +35,10 @@ textsize_countdown = 20;
 % ------------------------------------------------------------------------------
 % ------------------------------------------------------------------------------
 
-sub = input('Subject number: '); %keep sub number as a string so we can validate easily below
+sub = input('Subject number (from Qualtrics): '); %keep sub number as a string so we can validate easily below
 
 % create subject folder in the raw data folder
-filename_subnum = pad(num2str(sub), 3, 'left', '0');
+filename_subnum = pad(num2str(sub), 4, 'left', '0');
 data_file_path = [file_root sl 'sub' filename_subnum];
 [~, msg, ~] = mkdir(data_file_path);
 
@@ -165,6 +165,7 @@ if start_where == 1
     end
 
     initialization_struct.eligible = eligible;
+    initialization_struct.foods_selected_by_comp = 1; %default is that the foods were selected by computer
     initialization_struct.food_salt = food_salt;
     initialization_struct.food_sweet = food_sweet;
 
@@ -247,6 +248,69 @@ end
 
 if start_where <= 4
 % ---- 4: Block 1 of the main experiment trials
+% ---- chosen foods ok?
+    if initialization_struct.block(2) == 2
+        foods_ok = input(['\n\n' ...
+          'Chosen foods for Food Block' '\n' ...
+          'Sweet Food = ' initialization_struct.food_sweet '\n'...
+          'Salt Food = ' initialization_struct.food_salt '\n\n' ...
+          '1 = Participant is OK with both foods.' '\n' ...
+          '0 = Partcipant requires that we switch a food.' '\n' ...
+          'Response: ' ]);
+    end
+
+    if ~ismember(foods_ok, [0 1])
+        disp('Invalid entry, please try again.')
+        sca; return
+
+    elseif foods_ok == 0
+        % pick salty food
+        img_files = dir(['food_images' sl '*.png']);
+        img_file_names = {img_files(1:length(img_files)).name}';
+        img_file_index = find(contains(img_file_names, 'salt'))';
+
+        food_salt = input(['Reselect the salty food for this participant.' '\n' ...
+        'Please select one of the following foods.' '\n\n' ...
+        num2str(img_file_index(1)) ' = ' img_file_names{img_file_index(1)} '\n' ...
+        num2str(img_file_index(2)) ' = ' img_file_names{img_file_index(2)} '\n' ...
+        num2str(img_file_index(3)) ' = ' img_file_names{img_file_index(3)} '\n' ...
+        num2str(img_file_index(4)) ' = ' img_file_names{img_file_index(4)} '\n' ...
+        num2str(img_file_index(5)) ' = ' img_file_names{img_file_index(5)} '\n' ...
+        'Response: ']);
+
+        initialization_struct.food_salt = cellstr(img_file_names{food_salt});
+
+        % pick sweet food
+        img_file_names = {img_files(1:length(img_files)).name}';
+        img_file_index = find(contains(img_file_names, 'sweet'))';
+
+        food_sweet = input(['Reselect the sweet food for this participant.' '\n' ...
+        'Please select one of the following foods.' '\n\n' ...
+        num2str(img_file_index(1)) ' = ' img_file_names{img_file_index(1)} '\n' ...
+        num2str(img_file_index(2)) ' = ' img_file_names{img_file_index(2)} '\n' ...
+        num2str(img_file_index(3)) ' = ' img_file_names{img_file_index(3)} '\n' ...
+        num2str(img_file_index(4)) ' = ' img_file_names{img_file_index(4)} '\n' ...
+        num2str(img_file_index(5)) ' = ' img_file_names{img_file_index(5)} '\n' ...
+        'Response: ']);
+
+        initialization_struct.food_sweet = cellstr(img_file_names{food_sweet});
+        save([data_file_path sl 'initialization structure'], 'initialization_struct', '-v6')
+
+    end
+
+    % redo the selection of left/right food
+    initialization_struct.foods_selected_by_comp = 0; %indicate that the foods were not selected by computer
+
+    if initialization_struct.sweet_loc_left == 1
+        initialization_struct.left_food = initialization_struct.food_sweet{1}(7:end-4);
+        initialization_struct.right_food = initialization_struct.food_salt{1}(6:end-4);
+    else
+        initialization_struct.right_food = initialization_struct.food_sweet{1}(7:end-4);
+        initialization_struct.left_food = initialization_struct.food_salt{1}(6:end-4);
+    end
+
+    save([data_file_path sl 'initialization structure'], 'initialization_struct', '-v6')
+
 % ---- space prepped?
     if initialization_struct.block(2) == 1
         reward_bowl_prep = input(['\n\n' ...
@@ -258,8 +322,8 @@ if start_where <= 4
     else
         reward_bowl_prep = input(['\n\n' ...
           'Food Block' '\n' ...
-          'Left Food = ' left_food '\n'...
-          'Right Food = ' right_food '\n\n' ...
+          'Left Food = ' initialization_struct.left_food '\n'...
+          'Right Food = ' initialization_struct.right_food '\n\n' ...
           '1 = Everything is set up; continue.' '\n' ...
           '0 = I need to fix something; exit the script.' '\n' ...
           'Response: ' ]);
@@ -318,6 +382,69 @@ end
 
 if start_where <= 5
 % ---- 5: Block 3 of the main experiment trials
+% ---- chosen foods ok?
+    if initialization_struct.block(3) == 2
+        foods_ok = input(['\n\n' ...
+          'Chosen foods for Food Block' '\n' ...
+          'Sweet Food = ' initialization_struct.food_sweet '\n'...
+          'Salt Food = ' initialization_struct.food_salt '\n\n' ...
+          '1 = Participant is OK with both foods.' '\n' ...
+          '0 = Partcipant requires that we switch a food.' '\n' ...
+          'Response: ' ]);
+    end
+
+    if ~ismember(foods_ok, [0 1])
+        disp('Invalid entry, please try again.')
+        sca; return
+
+    elseif foods_ok == 0
+        % pick salty food
+        img_files = dir(['food_images' sl '*.png']);
+        img_file_names = {img_files(1:length(img_files)).name}';
+        img_file_index = find(contains(img_file_names, 'salt'))';
+
+        food_salt = input(['Reselect the salty food for this participant.' '\n' ...
+        'Please select one of the following foods.' '\n\n' ...
+        num2str(img_file_index(1)) ' = ' img_file_names{img_file_index(1)} '\n' ...
+        num2str(img_file_index(2)) ' = ' img_file_names{img_file_index(2)} '\n' ...
+        num2str(img_file_index(3)) ' = ' img_file_names{img_file_index(3)} '\n' ...
+        num2str(img_file_index(4)) ' = ' img_file_names{img_file_index(4)} '\n' ...
+        num2str(img_file_index(5)) ' = ' img_file_names{img_file_index(5)} '\n' ...
+        'Response: ']);
+
+        initialization_struct.food_salt = cellstr(img_file_names{food_salt});
+
+        % pick sweet food
+        img_file_names = {img_files(1:length(img_files)).name}';
+        img_file_index = find(contains(img_file_names, 'sweet'))';
+
+        food_sweet = input(['Reselect the sweet food for this participant.' '\n' ...
+        'Please select one of the following foods.' '\n\n' ...
+        num2str(img_file_index(1)) ' = ' img_file_names{img_file_index(1)} '\n' ...
+        num2str(img_file_index(2)) ' = ' img_file_names{img_file_index(2)} '\n' ...
+        num2str(img_file_index(3)) ' = ' img_file_names{img_file_index(3)} '\n' ...
+        num2str(img_file_index(4)) ' = ' img_file_names{img_file_index(4)} '\n' ...
+        num2str(img_file_index(5)) ' = ' img_file_names{img_file_index(5)} '\n' ...
+        'Response: ']);
+
+        initialization_struct.food_sweet = cellstr(img_file_names{food_sweet});
+        save([data_file_path sl 'initialization structure'], 'initialization_struct', '-v6')
+
+    end
+
+    % redo the selection of left/right food
+    initialization_struct.foods_selected_by_comp = 0; %indicate that the foods were not selected by computer
+
+    if initialization_struct.sweet_loc_left == 1
+        initialization_struct.left_food = initialization_struct.food_sweet{1}(7:end-4);
+        initialization_struct.right_food = initialization_struct.food_salt{1}(6:end-4);
+    else
+        initialization_struct.right_food = initialization_struct.food_sweet{1}(7:end-4);
+        initialization_struct.left_food = initialization_struct.food_salt{1}(6:end-4);
+    end
+
+    save([data_file_path sl 'initialization structure'], 'initialization_struct', '-v6')
+
 % ---- space prepped?
     if initialization_struct.block(3) == 1
         reward_bowl_prep = input(['\n\n' ...
