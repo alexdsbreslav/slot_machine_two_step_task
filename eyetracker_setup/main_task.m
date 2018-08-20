@@ -542,12 +542,12 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
                 Screen('FillRect', w, black);
                 Screen('TextSize', w, textsize_directions);
 
-                if block = 1
+                if block == 1
                     DrawFormattedText(w, [
                         'You can take a short break.' '\n\n' ...
                         'Press left or right to continue' ...
                         ],'center', 'center', white);
-                elseif block = 2
+                elseif block == 2
                     DrawFormattedText(w, [
                         'You can take a short break.' '\n' ...
                         'This is a good time to take a sip of water.' '\n\n' ...
@@ -809,6 +809,8 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
             else
                 if trial == trials
                     countdown_text = 'The game will end in';
+                elseif trial == (trials/5) || trial == (2*trials/5) || trial == (3*trials/5) || trial == (4*trials/5)
+                    countdown_text = 'A short break will start in';
                 else
                     countdown_text = 'The next trial will start in';
                 end
