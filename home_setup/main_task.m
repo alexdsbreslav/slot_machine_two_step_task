@@ -26,11 +26,9 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
     PsychDefaultSetup(1);
 
     % ---- Screen selection
-    doublebuffer=1; %????
     screens = Screen('Screens'); %count the screen
     whichScreen = max(screens); %select the screen; ALTERED THIS BECAUSE IT KEPT SHOWING UP ON MY LAPTOP INSTEAD OF THE ATTACHED MONITOR
-    [w, rect] = Screen('OpenWindow', whichScreen, 0,[], 32, ...
-        doublebuffer+1,[],[],kPsychNeedFastBackingStore); %???
+    [w, rect] = Screen('OpenWindow', whichScreen);
 
     % --- font sizes
     textsize_fixcross = initialization_struct.textsize_fixcross;
@@ -542,13 +540,23 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 % ---- Signal a short break every 50 trials on blocks 1,2
 
         if block ~= 0
-
-            if trial == (trials/3) + 1 || trial == (2*trials/3) + 1
+            if trial == (trials/5) + 1 || trial == (2*trials/5) + 1 || trial == (3*trials/5) + 1 || trial == (4*trials/5) + 1
                 Screen('FillRect', w, black);
                 Screen('TextSize', w, textsize_directions);
-                DrawFormattedText(w, [
-                    'You can take a short break. Press left or right to continue' ...
-                    ],'center', 'center', white);
+
+                if block == 1
+                    DrawFormattedText(w, [
+                        'You can take a short break.' '\n\n' ...
+                        'Press left or right to continue' ...
+                        ],'center', 'center', white);
+                elseif block == 2
+                    DrawFormattedText(w, [
+                        'You can take a short break.' '\n' ...
+                        'This is a good time to take a sip of water.' '\n\n' ...
+                        'Press left or right to continue' ...
+                        ],'center', 'center', white, [], [], [], 1.6);
+                end
+
                 Screen(w, 'Flip');
                 KbWait([],2);
             end
@@ -803,6 +811,8 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
             else
                 if trial == trials
                     countdown_text = 'The game will end in';
+                elseif trial == (trials/5) || trial == (2*trials/5) || trial == (3*trials/5) || trial == (4*trials/5)
+                    countdown_text = 'A short break will start in';
                 else
                     countdown_text = 'The next trial will start in';
                 end
@@ -971,6 +981,8 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
             else
                 if trial == trials
                     countdown_text = 'The game will end in';
+                elseif trial == (trials/5) || trial == (2*trials/5) || trial == (3*trials/5) || trial == (4*trials/5)
+                    countdown_text = 'A short break will start in';
                 else
                     countdown_text = 'The next trial will start in';
                 end
@@ -1103,7 +1115,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
         DrawFormattedText(w,[
             'You have completed the practice rounds!' '\n' ...
             'Please alert the experimenter, and' '\n' ...
-            'press c to close to practice game.'
+            'press ESCAPE to close to practice game.'
             ],'center','center', white, [], [], [], 1.6);
         Screen(w, 'Flip');
         WaitSecs(1);
@@ -1111,9 +1123,6 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
         while 1 %wait for response and allow exit if necessesary
           [keyIsDown, ~, keyCode] = KbCheck;
           if keyIsDown && any(keyCode(exitKeys))
-              exit_flag = 1; Screen('CloseAll'); FlushEvents;
-              sca; return
-          elseif keyIsDown && any(keyCode(continueKeys))
               break
           end
         end
@@ -1126,7 +1135,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
             'You have completed the money rounds.' '\n\n' ...
             'You earned: $' sprintf('%.2f', money_struct.payoff_sum) '\n\n' ...
             'Please alert the experimenter, and' '\n' ...
-            'press c to close to game.'
+            'press ESCAPE to close to game.'
             ], 'center', 'center', white);
         Screen(w, 'Flip');
         WaitSecs(1);
@@ -1134,9 +1143,6 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
         while 1 %wait for response and allow exit if necessesary
           [keyIsDown, ~, keyCode] = KbCheck;
           if keyIsDown && any(keyCode(exitKeys))
-              exit_flag = 1; Screen('CloseAll'); FlushEvents;
-              sca; return
-          elseif keyIsDown && any(keyCode(continueKeys))
               break
           end
         end
@@ -1148,7 +1154,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
         DrawFormattedText(w,[
             'You have completed the food rounds!' '\n' ...
             'Please alert the experimenter, and' '\n' ...
-            'press c to close to the game.'
+            'press ESCAPE to close to the game.'
             ],'center','center', white, [], [], [], 1.6);
         Screen(w, 'Flip');
         WaitSecs(1);
@@ -1156,9 +1162,6 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
         while 1 %wait for response and allow exit if necessesary
           [keyIsDown, ~, keyCode] = KbCheck;
           if keyIsDown && any(keyCode(exitKeys))
-              exit_flag = 1; Screen('CloseAll'); FlushEvents;
-              sca; return
-          elseif keyIsDown && any(keyCode(continueKeys))
               break
           end
         end
@@ -1166,7 +1169,6 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
     end
 
     ShowCursor;
-    Screen('Close',w);
     Screen('CloseAll');
     FlushEvents;
 

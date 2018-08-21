@@ -244,7 +244,7 @@ else
     DrawFormattedText(exp_screen,'Press the spacebar to begin!',...
         'center', allergy_wanting.height*.8, txt_color, wrapat, [], [], vSpacing);
     Screen(exp_screen, 'Flip');
-    WaitSecs(.2); KbEventFlush;
+    WaitSecs(.2);
     % wait for spacebar to begin
     while 1
         [keyIsDown, ~, keyCode] = KbCheck; % normal
@@ -388,7 +388,7 @@ else % otherwise, carry on as expected
     DrawFormattedText(exp_screen,'Press the spacebar to begin!',...
         'center', allergy_wanting.height*.8, txt_color, wrapat, [], [], vSpacing);
     Screen(exp_screen, 'Flip');
-    WaitSecs(.2); KbEventFlush;
+    WaitSecs(.2);
     % wait for spacebar to begin
     while 1
         [keyIsDown, ~, keyCode] = KbCheck; % normal
