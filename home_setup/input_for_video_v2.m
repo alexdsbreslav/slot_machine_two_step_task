@@ -36,10 +36,9 @@ video_coding_input = cell(num_trials, 12);
 % subID
 video_coding_input(:, 1) = num2cell(subject_number);
 
-% video link
+% create video folder
 video_file_path = [video_file_root sl 'sub' filename_subnum];
 [~, msg, ~] = mkdir(video_file_path);
-video_coding_input(:,2) = cellstr([video_file_path sl 'video.mp4']);
 
 % foods
 video_coding_input(:,3) = cellstr(initialization_struct.food_sweet{1}(7:end-4)); %variable is sweet_[food name].jpg
@@ -60,17 +59,21 @@ else
     food_end = trials_food;
 end
 
-% block number
-video_coding_input([money_start:money_end],6) = {2};
-video_coding_input([food_start:food_end],6) = {3};
+% block index
+video_coding_input([money_start:money_end],6) = num2cell(money_struct.block - 1);
+video_coding_input([food_start:food_end],6) = num2cell(food_struct.block - 1);
 
-% block text
+%video link
+video_coding_input([money_start:money_end],2) = cellstr([video_file_path sl filename_subnum '_' num2str(money_struct.block - 1) '.flv']);
+video_coding_input([food_start:food_end],2) = cellstr([video_file_path sl filename_subnum '_' num2str(food_struct.block - 1) '.flv']);
+
+% block name
 video_coding_input([money_start:money_end],7) = {'Money'};
 video_coding_input([food_start:food_end],7) = {'Food'};
 
 % trial numbers
-video_coding_input([money_start:money_end],8) = num2cell(money_start:money_end);
-video_coding_input([food_start:food_end],8) = num2cell(food_start:food_end);
+video_coding_input([money_start:money_end],8) = num2cell(1:trials_money);
+video_coding_input([food_start:food_end],8) = num2cell(1:trials_food);
 
 % reward feedback on
 int = floor(money_struct.reward_feedback_on);
@@ -148,7 +151,7 @@ video_coding_input([food_start:food_end],12) = num2cell(food_struct.payoff(~isna
 
 % convert array to table
 T = table(video_coding_input(:,1), video_coding_input(:,2), video_coding_input(:,3), video_coding_input(:,4), video_coding_input(:,5), video_coding_input(:,6), video_coding_input(:,7), video_coding_input(:,8), video_coding_input(:,9), video_coding_input(:,10), video_coding_input(:,11), video_coding_input(:,12), ...
-'VariableNames', {'subID', 'video_link', 'food_text_sweet', 'food_text_salt', 'sweet_loc_left', 'block_num', 'block_text', 'trial_num', 'reward_feedback_on', 'feedback_state', 'feedback_state_color', 'trial_win'});
+'VariableNames', {'subID', 'video_link', 'food_text_sweet', 'food_text_salt', 'sweet_loc_left', 'block_index', 'block_name', 'trial_num', 'reward_feedback_on', 'feedback_state', 'feedback_state_color', 'trial_win'});
 
 % print table to excel
 writetable(T, [video_file_path sl 'coding_input.xlsx']);
