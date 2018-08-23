@@ -337,6 +337,22 @@ if start_where <= 4
         sca; return
     end
 
+% --- camera on?
+    camera_on = input(['\n\n' ...
+      'Open OBS and ensure that all settings look good.' '\n' ...
+      '1 = OBS is open and ready to record.' '\n' ...
+      '0 = Something may not be working, exit the script so I can double check.' '\n' ...
+      'Response: ' ]);
+
+    if ~ismember(camera_on, [0 1])
+        disp('Invalid entry, please try again.')
+        sca; return
+    elseif camera_on == 0
+        disp([fprintf('\n') ...
+        'OK, you should restart the function to try again'])
+        sca; return
+    end
+
 % ---- eyetracker ready?
     eyetrack_ready = input(['\n\n' ...
       'Initialize the eye-tracker.' '\n' ...
@@ -352,23 +368,6 @@ if start_where <= 4
           'OK, you should restart the function to try again'])
           sca; return
       end
-
-% --- camera on?
-    camera_on = input(['\n\n' ...
-      'Before the task begins, ensure that the camera is on,' '\n' ...
-      'and that the software is recording!' '\n\n' ...
-      '1 = I am recording. The camera''s blue light is on; the recording timer has started.' '\n' ...
-      '0 = Something may not be working, exit the script so I can double check.' '\n' ...
-      'Response: ' ]);
-
-    if ~ismember(camera_on, [0 1])
-        disp('Invalid entry, please try again.')
-        sca; return
-    elseif camera_on == 0
-        disp([fprintf('\n') ...
-        'OK, you should restart the function to try again'])
-        sca; return
-    end
 
 % --- run the task
     exit_flag = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
@@ -470,6 +469,22 @@ if start_where <= 5
         sca; return
     end
 
+% --- camera on?
+    camera_on = input(['\n\n' ...
+      'Open OBS and ensure that all settings look good.' '\n' ...
+      '1 = OBS is open and ready to record.' '\n' ...
+      '0 = Something may not be working, exit the script so I can double check.' '\n' ...
+      'Response: ' ]);
+
+    if ~ismember(camera_on, [0 1])
+        disp('Invalid entry, please try again.')
+        sca; return
+    elseif camera_on == 0
+        disp([fprintf('\n') ...
+        'OK, you should restart the function to try again'])
+        sca; return
+    end
+
     % ---- eyetracker ready?
     eyetrack_ready = input(['\n\n' ...
       'Initialize the eye-tracker.' '\n' ...
@@ -486,23 +501,6 @@ if start_where <= 5
           sca; return
       end
 
-    % --- camera on?
-    camera_on = input(['\n\n' ...
-      'Before the task begins, ensure that the camera is on,' '\n' ...
-      'and that the software is recording!' '\n\n' ...
-      '1 = I am recording. The camera''s blue light is on; the recording timer has started.' '\n' ...
-      '0 = Something may not be working, exit the script so I can double check.' '\n' ...
-      'Response: ' ]);
-
-    if ~ismember(camera_on, [0 1])
-        disp('Invalid entry, please try again.')
-        sca; return
-    elseif camera_on == 0
-        disp([fprintf('\n') ...
-        'OK, you should restart the function to try again'])
-        sca; return
-    end
-
     % --- run the task
     exit_flag = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
 
@@ -516,5 +514,8 @@ end
 load([data_file_path sl 'money.mat']);
 fprintf('\n\n\n\n\n\n\n\n\n\nThe participant earned $ %.2f during the money rounds', money_struct.payoff_sum);
 fprintf('\nRound up to the nearest dollar and pay them (show up fee included) = $ %.2f', money_struct.payoff_total);
+
+% --- compile video input file
+input_for_video_v2(initialization_struct.sub)
 
 end

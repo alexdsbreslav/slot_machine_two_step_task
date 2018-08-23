@@ -263,7 +263,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
     L = KbName('LeftArrow');
     R = KbName('RightArrow');
     exitKeys = KbName('ESCAPE');
-    startFirstKeys = KbName({'p', 'd', 'y'});
+    startFirstKeys = KbName({'p', 'm', 'f'});
     continueKeys = KbName({'c', 'C'});
 
 % ---- Transition variables
@@ -520,15 +520,16 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
 % 8 - Begin trials
-    if block ~= 0 % not using the camera for the practice trials
-        DrawFormattedText(w,[
-            'Initializing camera...' ...
-            ], 'center','center', white, [], [], [], 1.6);
-        Screen('Flip',w);
-        WaitSecs(1)
-    end
-
     t0 = GetSecs;
+
+    DrawFormattedText(w, [
+        'subject: ' initialization_struct.sub '\n'...
+        'block index: ' find(initialization_struct.block == block) '\n' ...
+        'block type (1 = money, 2 = food): ' block ...
+        ],'center', 'center', white, [], [], [], 1.6);
+    Screen(w, 'Flip');
+    WaitSecs(1/30)
+
 
     for trial = 1:trials
 

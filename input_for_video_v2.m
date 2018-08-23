@@ -21,7 +21,7 @@ function input_for_video_v2(subject_number)
   % ------------------------------------------------------------------------------
 
 % load all of the necessary structures
-filename_subnum = pad(num2str(subject_number), 3, 'left', '0');
+filename_subnum = pad(num2str(subject_number), 4, 'left', '0');
 data_file_path = [file_root sl 'sub' filename_subnum];
 load([data_file_path sl 'initialization_structure.mat']);
 load([data_file_path sl 'food.mat']);
