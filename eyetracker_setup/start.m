@@ -66,7 +66,7 @@ if sub_exists == 1
    sca; return
 
 elseif sub_exists == 0
-    load([data_file_path sl 'initialization structure.mat']);
+    load([data_file_path sl 'initialization_structure.mat']);
     if initialization_struct.block(2) == 1
         block1_text = 'Money';
         block2_text = 'Food';
@@ -111,7 +111,7 @@ else
     initialization_struct = struct;
     initialization_struct.sub = sub; % save the subject number into the structure
     initialization_struct.data_file_path = data_file_path; % save the data file path as well
-    initialization_struct.rng_seed = init_rng_seed; % save the rng seed for the initialization structure
+    initialization_struct.rng_seed = init_rng_seed; % save the rng seed for the initialization_structure
 
     % stimuli sets
     symbols = {'b', 'e', 'i', 'inf', 'l', 'n', 'o', 'r', 'ri', 'to', 'u', 'w'};
@@ -151,7 +151,7 @@ else
     initialization_struct.textsize_fixcross = textsize_fixcross;
     initialization_struct.textsize_countdown = textsize_countdown;
 
-    save([data_file_path sl 'initialization structure'], 'initialization_struct', '-v6')
+    save([data_file_path sl 'initialization_structure'], 'initialization_struct', '-v6')
 end
 
 if start_where == 1
@@ -177,7 +177,7 @@ if start_where == 1
         initialization_struct.left_food = initialization_struct.food_salt{1}(6:end-4);
     end
 
-    save([data_file_path sl 'initialization structure'], 'initialization_struct', '-v6')
+    save([data_file_path sl 'initialization_structure'], 'initialization_struct', '-v6')
 
     if eligible == 0
         sca; return
@@ -201,7 +201,7 @@ if start_where <= 2
         'Response: ']);
 
         initialization_struct.food_salt = cellstr(img_file_names{food_salt});
-        save([data_file_path sl 'initialization structure'], 'initialization_struct', '-v6')
+        save([data_file_path sl 'initialization_structure'], 'initialization_struct', '-v6')
     end
 
     if isempty(initialization_struct.food_sweet)
@@ -219,7 +219,7 @@ if start_where <= 2
         'Response: ']);
 
         initialization_struct.food_sweet = cellstr(img_file_names{food_sweet});
-        save([data_file_path sl 'initialization structure'], 'initialization_struct', '-v6')
+        save([data_file_path sl 'initialization_structure'], 'initialization_struct', '-v6')
     end
 
 % ---- 2: Tutorial
@@ -252,8 +252,8 @@ if start_where <= 4
     if initialization_struct.block(2) == 2
         foods_ok = input(['\n\n' ...
           'Chosen foods for Food Block' '\n' ...
-          'Sweet Food = ' initialization_struct.food_sweet '\n'...
-          'Salt Food = ' initialization_struct.food_salt '\n\n' ...
+          'Sweet Food = ' initialization_struct.food_sweet{1}(7:end-4) '\n'...
+          'Salt Food = ' initialization_struct.food_salt{1}(6:end-4) '\n\n' ...
           '1 = Participant is OK with both foods.' '\n' ...
           '0 = Partcipant requires that we switch a food.' '\n' ...
           'Response: ' ]);
@@ -293,7 +293,7 @@ if start_where <= 4
             'Response: ']);
 
             initialization_struct.food_sweet = cellstr(img_file_names{food_sweet});
-            save([data_file_path sl 'initialization structure'], 'initialization_struct', '-v6')
+            save([data_file_path sl 'initialization_structure'], 'initialization_struct', '-v6')
         end
     end
 
@@ -308,7 +308,7 @@ if start_where <= 4
         initialization_struct.left_food = initialization_struct.food_salt{1}(6:end-4);
     end
 
-    save([data_file_path sl 'initialization structure'], 'initialization_struct', '-v6')
+    save([data_file_path sl 'initialization_structure'], 'initialization_struct', '-v6')
 
 % ---- space prepped?
     if initialization_struct.block(2) == 1
@@ -337,6 +337,22 @@ if start_where <= 4
         sca; return
     end
 
+% --- camera on?
+    camera_on = input(['\n\n' ...
+      'Open OBS and ensure that all settings look good.' '\n' ...
+      '1 = OBS is open and ready to record.' '\n' ...
+      '0 = Something may not be working, exit the script so I can double check.' '\n' ...
+      'Response: ' ]);
+
+    if ~ismember(camera_on, [0 1])
+        disp('Invalid entry, please try again.')
+        sca; return
+    elseif camera_on == 0
+        disp([fprintf('\n') ...
+        'OK, you should restart the function to try again'])
+        sca; return
+    end
+
 % ---- eyetracker ready?
     eyetrack_ready = input(['\n\n' ...
       'Initialize the eye-tracker.' '\n' ...
@@ -352,23 +368,6 @@ if start_where <= 4
           'OK, you should restart the function to try again'])
           sca; return
       end
-
-% --- camera on?
-    camera_on = input(['\n\n' ...
-      'Before the task begins, ensure that the camera is on,' '\n' ...
-      'and that the software is recording!' '\n\n' ...
-      '1 = I am recording. The camera''s blue light is on; the recording timer has started.' '\n' ...
-      '0 = Something may not be working, exit the script so I can double check.' '\n' ...
-      'Response: ' ]);
-
-    if ~ismember(camera_on, [0 1])
-        disp('Invalid entry, please try again.')
-        sca; return
-    elseif camera_on == 0
-        disp([fprintf('\n') ...
-        'OK, you should restart the function to try again'])
-        sca; return
-    end
 
 % --- run the task
     exit_flag = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(2));
@@ -426,7 +425,7 @@ if start_where <= 5
             'Response: ']);
 
             initialization_struct.food_sweet = cellstr(img_file_names{food_sweet});
-            save([data_file_path sl 'initialization structure'], 'initialization_struct', '-v6')
+            save([data_file_path sl 'initialization_structure'], 'initialization_struct', '-v6')
         end
     end
 
@@ -441,7 +440,7 @@ if start_where <= 5
         initialization_struct.left_food = initialization_struct.food_salt{1}(6:end-4);
     end
 
-    save([data_file_path sl 'initialization structure'], 'initialization_struct', '-v6')
+    save([data_file_path sl 'initialization_structure'], 'initialization_struct', '-v6')
 
 % ---- space prepped?
     if initialization_struct.block(3) == 1
@@ -470,6 +469,22 @@ if start_where <= 5
         sca; return
     end
 
+% --- camera on?
+    camera_on = input(['\n\n' ...
+      'Open OBS and ensure that all settings look good.' '\n' ...
+      '1 = OBS is open and ready to record.' '\n' ...
+      '0 = Something may not be working, exit the script so I can double check.' '\n' ...
+      'Response: ' ]);
+
+    if ~ismember(camera_on, [0 1])
+        disp('Invalid entry, please try again.')
+        sca; return
+    elseif camera_on == 0
+        disp([fprintf('\n') ...
+        'OK, you should restart the function to try again'])
+        sca; return
+    end
+
     % ---- eyetracker ready?
     eyetrack_ready = input(['\n\n' ...
       'Initialize the eye-tracker.' '\n' ...
@@ -486,23 +501,6 @@ if start_where <= 5
           sca; return
       end
 
-    % --- camera on?
-    camera_on = input(['\n\n' ...
-      'Before the task begins, ensure that the camera is on,' '\n' ...
-      'and that the software is recording!' '\n\n' ...
-      '1 = I am recording. The camera''s blue light is on; the recording timer has started.' '\n' ...
-      '0 = Something may not be working, exit the script so I can double check.' '\n' ...
-      'Response: ' ]);
-
-    if ~ismember(camera_on, [0 1])
-        disp('Invalid entry, please try again.')
-        sca; return
-    elseif camera_on == 0
-        disp([fprintf('\n') ...
-        'OK, you should restart the function to try again'])
-        sca; return
-    end
-
     % --- run the task
     exit_flag = main_task(initialization_struct, initialization_struct.num_trials(2), initialization_struct.block(3));
 
@@ -516,5 +514,8 @@ end
 load([data_file_path sl 'money.mat']);
 fprintf('\n\n\n\n\n\n\n\n\n\nThe participant earned $ %.2f during the money rounds', money_struct.payoff_sum);
 fprintf('\nRound up to the nearest dollar and pay them (show up fee included) = $ %.2f', money_struct.payoff_total);
+
+% --- compile video input file
+input_for_video_v2(initialization_struct.sub)
 
 end
