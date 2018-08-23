@@ -1072,7 +1072,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
         money_struct.block = find(initialization_struct.block == 1);
         money_struct.stim_symbol = initialization_struct.stim_symbol(1:6); % first 6 symbols always go to money block
         money_struct.payoff_sum = sum(nansum(payoff))/10;
-        money_struct.payoff_total = 7 + ceil(money_struct.payoff_sum);
+        money_struct.payoff_total = 10 + ceil(money_struct.payoff_sum);
         save([initialization_struct.data_file_path sl 'money'], 'money_struct', '-v6');
 
     else % food block
