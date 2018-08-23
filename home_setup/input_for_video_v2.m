@@ -10,7 +10,7 @@ function input_for_video_v2(subject_number)
   % ------------------------------------------------------------------------------
   % ------------------------------------------------------------------------------
   % ---- File specifications
-  file_root = '/Users/alex/OneDrive - Duke University/1. Research Projects/1. Huettel/17.09_MDT/6. Raw Data/MatLab'; % for Alex's computer
+  file_root = '/Users/alex/OneDrive - Duke University/1. Research Projects/1. Huettel/17.09_MDT/8. Raw Data/MatLab'; % for Alex's computer
   video_file_root = '/Users/alex/OneDrive - Duke University/1. Research Projects/1. Huettel/17.09_MDT/6. Raw Data/videos'; % for Alex's computer
   % file_root = '\Users\ads48\Documents\Projects\18.08.07_MDT\raw_data\matlab' % for the eye-tracker
   % video_file_root = '\Users\ads48\Documents\Projects\18.08.07_MDT\raw_data\videos' % for the eye-tracker
