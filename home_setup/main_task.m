@@ -263,8 +263,8 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
     L = KbName('LeftArrow');
     R = KbName('RightArrow');
     exitKeys = KbName('ESCAPE');
-    startFirstKeys = KbName({'p', 'm', 'f'});
-    continueKeys = KbName({'c', 'C'});
+    startFirstKeys = KbName({'p', 'f', 'm'});
+    spacekey = KbName({'SPACE'})
 
 % ---- Transition variables
     a = 0.4 + 0.6.*rand(trials,2); %transition probabilities
@@ -285,8 +285,10 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
 % ---- blank matrices for variables
     action = NaN(trials,3);
-    choice_on_time = NaN(trials,1);
-    choice_off_time = NaN(trials,1);
+    choice_on_time = NaN(trials,3);
+    choice_off_time = NaN(trials,3);
+    choice_on_datetime = cell(trials,3);
+    choice_off_datetime = cell(trials,3);
     position = NaN(trials,3);
     state = NaN(trials,1);
     reward_feedback_on = NaN(trials,1);
@@ -548,18 +550,28 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
                 if block == 1
                     DrawFormattedText(w, [
                         'You can take a short break.' '\n\n' ...
-                        'Press left or right to continue' ...
+                        'Press space to continue' ...
                         ],'center', 'center', white);
                 elseif block == 2
                     DrawFormattedText(w, [
                         'You can take a short break.' '\n' ...
                         'This is a good time to take a sip of water.' '\n\n' ...
-                        'Press left or right to continue' ...
+                        'Press space to continue' ...
                         ],'center', 'center', white, [], [], [], 1.6);
                 end
 
                 Screen(w, 'Flip');
-                KbWait([],2);
+
+                while 1 %wait for response and allow exit if necessesary
+                  [keyIsDown, ~, keyCode] = KbCheck;
+                  if keyIsDown && any(keyCode(exitKeys))
+                      exit_flag = 1; Screen('CloseAll'); FlushEvents;
+                      sca; return
+                  elseif keyIsDown && any(keyCode(spacekey))
+                      break
+                  end
+                end
+
             end
         end
 
@@ -593,6 +605,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
 % ---- start reaction timer
         choice_on_time(trial,1) = GetSecs - t0;
+        choice_on_datetime(trial,1) = num2cell(clock);
 
 % ---- capture key press
         key_is_down = 0;
@@ -605,6 +618,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
 % ---- stop reaction timer
         choice_off_time(trial,1) = GetSecs - t0;
+        choice_off_datetime(trial,1) = num2cell(clock);
 
 % ---- capture selection
         down_key = find(key_code,1);
@@ -709,6 +723,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
 % ---- start reaction timer
             choice_on_time(trial,2) = GetSecs - t0;
+            choice_on_datetime(trial,2) = num2cell(clock);
 
 % ---- capture key press
             key_is_down = 0;
@@ -721,6 +736,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
 % ---- stop reaction timer
             choice_off_time(trial,2) = GetSecs - t0;
+            choice_off_datetime(trial,2) = num2cell(clock);
 
 % ---- capture selection and determine payoff
             down_key = find(key_code,1);
@@ -879,6 +895,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
 % ---- start reaction timer
             choice_on_time(trial,3) = GetSecs - t0;
+            choice_on_datetime(trial,3) = num2cell(clock);
 
 % ---- capture key press
             key_is_down = 0;
@@ -891,7 +908,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
 % ---- stop reaction timer
             choice_off_time(trial,3) = GetSecs - t0;
-
+            choice_off_datetime(trial,3) = num2cell(clock);
             down_key = find(key_code,1);
 
 % ---- capture selection and determine payoff
@@ -1035,6 +1052,10 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
         practice_struct.action = action;
         practice_struct.on = choice_on_time;
         practice_struct.off = choice_off_time;
+
+        practice_struct.on_datetime = choice_on_datetime;
+        practice_struct.off_datetime = choice_on_datetime;
+
         practice_struct.rt = choice_off_time-choice_on_time;
         practice_struct.reward_feedback_on = reward_feedback_on;
         practice_struct.transition_prob = a;
@@ -1062,6 +1083,10 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
         money_struct.action = action;
         money_struct.on = choice_on_time;
         money_struct.off = choice_off_time;
+
+        money_struct.on_datetime = choice_on_datetime;
+        money_struct.off_datetime = choice_on_datetime;
+
         money_struct.rt = choice_off_time-choice_on_time;
         money_struct.reward_feedback_on = reward_feedback_on;
         money_struct.transition_prob = a;
@@ -1088,6 +1113,10 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
         food_struct.action = action;
         food_struct.on = choice_on_time;
         food_struct.off = choice_off_time;
+
+        food_struct.on_datetime = choice_on_datetime;
+        food_struct.off_datetime = choice_on_datetime;
+
         food_struct.rt = choice_off_time-choice_on_time;
         food_struct.reward_feedback_on = reward_feedback_on;
         food_struct.transition_prob = a;
