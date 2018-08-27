@@ -23,7 +23,7 @@ results_file_name = [initialization_struct.data_file_path sl 'allergy_wanting'];
 
 % open window
 Screen('Preference', 'VisualDebugLevel', 1);% change psych toolbox screen check to black
-[exp_screen, ~] = Screen('OpenWindow', max(Screen('Screens')));
+[exp_screen, ~] = Screen('OpenWindow', min(Screen('Screens')));
 %[exp_screen, ~] = Screen('OpenWindow', max(Screen('Screens')), [], [0 0 1200 800]); % for opening into a small rectangle instead
 [allergy_wanting.width, allergy_wanting.height] = Screen('WindowSize',exp_screen);
 allergy_wanting.screenRefreshRate = Screen('GetFlipInterval', exp_screen);
