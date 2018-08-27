@@ -8,6 +8,7 @@
 function exit_flag = main_task(initialization_struct, trials, block, tutorial_timing_struct)
 
 % 1 - Initial setup
+    format shortg
     exit_flag = 0;
 
     % ---- file set up; enables flexibility between OSX and Windows
