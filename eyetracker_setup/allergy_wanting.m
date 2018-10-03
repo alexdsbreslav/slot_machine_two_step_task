@@ -358,7 +358,7 @@ if isempty(allergy_wanting.foods_not_allergic) > 0 % end if they are allergic to
     Screen('Flip', exp_screen)
     KbWait([], 2) % normal
     % KbWait(6, 2) % for bluetooth keyboard
-
+    exit_flag = 2;
     disp(['not allergic: ' allergy_wanting.foods_not_allergic' ' ||| want sweet: ' allergy_wanting.sweet_food_want' ' ||| want salt: ' allergy_wanting.salt_food_want'])
 
     allergy_wanting.taskDur(2) = toc;
@@ -533,6 +533,7 @@ else % otherwise, carry on as expected
         Screen('Flip', exp_screen)
         KbWait([], 2) % normal
         % KbWait(6, 2) % for bluetooth keyboard
+        exit_flag = 3;
 
         disp(['not allergic: ' allergy_wanting.foods_not_allergic' ' ||| want sweet: ' allergy_wanting.sweet_food_want' ' ||| want salt: ' allergy_wanting.salt_food_want'])
 

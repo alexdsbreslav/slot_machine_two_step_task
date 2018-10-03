@@ -119,8 +119,8 @@ for idx = trials_money+1:num_trials
 end
 
 % trial win
-video_coding_input([1:trials_money],12) = num2cell(money_struct.payoff(~isnan(money_struct.payoff)));
-video_coding_input([trials_money+1:num_trials],12) = num2cell(food_struct.payoff(~isnan(food_struct.payoff)));
+video_coding_input([1:trials_money],12) = num2cell(nansum(money_struct.payoff, 2));
+video_coding_input([trials_money+1:num_trials],12) = num2cell(nansum(food_struct.payoff,2));
 
 % convert array to table
 T = table(video_coding_input(:,1), video_coding_input(:,2), video_coding_input(:,3), video_coding_input(:,4), video_coding_input(:,5), video_coding_input(:,6), video_coding_input(:,7), video_coding_input(:,8), video_coding_input(:,9), video_coding_input(:,10), video_coding_input(:,11), video_coding_input(:,12), ...
