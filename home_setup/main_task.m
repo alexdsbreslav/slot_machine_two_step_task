@@ -8,6 +8,7 @@
 function exit_flag = main_task(initialization_struct, trials, block, tutorial_timing_struct)
 
 % 1 - Initial setup
+    format shortg
     exit_flag = 0;
 
     % ---- file set up; enables flexibility between OSX and Windows
@@ -263,8 +264,8 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
     L = KbName('LeftArrow');
     R = KbName('RightArrow');
     exitKeys = KbName('ESCAPE');
-    startFirstKeys = KbName({'p', 'm', 'f'});
-    continueKeys = KbName({'c', 'C'});
+    startFirstKeys = KbName({'p', 'y', 'd'});
+    spacekey = KbName({'space'});
 
 % ---- Transition variables
     a = 0.4 + 0.6.*rand(trials,2); %transition probabilities
@@ -285,8 +286,10 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
 % ---- blank matrices for variables
     action = NaN(trials,3);
-    choice_on_time = NaN(trials,1);
-    choice_off_time = NaN(trials,1);
+    choice_on_time = NaN(trials,3);
+    choice_off_time = NaN(trials,3);
+    choice_on_datetime = cell(trials,3);
+    choice_off_datetime = cell(trials,3);
     position = NaN(trials,3);
     state = NaN(trials,1);
     reward_feedback_on = NaN(trials,1);
@@ -410,7 +413,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
             'If you have any questions at all about the the food version' '\n' ...
             'of the game, this is a great time to ask the experimenter.' '\n\n' ...
             'Once the experimenter has answered all of your questions,' '\n' ...
-            'press f to begin the food version of the game!' ...
+            'press d to begin the food version of the game!' ...
             ], 'center', 'center', white, [], [], [], 1.6);
         Screen(w, 'Flip');
 
@@ -499,7 +502,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
             'If you have any questions at all about the the money version' '\n' ...
             'of the game, this is a great time to ask the experimenter.' '\n\n' ...
             'Once the experimenter has answered all of your questions,' '\n' ...
-            'press m to begin the food version of the game!' ...
+            'press y to begin the money version of the game!' ...
             ], 'center', 'center', white, [], [], [], 1.6);
         Screen(w, 'Flip');
 
@@ -541,6 +544,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 % ---- Signal a short break every 50 trials on blocks 1,2
 
         if block ~= 0
+            RestrictKeysForKbCheck([]);
             if trial == (trials/5) + 1 || trial == (2*trials/5) + 1 || trial == (3*trials/5) + 1 || trial == (4*trials/5) + 1
                 Screen('FillRect', w, black);
                 Screen('TextSize', w, textsize_directions);
@@ -548,18 +552,27 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
                 if block == 1
                     DrawFormattedText(w, [
                         'You can take a short break.' '\n\n' ...
-                        'Press left or right to continue' ...
+                        'Press space to continue' ...
                         ],'center', 'center', white);
                 elseif block == 2
                     DrawFormattedText(w, [
                         'You can take a short break.' '\n' ...
                         'This is a good time to take a sip of water.' '\n\n' ...
-                        'Press left or right to continue' ...
+                        'Press space to continue' ...
                         ],'center', 'center', white, [], [], [], 1.6);
                 end
 
                 Screen(w, 'Flip');
-                KbWait([],2);
+                while 1 %wait for response and allow exit if necessesary
+                  [keyIsDown, ~, keyCode] = KbCheck;
+                  if keyIsDown && any(keyCode(exitKeys))
+                      exit_flag = 1; Screen('CloseAll'); FlushEvents;
+                      sca; return
+                  elseif keyIsDown && any(keyCode(spacekey))
+                      break
+                  end
+                end
+
             end
         end
 
@@ -593,6 +606,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
 % ---- start reaction timer
         choice_on_time(trial,1) = GetSecs - t0;
+        choice_on_datetime{trial,1} = clock;
 
 % ---- capture key press
         key_is_down = 0;
@@ -605,6 +619,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
 % ---- stop reaction timer
         choice_off_time(trial,1) = GetSecs - t0;
+        choice_off_datetime{trial,1} = clock;
 
 % ---- capture selection
         down_key = find(key_code,1);
@@ -709,11 +724,12 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
 % ---- start reaction timer
             choice_on_time(trial,2) = GetSecs - t0;
+            choice_on_datetime{trial,2} = clock;
 
 % ---- capture key press
             key_is_down = 0;
             FlushEvents;
-            oldenablekeys = RestrictKeysForKbCheck([L,R]);
+            RestrictKeysForKbCheck([L,R]);
 
             while key_is_down==0
                     [key_is_down, secs, key_code] = KbCheck(-3);
@@ -721,6 +737,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
 % ---- stop reaction timer
             choice_off_time(trial,2) = GetSecs - t0;
+            choice_off_datetime{trial,2} = clock;
 
 % ---- capture selection and determine payoff
             down_key = find(key_code,1);
@@ -879,11 +896,12 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
 % ---- start reaction timer
             choice_on_time(trial,3) = GetSecs - t0;
+            choice_on_datetime{trial,3} = clock;
 
 % ---- capture key press
             key_is_down = 0;
             FlushEvents;
-            oldenablekeys = RestrictKeysForKbCheck([L,R]);
+            RestrictKeysForKbCheck([L,R]);
 
             while key_is_down==0
                     [key_is_down, secs, key_code] = KbCheck(-3);
@@ -891,7 +909,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
 % ---- stop reaction timer
             choice_off_time(trial,3) = GetSecs - t0;
-
+            choice_off_datetime{trial,3} = clock;
             down_key = find(key_code,1);
 
 % ---- capture selection and determine payoff
@@ -1035,6 +1053,10 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
         practice_struct.action = action;
         practice_struct.on = choice_on_time;
         practice_struct.off = choice_off_time;
+
+        practice_struct.on_datetime = choice_on_datetime;
+        practice_struct.off_datetime = choice_off_datetime;
+
         practice_struct.rt = choice_off_time-choice_on_time;
         practice_struct.reward_feedback_on = reward_feedback_on;
         practice_struct.transition_prob = a;
@@ -1062,6 +1084,10 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
         money_struct.action = action;
         money_struct.on = choice_on_time;
         money_struct.off = choice_off_time;
+
+        money_struct.on_datetime = choice_on_datetime;
+        money_struct.off_datetime = choice_off_datetime;
+
         money_struct.rt = choice_off_time-choice_on_time;
         money_struct.reward_feedback_on = reward_feedback_on;
         money_struct.transition_prob = a;
@@ -1088,6 +1114,10 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
         food_struct.action = action;
         food_struct.on = choice_on_time;
         food_struct.off = choice_off_time;
+
+        food_struct.on_datetime = choice_on_datetime;
+        food_struct.off_datetime = choice_off_datetime;
+
         food_struct.rt = choice_off_time-choice_on_time;
         food_struct.reward_feedback_on = reward_feedback_on;
         food_struct.transition_prob = a;

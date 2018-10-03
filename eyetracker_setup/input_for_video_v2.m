@@ -47,33 +47,21 @@ video_coding_input(:,4) = cellstr(initialization_struct.food_salt{1}(6:end-4)); 
 % food location
 video_coding_input(:,5) = num2cell(initialization_struct.sweet_loc_left);
 
-if initialization_struct.block(2) == 1
-    money_start = 1;
-    money_end = trials_money;
-    food_start = trials_money + 1;
-    food_end = num_trials;
-else
-    money_start = trials_food + 1;
-    money_end = num_trials;
-    food_start = 1;
-    food_end = trials_food;
-end
-
 % block index
-video_coding_input([money_start:money_end],6) = num2cell(money_struct.block - 1);
-video_coding_input([food_start:food_end],6) = num2cell(food_struct.block - 1);
+video_coding_input([1:trials_money],6) = num2cell(money_struct.block - 1);
+video_coding_input([trials_money + 1:num_trials],6) = num2cell(food_struct.block - 1);
 
 %video link
-video_coding_input([money_start:money_end],2) = cellstr([video_file_path sl filename_subnum '_' num2str(money_struct.block - 1) '.flv']);
-video_coding_input([food_start:food_end],2) = cellstr([video_file_path sl filename_subnum '_' num2str(food_struct.block - 1) '.flv']);
+video_coding_input([1:trials_money],2) = cellstr([video_file_path sl filename_subnum '_' num2str(money_struct.block - 1) '.mp4']);
+video_coding_input([trials_money+1:num_trials],2) = cellstr([video_file_path sl filename_subnum '_' num2str(food_struct.block - 1) '.mp4']);
 
 % block name
-video_coding_input([money_start:money_end],7) = {'Money'};
-video_coding_input([food_start:food_end],7) = {'Food'};
+video_coding_input([1:trials_money],7) = {'Money'};
+video_coding_input([trials_money+1:num_trials],7) = {'Food'};
 
 % trial numbers
-video_coding_input([money_start:money_end],8) = num2cell(1:trials_money);
-video_coding_input([food_start:food_end],8) = num2cell(1:trials_food);
+video_coding_input([1:trials_money],8) = num2cell(1:trials_money);
+video_coding_input([trials_money+1:num_trials],8) = num2cell(1:trials_food);
 
 % reward feedback on
 int = floor(money_struct.reward_feedback_on);
@@ -88,17 +76,12 @@ frame = floor(fract*30);
 frames_per_seconds = int * 30;
 food_time_as_frame = frames_per_seconds + frame;
 
-if money_start == 1
-    video_coding_input([money_start:money_end],9) = num2cell(money_time_as_frame);
-    video_coding_input([food_start:food_end],9) = num2cell(food_time_as_frame);
-else
-    video_coding_input([money_start:money_end],9) = num2cell(money_time_as_frame);
-    video_coding_input([food_start:food_end],9) = num2cell(food_time_as_frame);
-end
+video_coding_input([1:trials_money],9) = num2cell(money_time_as_frame);
+video_coding_input([trials_money+1:num_trials],9) = num2cell(food_time_as_frame);
 
 % feedback state
-video_coding_input([money_start:money_end],10) = num2cell(money_struct.state);
-video_coding_input([food_start:food_end],10) = num2cell(food_struct.state);
+video_coding_input([1:trials_money],10) = num2cell(money_struct.state);
+video_coding_input([trials_money+1:num_trials],10) = num2cell(food_struct.state);
 
 % feedback state color
 colors = {'red', 'orange', 'yellow'};
@@ -115,7 +98,7 @@ for block = 2:3
     warm_color(block - 1) = colors(color_logical);
 end
 
-color_map = containers.Map({'red', 'orange', 'yellow'}, {'blue', 'purple', 'yellow'});
+color_map = containers.Map({'red', 'orange', 'yellow'}, {'blue', 'purple', 'green'});
 cool_color{1} = color_map(warm_color{1});
 cool_color{2} = color_map(warm_color{2});
 
@@ -127,27 +110,17 @@ else
       block2_color_map = containers.Map({3,2}, {warm_color{2}, cool_color{2}});
 end
 
-if money_start == 1
-    for idx = money_start:money_end
-          video_coding_input{idx, 11} = block1_color_map(money_struct.state(idx));
-    end
+for idx = 1:trials_money
+      video_coding_input{idx, 11} = block1_color_map(money_struct.state(idx));
+end
 
-    for idx = food_start:food_end
-          video_coding_input{idx, 11} = block2_color_map(food_struct.state(idx - money_end));
-    end
-else
-    for idx = money_start:money_end
-          video_coding_input{idx, 11} = block2_color_map(money_struct.state(idx - food_end));
-    end
-
-    for idx = food_start:food_end
-          video_coding_input{idx, 11} = block1_color_map(food_struct.state(idx));
-    end
+for idx = trials_money+1:num_trials
+      video_coding_input{idx, 11} = block2_color_map(food_struct.state(idx - trials_money));
 end
 
 % trial win
-video_coding_input([money_start:money_end],12) = num2cell(money_struct.payoff(~isnan(money_struct.payoff)));
-video_coding_input([food_start:food_end],12) = num2cell(food_struct.payoff(~isnan(food_struct.payoff)));
+video_coding_input([1:trials_money],12) = num2cell(nansum(money_struct.payoff, 2));
+video_coding_input([trials_money+1:num_trials],12) = num2cell(nansum(food_struct.payoff, 2));
 
 % convert array to table
 T = table(video_coding_input(:,1), video_coding_input(:,2), video_coding_input(:,3), video_coding_input(:,4), video_coding_input(:,5), video_coding_input(:,6), video_coding_input(:,7), video_coding_input(:,8), video_coding_input(:,9), video_coding_input(:,10), video_coding_input(:,11), video_coding_input(:,12), ...

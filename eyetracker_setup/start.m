@@ -162,6 +162,12 @@ if start_where == 1
     if exit_flag == 1
         disp('The script was exited because ESCAPE was pressed')
         sca; return
+    elseif exit_flag = 2
+        disp('The script was exited becuase of the participant''s food allergies')
+        sca; return
+    elseif exit_flag = 3
+        disp('The script was exited because of the pariticipant''s food preferences')
+        sca; return
     end
 
     initialization_struct.eligible = eligible;
