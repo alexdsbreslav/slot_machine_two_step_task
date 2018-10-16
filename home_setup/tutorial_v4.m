@@ -75,9 +75,15 @@ end
 % ---- psychtoolbox: define the screen to open into
 doublebuffer=1;
 screens = Screen('Screens'); %count the screen
-whichScreen = min(screens); %select the screen ALTERED FOR DEBUGGING
+whichScreen = max(screens); %select the screen ALTERED FOR DEBUGGING
 [w,rect] = Screen('OpenWindow', whichScreen, 0,[], 32, ...
         doublebuffer+1,[],[],kPsychNeedFastBackingStore);
+
+% ---- define formatting for loading bar
+load_bar_width = 400;
+hor_align = rect(3)*0.5;
+ver_align = rect(4)*0.6;
+rate_obj = robotics.Rate(24);
 
 % ---- define parameters for stimuli
 r = [0,0,400,290]; %stimuli rectangle
@@ -774,20 +780,32 @@ if down_key == L
       WaitSecs(1);
 
 % ---- countdown to next trial
-      for i = 1:initialization_struct.reward_feedback_len-1
-          Screen(w, 'FillRect', black);
-          Screen('TextSize', w, textsize_countdown);
-          DrawFormattedText(w, [
-              'The next trial will start in' '\n' ...
-              num2str(initialization_struct.reward_feedback_len-i) ' seconds.' ...
-              ], 'center', 'center', white, [], [], [], 1.6);
+      iti = 4; %minus one second from above
+      frames = iti * 24;
+      pixels_per_frame = load_bar_width/frames;
+
+      for i=1:frames
+          DrawFormattedText(w,[
+          'The next trial will begin shortly. ' ...
+          ],'center',rect(4)*0.5 , [], [], [], [], 1.6);
+
+          fill_width = pixels_per_frame * i;
+
+          % fill for the load bar
+          Screen('FillRect',w, [255 255 255], ...
+          CenterRectOnPoint([0,0,fill_width, 15], hor_align - load_bar_width/2 + fill_width/2, ver_align));
+
+          % outline for the load bar
+          Screen('FrameRect',w, [255 255 255], ...
+          CenterRectOnPoint([0,0,load_bar_width,15], hor_align, ver_align), 3);
 
           Screen('TextSize', w, textsize_directions);
           DrawFormattedText(w,[
-              'Win!' ...
-              ],'center',rect(4)*0.75, [], [], [], [], 1.6);
+               'Win!' ...
+               ],'center',rect(4)*0.75, [], [], [], [], 1.6);
+
           Screen(w, 'Flip');
-          WaitSecs(1);
+          waitfor(rate_obj);
       end
 
 elseif down_key == R
@@ -811,20 +829,32 @@ elseif down_key == R
       Screen('Flip',w);
       WaitSecs(1);
 % ---- countdown to next trial
-      for i = 1:initialization_struct.reward_feedback_len-1
-          Screen(w, 'FillRect', black);
-          Screen('TextSize', w, textsize_countdown);
-          DrawFormattedText(w, [
-              'The next trial will start in' '\n' ...
-              num2str(initialization_struct.reward_feedback_len-i) ' seconds.' ...
-              ], 'center', 'center', white, [], [], [], 1.6);
+      iti = 4; %minus one second from above
+      frames = iti * 24;
+      pixels_per_frame = load_bar_width/frames;
+
+      for i=1:frames
+          DrawFormattedText(w,[
+          'The next trial will begin shortly. ' ...
+          ],'center',rect(4)*0.5 , [], [], [], [], 1.6);
+
+          fill_width = pixels_per_frame * i;
+
+          % fill for the load bar
+          Screen('FillRect',w, [255 255 255], ...
+          CenterRectOnPoint([0,0,fill_width, 15], hor_align - load_bar_width/2 + fill_width/2, ver_align));
+
+          % outline for the load bar
+          Screen('FrameRect',w, [255 255 255], ...
+          CenterRectOnPoint([0,0,load_bar_width,15], hor_align, ver_align), 3);
 
           Screen('TextSize', w, textsize_directions);
           DrawFormattedText(w,[
-              'Win!' ...
-              ],'center',rect(4)*0.75, [], [], [], [], 1.6);
+               'Win!' ...
+               ],'center',rect(4)*0.75, [], [], [], [], 1.6);
+
           Screen(w, 'Flip');
-          WaitSecs(1);
+          waitfor(rate_obj);
       end
 end
 
@@ -952,20 +982,32 @@ if down_key == L
       Screen('Flip',w);
       WaitSecs(1);
 % ---- countdown to next trial
-      for i = 1:initialization_struct.reward_feedback_len-1
-          Screen(w, 'FillRect', black);
-          Screen('TextSize', w, textsize_countdown);
-          DrawFormattedText(w, [
-              'The next trial will start in' '\n' ...
-              num2str(initialization_struct.reward_feedback_len-i) ' seconds.' ...
-              ], 'center', 'center', white, [], [], [], 1.6);
+      iti = 2; %minus one second from above
+      frames = iti * 24;
+      pixels_per_frame = load_bar_width/frames;
+
+      for i=1:frames
+          DrawFormattedText(w,[
+          'The next trial will begin shortly. ' ...
+          ],'center',rect(4)*0.5 , [], [], [], [], 1.6);
+
+          fill_width = pixels_per_frame * i;
+
+          % fill for the load bar
+          Screen('FillRect',w, [255 255 255], ...
+          CenterRectOnPoint([0,0,fill_width, 15], hor_align - load_bar_width/2 + fill_width/2, ver_align));
+
+          % outline for the load bar
+          Screen('FrameRect',w, [255 255 255], ...
+          CenterRectOnPoint([0,0,load_bar_width,15], hor_align, ver_align), 3);
 
           Screen('TextSize', w, textsize_directions);
           DrawFormattedText(w,[
-              'Lose' ...
-              ],'center',rect(4)*0.75, [], [], [], [], 1.6);
+               'Lose' ...
+               ],'center',rect(4)*0.75, [], [], [], [], 1.6);
+
           Screen(w, 'Flip');
-          WaitSecs(1);
+          waitfor(rate_obj);
       end
 
 elseif down_key == R
@@ -989,20 +1031,32 @@ elseif down_key == R
       Screen('Flip',w);
       WaitSecs(1);
 % ---- countdown to next trial
-      for i = 1:initialization_struct.reward_feedback_len-1
-          Screen(w, 'FillRect', black);
-          Screen('TextSize', w, textsize_countdown);
-          DrawFormattedText(w, [
-              'The next trial will start in' '\n' ...
-              num2str(initialization_struct.reward_feedback_len-i) ' seconds.' ...
-              ], 'center', 'center', white, [], [], [], 1.6);
+      iti = 2; %minus one second from above
+      frames = iti * 24;
+      pixels_per_frame = load_bar_width/frames;
+
+      for i=1:frames
+          DrawFormattedText(w,[
+          'The next trial will begin shortly. ' ...
+          ],'center',rect(4)*0.5 , [], [], [], [], 1.6);
+
+          fill_width = pixels_per_frame * i;
+
+          % fill for the load bar
+          Screen('FillRect',w, [255 255 255], ...
+          CenterRectOnPoint([0,0,fill_width, 15], hor_align - load_bar_width/2 + fill_width/2, ver_align));
+
+          % outline for the load bar
+          Screen('FrameRect',w, [255 255 255], ...
+          CenterRectOnPoint([0,0,load_bar_width,15], hor_align, ver_align), 3);
 
           Screen('TextSize', w, textsize_directions);
           DrawFormattedText(w,[
-              'Lose' ...
-              ],'center',rect(4)*0.75, [], [], [], [], 1.6);
+               'Lose' ...
+               ],'center',rect(4)*0.75, [], [], [], [], 1.6);
+
           Screen(w, 'Flip');
-          WaitSecs(1);
+          waitfor(rate_obj);
       end
 end
 
@@ -1126,20 +1180,32 @@ if down_key == L
       Screen('Flip',w);
       WaitSecs(1);
 % ---- countdown to next trial
-      for i = 1:initialization_struct.reward_feedback_len-1
-          Screen(w, 'FillRect', black);
-          Screen('TextSize', w, textsize_countdown);
-          DrawFormattedText(w, [
-              'The trial will end in' '\n' ...
-              num2str(initialization_struct.reward_feedback_len-i) ' seconds.' ...
-              ], 'center', 'center', white, [], [], [], 1.6);
+      iti = 4; %minus one second from above
+      frames = iti * 24;
+      pixels_per_frame = load_bar_width/frames;
+
+      for i=1:frames
+          DrawFormattedText(w,[
+          'The next trial will begin shortly. ' ...
+          ],'center',rect(4)*0.5 , [], [], [], [], 1.6);
+
+          fill_width = pixels_per_frame * i;
+
+          % fill for the load bar
+          Screen('FillRect',w, [255 255 255], ...
+          CenterRectOnPoint([0,0,fill_width, 15], hor_align - load_bar_width/2 + fill_width/2, ver_align));
+
+          % outline for the load bar
+          Screen('FrameRect',w, [255 255 255], ...
+          CenterRectOnPoint([0,0,load_bar_width,15], hor_align, ver_align), 3);
 
           Screen('TextSize', w, textsize_directions);
           DrawFormattedText(w,[
-              'Win!' ...
-              ],'center',rect(4)*0.75, [], [], [], [], 1.6);
+               'Win!' ...
+               ],'center',rect(4)*0.75, [], [], [], [], 1.6);
+
           Screen(w, 'Flip');
-          WaitSecs(1);
+          waitfor(rate_obj);
       end
 
 elseif down_key == R
@@ -1163,20 +1229,32 @@ elseif down_key == R
       Screen('Flip',w);
       WaitSecs(1);
 % ---- countdown to next trial
-      for i = 1:initialization_struct.reward_feedback_len-1
-          Screen(w, 'FillRect', black);
-          Screen('TextSize', w, textsize_countdown);
-          DrawFormattedText(w, [
-              'The trial will end in' '\n' ...
-              num2str(initialization_struct.reward_feedback_len-i) ' seconds.' ...
-              ], 'center', 'center', white, [], [], [], 1.6);
+      iti = 4; %minus one second from above
+      frames = iti * 24;
+      pixels_per_frame = load_bar_width/frames;
+
+      for i=1:frames
+          DrawFormattedText(w,[
+          'The next trial will begin shortly. ' ...
+          ],'center',rect(4)*0.5 , [], [], [], [], 1.6);
+
+          fill_width = pixels_per_frame * i;
+
+          % fill for the load bar
+          Screen('FillRect',w, [255 255 255], ...
+          CenterRectOnPoint([0,0,fill_width, 15], hor_align - load_bar_width/2 + fill_width/2, ver_align));
+
+          % outline for the load bar
+          Screen('FrameRect',w, [255 255 255], ...
+          CenterRectOnPoint([0,0,load_bar_width,15], hor_align, ver_align), 3);
 
           Screen('TextSize', w, textsize_directions);
           DrawFormattedText(w,[
-              'Win!' ...
-              ],'center',rect(4)*0.75, [], [], [], [], 1.6);
+               'Win!' ...
+               ],'center',rect(4)*0.75, [], [], [], [], 1.6);
+
           Screen(w, 'Flip');
-          WaitSecs(1);
+          waitfor(rate_obj);
       end
 end
 
