@@ -18,8 +18,6 @@ FlushEvents;
 num_trials_practice = 1;
 num_trials_main_task = 5;
 
-length_of_reward_feedback_screen = 4;
-
 % ---- File specifications
 % file_root = '/Users/alex/OneDrive - Duke University/1. Research Projects/1. Huettel/17.09_MDT/6. Raw Data/MatLab'; % for Alex's computer
 file_root = '\Users\ads48\Documents\MDT project files\raw data\matlab'; % for the eye-tracker
@@ -31,6 +29,13 @@ textsize_directions = 30;
 textsize_allergy_wanting_rateGuide = 20;
 textsize_fixcross = 40;
 textsize_countdown = 20;
+
+% ---- loading bar formatting
+load_bar_dimensions = [400, 15];
+
+% ---- iti distributions N~(mean, sd)
+win_iti = [5, 0.5];
+loss_iti = [3, 0.5];
 
 % ------------------------------------------------------------------------------
 % ------------------------------------------------------------------------------
@@ -138,9 +143,6 @@ else
     % input the number of trials per block; 1 = practice trials, 2 = experimental blocks
     initialization_struct.num_trials = [num_trials_practice num_trials_main_task];
 
-    % set the reward_feedback_len
-    initialization_struct.reward_feedback_len = length_of_reward_feedback_screen;
-
     % set the file root and backslash vs. forwardslash convention
     initialization_struct.file_root = file_root;
     initialization_struct.slash_convention = sl;
@@ -150,6 +152,28 @@ else
     initialization_struct.textsize_allergy_wanting_rateGuide = textsize_allergy_wanting_rateGuide;
     initialization_struct.textsize_fixcross = textsize_fixcross;
     initialization_struct.textsize_countdown = textsize_countdown;
+
+    % set the load bar formaating
+    initialization_struct.load_bar_dimensions = load_bar_dimensions;
+
+    % create the ITIs
+    iti_init = zeros(150,6);
+    % loss iti
+    iti_init(:,1) = normrnd(loss_iti(1),loss_iti(2),150,1);
+    % win iti
+    iti_init(:,2) = normrnd(win_iti(1),win_iti(2),150,1);
+    % number of frames per iti; subtract 24 frames because the chosen stimulus is shown for 1 second before the loading bar
+    iti_init(:,3:4) = floor(iti_init(:,1:2)*24) - 24;
+    %number of pixels per frame
+    iti_init(:,5:6) = (ones(150,2)*load_bar_dimensions(1))./iti_init(:,3:4);
+    initialization_struct.iti_init = iti_init;
+
+    % load the walk
+    load(['walks.mat'])
+    walks_idx = randi(length(walks.payoff_prob));
+    initialization_struct.walk_idx = walk_idx;
+    initialization_struct.payoff_prob = walks.payoff_prob(:,:,walks_idx);
+    initialization_struct.walk_seed = walks.seed(walk_idx);
 
     save([data_file_path sl 'initialization_structure'], 'initialization_struct', '-v6')
 end
@@ -162,11 +186,12 @@ if start_where == 1
     if exit_flag == 1
         disp('The script was exited because ESCAPE was pressed')
         sca; return
-    elseif exit_flag = 2
-        disp('The script was exited becuase of the participant''s food allergies')
-        sca; return
-    elseif exit_flag = 3
-        disp('The script was exited because of the pariticipant''s food preferences')
+    end
+
+    if eligible == 0
+        disp('Not eligible due to food allergies/food preferences')
+        load([data_file_path sl 'allergy_wanting.mat'])
+        disp(['not allergic: n = ' num2str(length(allergy_wanting.foods_not_allergic))' ' ||| want sweet: n = ' num2str(length(allergy_wanting.sweet_food_want))' ' ||| want salt: n = ' num2str(length(allergy_wanting.salt_food_want))])
         sca; return
     end
 
@@ -185,9 +210,6 @@ if start_where == 1
 
     save([data_file_path sl 'initialization_structure'], 'initialization_struct', '-v6')
 
-    if eligible == 0
-        sca; return
-    end
 end
 
 if start_where <= 2
@@ -229,6 +251,23 @@ if start_where <= 2
     end
 
 % ---- 2: Tutorial
+% --- explain no deception
+    explain_no_deception = input(['\n\n' ...
+      'Explain that we do not use any deception in the study.' '\n' ...
+      'Encourage participants to ask any questions if they have any.' '\n' ...
+      '1 = Done; start the tutorial' '\n' ...
+      '0 = Something may not be working, exit the script so I can double check.' '\n' ...
+      'Response: ' ]);
+
+    if ~ismember(explain_no_deception, [0 1])
+        disp('Invalid entry, please try again.')
+        sca; return
+    elseif explain_no_deception == 0
+        disp([fprintf('\n') ...
+        'OK, you should restart the function to try again'])
+        sca; return
+    end
+
     exit_flag = tutorial_v4(initialization_struct);
 
     if exit_flag == 1
@@ -329,7 +368,7 @@ if start_where <= 4
           'Food Block' '\n' ...
           'Left Food = ' initialization_struct.left_food '\n'...
           'Right Food = ' initialization_struct.right_food '\n\n' ...
-          '1 = Everything is set up; continue.' '\n' ...
+          '1 = Food is set up/participant has water; continue.' '\n' ...
           '0 = I need to fix something; exit the script.' '\n' ...
           'Response: ' ]);
     end
@@ -354,6 +393,23 @@ if start_where <= 4
         disp('Invalid entry, please try again.')
         sca; return
     elseif camera_on == 0
+        disp([fprintf('\n') ...
+        'OK, you should restart the function to try again'])
+        sca; return
+    end
+
+% --- lights off?
+    lights_off = input(['\n\n' ...
+      'Are the overhead lights turned off?' '\n' ...
+      'Only the standing lamp should be on.' '\n' ...
+      '1 = Overhead lights are off; continue' '\n' ...
+      '0 = Something may not be working, exit the script so I can double check.' '\n' ...
+      'Response: ' ]);
+
+    if ~ismember(lights_off, [0 1])
+        disp('Invalid entry, please try again.')
+        sca; return
+    elseif lights_off == 0
         disp([fprintf('\n') ...
         'OK, you should restart the function to try again'])
         sca; return
@@ -475,6 +531,32 @@ if start_where <= 5
         sca; return
     end
 
+    % ---- explain breaks
+        if initialization_struct.block(3) == 1
+            explain_breaks = input(['\n\n' ...
+              'Explain breaks every 5-6 minutes.' '\n' ...
+              'Good time to drink water, adjust position etc.' '\n\n' ...
+              '1 = Everything is set up; continue.' '\n' ...
+              '0 = I need to fix something; exit the script.' '\n' ...
+              'Response: ' ]);
+        else
+            explain_breaks = input(['\n\n' ...
+              'Explain breaks every 5-6 minutes.' '\n' ...
+              'Wait to drink water until break! Good time to adjust position.' '\n\n' ...
+              '1 = Everything is set up; continue.' '\n' ...
+              '0 = I need to fix something; exit the script.' '\n' ...
+              'Response: ' ]);
+        end
+
+        if ~ismember(explain_breaks, [0 1])
+            disp('Invalid entry, please try again.')
+            sca; return
+        elseif explain_breaks == 0
+            disp([fprintf('\n') ...
+            'OK, you should restart the function to try again'])
+            sca; return
+        end
+
 % --- camera on?
     camera_on = input(['\n\n' ...
       'Open OBS and ensure that all settings look good.' '\n' ...
@@ -486,6 +568,23 @@ if start_where <= 5
         disp('Invalid entry, please try again.')
         sca; return
     elseif camera_on == 0
+        disp([fprintf('\n') ...
+        'OK, you should restart the function to try again'])
+        sca; return
+    end
+
+% --- lights off?
+    lights_off = input(['\n\n' ...
+      'Are the overhead lights turned off?' '\n' ...
+      'Only the standing lamp should be on.' '\n' ...
+      '1 = Overhead lights are off; continue' '\n' ...
+      '0 = Something may not be working, exit the script so I can double check.' '\n' ...
+      'Response: ' ]);
+
+    if ~ismember(lights_off, [0 1])
+        disp('Invalid entry, please try again.')
+        sca; return
+    elseif lights_off == 0
         disp([fprintf('\n') ...
         'OK, you should restart the function to try again'])
         sca; return

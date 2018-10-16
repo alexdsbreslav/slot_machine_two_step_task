@@ -358,7 +358,7 @@ if isempty(allergy_wanting.foods_not_allergic) > 0 % end if they are allergic to
     Screen('Flip', exp_screen)
     KbWait([], 2) % normal
     % KbWait(6, 2) % for bluetooth keyboard
-    exit_flag = 2;
+
     disp(['not allergic: ' allergy_wanting.foods_not_allergic' ' ||| want sweet: ' allergy_wanting.sweet_food_want' ' ||| want salt: ' allergy_wanting.salt_food_want'])
 
     allergy_wanting.taskDur(2) = toc;
@@ -523,20 +523,6 @@ else % otherwise, carry on as expected
         eligible = 0;
         food_salt = {};
         food_sweet = {};
-
-        Screen(exp_screen, 'FillRect', bg_color);
-        DrawFormattedText(exp_screen,[
-            'Based on your responses in this section, you may' '\n' ...
-            'not be eligible to continue with the study.' '\n' ...
-            'Please tell the experimenter that you''ve encountered an issue.' ...
-            ], 'center', 'center',txt_color,[],[],[],1.6);
-        Screen('Flip', exp_screen)
-        KbWait([], 2) % normal
-        % KbWait(6, 2) % for bluetooth keyboard
-        exit_flag = 3;
-
-        disp(['not allergic: ' allergy_wanting.foods_not_allergic' ' ||| want sweet: ' allergy_wanting.sweet_food_want' ' ||| want salt: ' allergy_wanting.salt_food_want'])
-
     end
 
     allergy_wanting.taskDur(2) = toc;
