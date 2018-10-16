@@ -359,7 +359,7 @@ if isempty(allergy_wanting.foods_not_allergic) > 0 % end if they are allergic to
     KbWait([], 2) % normal
     % KbWait(6, 2) % for bluetooth keyboard
 
-    disp(['not allergic: ' allergy_wanting.foods_not_allergic' ' ||| want sweet: ' allergy_wanting.sweet_food_want' ' ||| want salt: ' allergy_wanting.salt_food_want'])
+    disp(['not allergic: ' allergy_wanting.foods_not_allergic ' ||| want sweet: ' allergy_wanting.sweet_food_want ' ||| want salt: ' allergy_wanting.salt_food_want])
 
     allergy_wanting.taskDur(2) = toc;
     save(results_file_name,'allergy_wanting');
@@ -512,8 +512,9 @@ else % otherwise, carry on as expected
 
         Screen(exp_screen, 'FillRect', bg_color);
         DrawFormattedText(exp_screen,[
-            'You have finished this section.' '\n' ...
-            'Press any key to continue on to the tutorial.' ...
+            'You have completed this section.' '\n' ...
+            'Please alert the experimenter and' '\n' ...
+            'press any key to close to close this section.' ...
             ], 'center', 'center',txt_color,[],[],[],1.6);
         Screen('Flip', exp_screen)
         KbWait([], 2) % normal

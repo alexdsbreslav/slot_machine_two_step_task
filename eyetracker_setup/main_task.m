@@ -530,13 +530,16 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 % 8 - Begin trials
     t0 = GetSecs;
 
-    DrawFormattedText(w, [
-        'subject: ' num2str(initialization_struct.sub) '\n'...
-        'block index: ' num2str(find(initialization_struct.block == block)) '\n' ...
-        'block type (1 = money, 2 = food): ' num2str(block) ...
-        ],'center', 'center', white, [], [], [], 1.6);
-    Screen(w, 'Flip');
-    WaitSecs(1/10)
+    if block ~= 0
+        Screen('TextSize', w, 10);
+        DrawFormattedText(w, [
+            'subject: ' num2str(initialization_struct.sub) '\n'...
+            'block index: ' num2str(find(initialization_struct.block == block)) '\n' ...
+            'block type (1 = money, 2 = food): ' num2str(block) ...
+            ],rect(3)*0.8, rect(4)*0.8, white, [], [], [], 1.6);
+        Screen(w, 'Flip');
+        WaitSecs(1/10)
+    end
 
 
     for trial = 1:trials
@@ -864,7 +867,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
                 % fill for the load bar
                 Screen('FillRect',w, [255 255 255], ...
-                CenterRectOnPoint([0,0,fill_width, initialization_struct.load_bar_dimensions(2)], hor_align - initialization_structure.load_bar_dimensions(1)/2 + fill_width/2, ver_align));
+                CenterRectOnPoint([0,0,fill_width, initialization_struct.load_bar_dimensions(2)], hor_align - initialization_struct.load_bar_dimensions(1)/2 + fill_width/2, ver_align));
 
                % outline for the load bar
                 Screen('FrameRect',w, [255 255 255], ...
@@ -1052,11 +1055,11 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
                 % fill for the load bar
                 Screen('FillRect',w, [255 255 255], ...
-                CenterRectOnPoint([0,0,fill_width, load_bar_dimensions(2)], hor_align - load_bar_dimensions(1)/2 + fill_width/2, ver_align));
+                CenterRectOnPoint([0,0,fill_width, initialization_struct.load_bar_dimensions(2)], hor_align - initialization_struct.load_bar_dimensions(1)/2 + fill_width/2, ver_align));
 
                % outline for the load bar
                 Screen('FrameRect',w, [255 255 255], ...
-                CenterRectOnPoint([0,0,load_bar_dimensions(1),load_bar_dimensions(2)], hor_align, ver_align), 3);
+                CenterRectOnPoint([0,0,initialization_struct.load_bar_dimensions(1),initialization_struct.load_bar_dimensions(2)], hor_align, ver_align), 3);
 
                Screen(w, 'Flip');
                waitfor(rate_obj);

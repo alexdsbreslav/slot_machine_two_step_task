@@ -1185,7 +1185,7 @@ if down_key == L
 
       for i=1:frames
           DrawFormattedText(w,[
-          'The next trial will begin shortly. ' ...
+          'The example trials will end shortly.' ...
           ],'center',rect(4)*0.5 , [], [], [], [], 1.6);
 
           fill_width = pixels_per_frame * i;
@@ -1234,7 +1234,7 @@ elseif down_key == R
 
       for i=1:frames
           DrawFormattedText(w,[
-          'The next trial will begin shortly. ' ...
+          'The example trials will end shortly.' ...
           ],'center',rect(4)*0.5 , [], [], [], [], 1.6);
 
           fill_width = pixels_per_frame * i;
