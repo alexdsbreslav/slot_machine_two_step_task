@@ -20,6 +20,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
     rng_seed = rng_seed.Seed;
 
     % ---- Screen setup
+    Screen('Preference', 'SkipSyncTests', 1);
     Screen('Preference', 'VisualDebugLevel', 1);% change psych toolbox screen check to black
     FlushEvents;
     HideCursor;
@@ -529,9 +530,9 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 % -----------------------------------------------------------------------------
 % 8 - Begin trials
     t0 = GetSecs;
-
+    
     if block ~= 0
-        Screen('TextSize', w, 10);
+        Screen('TextSize', w,10);
         DrawFormattedText(w, [
             'subject: ' num2str(initialization_struct.sub) '\n'...
             'block index: ' num2str(find(initialization_struct.block == block)) '\n' ...
@@ -573,10 +574,10 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
                 Screen(w, 'Flip');
                 while 1 %wait for response and allow exit if necessesary
                   [keyIsDown, ~, keyCode] = KbCheck;
-                  if keyIsDown && any(keyCode(exitKeys))
-                      exit_flag = 1; Screen('CloseAll'); FlushEvents;
-                      sca; return
-                  elseif keyIsDown && any(keyCode(spacekey))
+%                   if keyIsDown && any(keyCode(exitKeys))
+%                       exit_flag = 1; Screen('CloseAll'); FlushEvents;
+%                       sca; return
+                  if keyIsDown && any(keyCode(spacekey))
                       break
                   end
                 end

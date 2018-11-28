@@ -570,11 +570,11 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
                 Screen(w, 'Flip');
                 while 1 %wait for response and allow exit if necessesary
-                  [keyIsDown, ~, keyCode] = KbCheck;
-                  if keyIsDown && any(keyCode(exitKeys))
-                      exit_flag = 1; Screen('CloseAll'); FlushEvents;
-                      sca; return
-                  elseif keyIsDown && any(keyCode(spacekey))
+%                   [keyIsDown, ~, keyCode] = KbCheck;
+%                   if keyIsDown && any(keyCode(exitKeys))
+%                       exit_flag = 1; Screen('CloseAll'); FlushEvents;
+%                       sca; return
+                  if keyIsDown && any(keyCode(spacekey))
                       break
                   end
                 end

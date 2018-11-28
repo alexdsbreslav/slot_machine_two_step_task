@@ -1185,7 +1185,7 @@ if down_key == L
 
       for i=1:frames
           DrawFormattedText(w,[
-          'The example trials will end shortly.' ...
+          'The example trials will end shortly. ' ...
           ],'center',rect(4)*0.5 , [], [], [], [], 1.6);
 
           fill_width = pixels_per_frame * i;
@@ -1234,7 +1234,7 @@ elseif down_key == R
 
       for i=1:frames
           DrawFormattedText(w,[
-          'The example trials will end shortly.' ...
+          'The example trials will end shortly. ' ...
           ],'center',rect(4)*0.5 , [], [], [], [], 1.6);
 
           fill_width = pixels_per_frame * i;
@@ -1755,7 +1755,7 @@ Screen('FrameRect',w,white,slot_label_Lframe,10);
 
 Screen('DrawTexture', w, win, [], CenterRectOnPoint([0,0,533*size_prob(75),387*size_prob(75)], 3*rect(3)/4, rect(4)*0.3));
 Screen('DrawTexture', w, lose, [], CenterRectOnPoint([0,0,533*(1-size_prob(75)),387*(1-size_prob(75))], 3*rect(3)/4, rect(4)*0.5));
-DrawFormattedText(w,['Trial: ' num2str(trial_num(75))], rect(3)*.7, rect(4)*0.2, [], [], [], [], 1.6);
+DrawFormattedText(w,['Round: ' num2str(trial_num(75))], rect(3)*.7, rect(4)*0.2, [], [], [], [], 1.6);
 
 DrawFormattedText(w,[
     'Now, halfway through the game, your chance' '\n' ...

@@ -171,9 +171,9 @@ else
     % load the walk
     load(['walks.mat'])
     walks_idx = randi(length(walks.payoff_prob));
-    initialization_struct.walk_idx = walk_idx;
+    initialization_struct.walks_idx = walks_idx;
     initialization_struct.payoff_prob = walks.payoff_prob(:,:,walks_idx);
-    initialization_struct.walk_seed = walks.seed(walk_idx);
+    initialization_struct.walk_seed = walks.seed(walks_idx);
 
     save([data_file_path sl 'initialization_structure'], 'initialization_struct', '-v6')
 end
