@@ -28,7 +28,7 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
     % ---- Screen selection
     screens = Screen('Screens'); %count the screen
-    whichScreen = min(screens); %select the screen; ALTERED THIS BECAUSE IT KEPT SHOWING UP ON MY LAPTOP INSTEAD OF THE ATTACHED MONITOR
+    whichScreen = max(screens); %select the screen; ALTERED THIS BECAUSE IT KEPT SHOWING UP ON MY LAPTOP INSTEAD OF THE ATTACHED MONITOR
     [w, rect] = Screen('OpenWindow', whichScreen);
 
     % --- font sizes
@@ -284,6 +284,11 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
       step1_frame_color = white;
     end
 
+% ---- formatting for loading bar
+    hor_align = rect(3)*0.5;
+    ver_align = rect(4)*0.55;
+    rate_obj = robotics.Rate(24);
+
 % ---- blank matrices for variables
     action = NaN(trials,3);
     choice_on_time = NaN(trials,3);
@@ -294,10 +299,11 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
     state = NaN(trials,1);
     reward_feedback_on = NaN(trials,1);
 
-    payoff_prob = zeros(trials,4);
-    payoff_prob(1,:) = 0.25 + 0.5.*rand(1,4);
     payoff_det = rand(trials,4);
     payoff = NaN(trials,2);
+
+    iti_selected = zeros(trials, 1);
+    iti_actual = zeros(trials, 1);
 
 % ---- Waiting screen
     Screen('FillRect', w, black);
@@ -526,12 +532,12 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
     t0 = GetSecs;
 
     DrawFormattedText(w, [
-        'subject: ' initialization_struct.sub '\n'...
-        'block index: ' find(initialization_struct.block == block) '\n' ...
-        'block type (1 = money, 2 = food): ' block ...
+        'subject: ' num2str(initialization_struct.sub) '\n'...
+        'block index: ' num2str(find(initialization_struct.block == block)) '\n' ...
+        'block type (1 = money, 2 = food): ' num2str(block) ...
         ],'center', 'center', white, [], [], [], 1.6);
     Screen(w, 'Flip');
-    WaitSecs(1/30)
+    WaitSecs(1/10)
 
 
     for trial = 1:trials
@@ -564,11 +570,11 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
                 Screen(w, 'Flip');
                 while 1 %wait for response and allow exit if necessesary
-                  [keyIsDown, ~, keyCode] = KbCheck;
-                  if keyIsDown && any(keyCode(exitKeys))
-                      exit_flag = 1; Screen('CloseAll'); FlushEvents;
-                      sca; return
-                  elseif keyIsDown && any(keyCode(spacekey))
+%                   [keyIsDown, ~, keyCode] = KbCheck;
+%                   if keyIsDown && any(keyCode(exitKeys))
+%                       exit_flag = 1; Screen('CloseAll'); FlushEvents;
+%                       sca; return
+                  if keyIsDown && any(keyCode(spacekey))
                       break
                   end
                 end
@@ -744,13 +750,13 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
             if (down_key==L && type == 0) || (down_key==R && type == 1)
                 action(trial,2)=0;
-                if payoff_det(trial, 1) <  payoff_prob(trial,1)
+                if payoff_det(trial, 1) <  initialization_struct.payoff_prob(trial,1)
                     payoff(trial,1) = 1;
                 else payoff(trial,1) = 0;
                 end
             elseif (down_key==L && type == 1) || (down_key==R && type == 0)
                 action(trial,2)=1;
-                if payoff_det(trial, 2) <  payoff_prob(trial,2)
+                if payoff_det(trial, 2) <  initialization_struct.payoff_prob(trial,2)
                     payoff(trial,1) = 1;
                 else payoff(trial,1) = 0;
                 end
@@ -822,29 +828,31 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
             % variable tex that will change on the last trial of the game
             if block == 0
                 if trial == trials
-                    countdown_text = 'The game will end in';
+                    countdown_text = 'The game will end shortly.';
                 else
-                    countdown_text = 'The next trial will start in';
+                    countdown_text = 'The next trial will begin shortly.';
                 end
             else
                 if trial == trials
-                    countdown_text = 'The game will end in';
+                    countdown_text = 'The game will end shortly.';
                 elseif trial == (trials/5) || trial == (2*trials/5) || trial == (3*trials/5) || trial == (4*trials/5)
-                    countdown_text = 'A short break will start in';
+                    countdown_text = 'A break will begin shortly.';
                 else
-                    countdown_text = 'The next trial will start in';
+                    countdown_text = 'The next trial will begin shortly.';
                 end
             end
 
             % countdown to next trial
-            for i = 1:initialization_struct.reward_feedback_len-1
+            for i = 1:initialization_struct.iti_init(trial, payoff(trial,1)+3)
                 Screen(w, 'FillRect', black);
                 Screen('TextSize', w, textsize_countdown);
+
+                % countdown text
                 DrawFormattedText(w, [
-                    countdown_text '\n' ...
-                    num2str(initialization_struct.reward_feedback_len-i) ' seconds.' ...
+                    countdown_text ...
                     ], 'center', 'center', white, [], [], [], 1.6);
 
+                % feedback text
                 Screen('TextSize', w, textsize_fixcross);
                 if payoff(trial,1) == 1
                     DrawFormattedText(w, reward, 'center', rect(4)*0.8, white);
@@ -852,9 +860,24 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
                     DrawFormattedText(w, noreward, 'center', rect(4)*0.8, white);
                 end
 
-                Screen(w, 'Flip');
-                WaitSecs(1);
+                % load bar fill calculation
+                fill_width = initialization_struct.iti_init(trial, nansum(payoff(trial,:))+5) * i;
+
+                % fill for the load bar
+                Screen('FillRect',w, [255 255 255], ...
+                CenterRectOnPoint([0,0,fill_width, initialization_struct.load_bar_dimensions(2)], hor_align - initialization_structure.load_bar_dimensions(1)/2 + fill_width/2, ver_align));
+
+               % outline for the load bar
+                Screen('FrameRect',w, [255 255 255], ...
+                CenterRectOnPoint([0,0,initialization_struct.load_bar_dimensions(1),initialization_struct.load_bar_dimensions(2)], hor_align, ver_align), 3);
+
+               Screen(w, 'Flip');
+               waitfor(rate_obj);
             end
+
+            iti_actual(trial) = GetSecs - t0 - reward_feedback_on(trial);
+            iti_selected(trial) = initialization_struct.iti_init(trial, payoff(trial,1)+1);
+
 
 % -----------------------------------------------------------------------------
 % -----------------------------------------------------------------------------
@@ -915,13 +938,13 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 % ---- capture selection and determine payoff
             if (down_key==L && type == 0) || (down_key==R && type == 1)
                 action(trial,3)=0;
-                if payoff_det(trial, 3) <  payoff_prob(trial,3)
+                if payoff_det(trial, 3) <  initialization_struct.payoff_prob(trial,3)
                     payoff(trial,2) = 1;
                 else payoff(trial,2) = 0;
                 end
             elseif (down_key==L && type == 1) || (down_key==R && type == 0)
                 action(trial,3)=1;
-                if payoff_det(trial, 4) <  payoff_prob(trial,4)
+                if payoff_det(trial, 4) <  initialization_struct.payoff_prob(trial,4)
                     payoff(trial,2) = 1;
                 else payoff(trial,2) = 0;
                 end
@@ -993,29 +1016,31 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
             % variable tex that will change on the last trial of the game
             if block == 0
                 if trial == trials
-                    countdown_text = 'The game will end in';
+                    countdown_text = 'The game will end shortly.';
                 else
-                    countdown_text = 'The next trial will start in';
+                    countdown_text = 'The next trial will begin shortly.';
                 end
             else
                 if trial == trials
-                    countdown_text = 'The game will end in';
+                    countdown_text = 'The game will end shortly.';
                 elseif trial == (trials/5) || trial == (2*trials/5) || trial == (3*trials/5) || trial == (4*trials/5)
-                    countdown_text = 'A short break will start in';
+                    countdown_text = 'A break will begin shortly.';
                 else
-                    countdown_text = 'The next trial will start in';
+                    countdown_text = 'The next trial will begin shortly.';
                 end
             end
 
             % countdown to next trial
-            for i = 1:initialization_struct.reward_feedback_len-1
+            for i = 1:initialization_struct.iti_init(trial, payoff(trial,2)+3)
                 Screen(w, 'FillRect', black);
                 Screen('TextSize', w, textsize_countdown);
+
+                % countdown text
                 DrawFormattedText(w, [
-                    countdown_text '\n' ...
-                    num2str(initialization_struct.reward_feedback_len-i) ' seconds.' ...
+                    countdown_text ...
                     ], 'center', 'center', white, [], [], [], 1.6);
 
+                % feedback text
                 Screen('TextSize', w, textsize_fixcross);
                 if payoff(trial,2) == 1
                     DrawFormattedText(w, reward, 'center', rect(4)*0.8, white);
@@ -1023,18 +1048,24 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
                     DrawFormattedText(w, noreward, 'center', rect(4)*0.8, white);
                 end
 
-                Screen(w, 'Flip');
-                WaitSecs(1);
-            end
-        end % close the if/else for state
+                % load bar fill calculation
+                fill_width = initialization_struct.iti_init(trial, nansum(payoff(trial,:))+5) * i;
 
-% ---- update the payoff proability
-        for i = 1:4
-            payoff_prob(trial+1,i) = payoff_prob(trial,i) + 0.025*randn;
-            if (payoff_prob(trial+1,i) < 0.25) || (payoff_prob(trial+1,i) > 0.75)
-                payoff_prob(trial+1,i) = payoff_prob(trial,i);
+                % fill for the load bar
+                Screen('FillRect',w, [255 255 255], ...
+                CenterRectOnPoint([0,0,fill_width, load_bar_dimensions(2)], hor_align - load_bar_dimensions(1)/2 + fill_width/2, ver_align));
+
+               % outline for the load bar
+                Screen('FrameRect',w, [255 255 255], ...
+                CenterRectOnPoint([0,0,load_bar_dimensions(1),load_bar_dimensions(2)], hor_align, ver_align), 3);
+
+               Screen(w, 'Flip');
+               waitfor(rate_obj);
             end
-        end
+
+            iti_actual(trial) = GetSecs - t0 - reward_feedback_on(trial);
+            iti_selected(trial) = initialization_struct.iti_init(trial, payoff(trial,2)+1);
+        end % close the if/else for state
     end % close the entire for loop
     RestrictKeysForKbCheck([]);
 
@@ -1059,9 +1090,10 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
         practice_struct.rt = choice_off_time-choice_on_time;
         practice_struct.reward_feedback_on = reward_feedback_on;
+        practice_struct.iti_actual = iti_actual;
+        practice_struct.iti_selected = iti_selected;
         practice_struct.transition_prob = a;
         practice_struct.transition_det = r;
-        practice_struct.payoff_prob = payoff_prob;
         practice_struct.payoff_det = payoff_det;
         practice_struct.payoff = payoff;
         practice_struct.state = state;
@@ -1090,9 +1122,10 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
         money_struct.rt = choice_off_time-choice_on_time;
         money_struct.reward_feedback_on = reward_feedback_on;
+        money_struct.iti_actual = iti_actual;
+        money_struct.iti_selected = iti_selected;
         money_struct.transition_prob = a;
         money_struct.transition_det = r;
-        money_struct.payoff_prob = payoff_prob;
         money_struct.payoff_det = payoff_det;
         money_struct.payoff = payoff;
         money_struct.state = state;
@@ -1120,9 +1153,11 @@ function exit_flag = main_task(initialization_struct, trials, block, tutorial_ti
 
         food_struct.rt = choice_off_time-choice_on_time;
         food_struct.reward_feedback_on = reward_feedback_on;
+        food_struct.iti_actual = iti_actual;
+        food_struct.iti_selected = iti_selected;
+
         food_struct.transition_prob = a;
         food_struct.transition_det = r;
-        food_struct.payoff_prob = payoff_prob;
         food_struct.payoff_det = payoff_det;
         food_struct.payoff = payoff;
         food_struct.state = state;

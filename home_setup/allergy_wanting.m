@@ -23,7 +23,7 @@ results_file_name = [initialization_struct.data_file_path sl 'allergy_wanting'];
 
 % open window
 Screen('Preference', 'VisualDebugLevel', 1);% change psych toolbox screen check to black
-[exp_screen, ~] = Screen('OpenWindow', min(Screen('Screens')));
+[exp_screen, ~] = Screen('OpenWindow', max(Screen('Screens')));
 %[exp_screen, ~] = Screen('OpenWindow', max(Screen('Screens')), [], [0 0 1200 800]); % for opening into a small rectangle instead
 [allergy_wanting.width, allergy_wanting.height] = Screen('WindowSize',exp_screen);
 allergy_wanting.screenRefreshRate = Screen('GetFlipInterval', exp_screen);
@@ -524,19 +524,6 @@ else % otherwise, carry on as expected
         eligible = 0;
         food_salt = {};
         food_sweet = {};
-
-        Screen(exp_screen, 'FillRect', bg_color);
-        DrawFormattedText(exp_screen,[
-            'Based on your responses in this section, you may' '\n' ...
-            'not be eligible to continue with the study.' '\n' ...
-            'Please tell the experimenter that you''ve encountered an issue.' ...
-            ], 'center', 'center',txt_color,[],[],[],1.6);
-        Screen('Flip', exp_screen)
-        KbWait([], 2) % normal
-        % KbWait(6, 2) % for bluetooth keyboard
-
-        disp(['not allergic: ' allergy_wanting.foods_not_allergic' ' ||| want sweet: ' allergy_wanting.sweet_food_want' ' ||| want salt: ' allergy_wanting.salt_food_want'])
-
     end
 
     allergy_wanting.taskDur(2) = toc;
