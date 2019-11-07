@@ -15,5 +15,10 @@ For this version of the task:
 
 - There are practice rounds, a block (150 trials) where subjects are rewarded with money, and a block (150 trials) where subjects were rewarded with food.
 
+Dependencies:
+- MatLab 9.4
+- Psychtoolbox 3
+- Statistics and Machine Learning Toolbox 11.3
+
 Please do not share or use this code without my written consent.  
 alexander.breslav@duke.edu
